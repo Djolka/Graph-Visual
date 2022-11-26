@@ -1,4 +1,4 @@
-#include "graph.h"
+#include "Headers/graph.h"
 
 #include <QApplication>
 
