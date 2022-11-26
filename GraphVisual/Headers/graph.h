@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <QMainWindow>
+#include<QPointF>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Graph; }

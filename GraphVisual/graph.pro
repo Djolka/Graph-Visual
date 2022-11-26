@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     Source/main.cpp \
-    Source/graph.cpp
+    Source/graph.cpp \
+    Source/node.cpp
 
 HEADERS += \
-    Headers/graph.h
+    Headers/graph.h \
+    Headers/node.h
 
 FORMS += \
     Forms/graph.ui
