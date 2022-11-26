@@ -8,7 +8,11 @@
 class Node{
 
 public:
-
+    Node(){
+    this->m_in_deg=0;
+    this->m_out_deg=0;
+    this->m_deg=0;
+    }
     explicit Node(std::string);
     explicit Node(std::string, QPointF position);
 
@@ -28,8 +32,6 @@ public:
 
 private:
 
-    Node(){}
-
     unsigned m_in_deg;
     unsigned m_out_deg;
     unsigned m_deg;
@@ -44,7 +46,7 @@ private:
     void dec_deg();
     void set_name(std::string name);
 
-    friend class Graph
+    friend class Graph;
 };
 
 

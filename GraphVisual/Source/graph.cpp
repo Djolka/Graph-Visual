@@ -1,4 +1,4 @@
-#include "Header/graph.h"
+#include "Headers/graph.h"
 #include "ui_graph.h"
 
 #include <QString>

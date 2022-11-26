@@ -2,11 +2,6 @@
 #include<utility>
 #include<QPointF>
 
-Node::Node(){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
-    this->m_deg=0;
-}
 
 Node::Node(std::string name){
     this->m_in_deg=0;
@@ -63,7 +58,7 @@ void Node::dec_in_deg(){
     if(m_in_deg>0){
         this->m_in_deg--;
     }else{
-        cerr<<"Ovaj cvor nema ulaznih grana koje se mogu obrisati!!!"<<endl;
+        std::cerr<<"Ovaj cvor nema ulaznih grana koje se mogu obrisati!!!"<<std::endl;
     }
 }
 
@@ -71,7 +66,7 @@ void Node::dec_out_deg(){
     if(m_out_deg>0){
         this->m_out_deg--;
     }else{
-        cerr<<"Ovaj cvor nema izlaznih grana koje se mogu obrisati!!!"<<endl;
+        std::cerr<<"Ovaj cvor nema izlaznih grana koje se mogu obrisati!!!"<<std::endl;
     }
 }
 
@@ -83,7 +78,7 @@ void Node::dec_deg(){
     if(m_deg>0){
         this->m_deg--;
     }else{
-        cerr<<"Ovaj cvor nema grana koje se mogu obrisati!!!"<<endl;
+        std::cerr<<"Ovaj cvor nema grana koje se mogu obrisati!!!"<<std::endl;
     }
 }
 
