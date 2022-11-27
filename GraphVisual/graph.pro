@@ -17,8 +17,7 @@ SOURCES += \
 HEADERS += \
     Headers/edge.h \
     Headers/graph.h \
-    Headers/node.h \
-    Source/edge.h
+    Headers/node.h
 
 FORMS += \
     Forms/graph.ui
