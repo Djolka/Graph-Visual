@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Graph</class>
- <widget class="QMainWindow" name="Graph">
+ <class>GraphWindow</class>
+ <widget class="QMainWindow" name="GraphWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1454</width>
+    <width>1554</width>
     <height>678</height>
    </rect>
   </property>
@@ -323,7 +323,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1454</width>
+     <width>1554</width>
      <height>22</height>
     </rect>
    </property>

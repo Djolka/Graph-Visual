@@ -20,7 +20,7 @@ HEADERS += \
     Headers/node.h
 
 FORMS += \
-    Forms/graph.ui
+    Forms/graphwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
