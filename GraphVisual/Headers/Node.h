@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include<utility>
+#include<list>
 #include <QPointF>
 
 class Node{
@@ -29,6 +30,9 @@ public:
     //overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
 
+    bool operator<(const Node &second) const;
+
+    std::list<Node> neighbours();
 
 private:
 
@@ -37,6 +41,8 @@ private:
     unsigned m_deg;
     std::string m_name;
     QPointF m_position;
+
+    std::list<Node> m_neighbours;
 
     void inc_in_deg();
     void inc_out_deg();

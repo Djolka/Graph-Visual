@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-//#include "Headers/Edge.h"
+#include "Headers/edge.h"
 #include "Headers/Node.h"
 
 #include <QList>
@@ -37,21 +37,22 @@ public:
     //bool setEdge(const std::string &uname, const std::string &vname);
     //bool setEdge(Node *u, Node *v, int w);
     //bool setEdge(const std::string &uname, const std::string &vname, int w);
-    //bool removeEdge(Node *u, Node *v);
+    bool removeEdge(Node *u, Node *v);
     //bool removeEdge(const std::string &uname, const std::string &vname);
     //bool hasEdge(Node *u, Node *v) const;
     //bool hasEdge(const std::string &uname, const std::string &vname) const;
-    //int weight(Node *u, Node *v) const;
+    int weight(Node u, Node v) const;
     //int weight(const std::string &uname, const std::string &vname) const;
     //void clearEdges();
     //QString nextNodeName() const;
-    //QList edgeSet();
-    //QList nodeSet();
-    //Node *randomNode();
+    QList<Edge> edges();
+    QList<Node> nodes();
+    Node randomNode();
+    Edge* getEdge(Node a, Node b);
 
 protected:
-//        QSet<Edge> _edgeSet;
-//        QSet<Node> _nodeSet;
+        QList<Edge> m_edges;
+        QList<Node> m_nodes;
 
 //private:
 //    bool hasDirectedEdge(Node *u, Node *v) const;

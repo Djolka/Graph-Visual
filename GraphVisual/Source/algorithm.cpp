@@ -1,6 +1,8 @@
 #include"Headers/algorithm.h"
 
 #include<limits>
+#include<stack>
+#include<queue>
 
 using namespace std;
 
@@ -49,18 +51,18 @@ bool Algorithm::isConnected (Node u, Node v){
 
 }
 
-bool Algorithm::isAllConnected (Graph* graph){
+bool Algorithm::isAllConnected (Graph graph){
 
-    for (auto node : graph->m_nodes) {
+    for (auto node : graph.nodes()) {
 
         map<Node, bool> visited;
         list<Node> steps;
 
         DFS(node, visited, steps);
 
-        for(auto v : graph->m_nodes)
+        for(auto v : graph.nodes())
             if(visited.find(v)==visited.end())
-                return False;
+                return false;
     }
 
     return true;
@@ -81,7 +83,7 @@ float Algorithm::Dijkstra (Graph graph, Node start, Node end){
 
         for(auto neighb : current.neighbours()){
             if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {
-                dist[neighb] = dist[current] + graph->weight(current, neighb);
+                dist[neighb] = dist[current] + graph.weight(current, neighb);
                 parent[neighb] = current;
             }
 
@@ -104,25 +106,31 @@ Node Algorithm::minDist(map<Node, float> dist, map<Node, bool> visited){
     return minNode;
 }
 
+/*
 void Algorithm::MST (Graph graph){
 
     map<Node, bool> visited;
     map<Node, Node> parent;
     map<Node, int> minEdge;
-    priority_queue<pair(float, Node)> minDist;
 
-    for(auto e : graph.edgeSet()){
+    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
+
+    int min = numeric_limits<int>::max();
+    Node* begin;
+    Node* end;
+
+    for(Edge e : graph.edges()){
         if(e.weight() < min){
             min = e.weight();
-            begin = e.first();
-            end = e.second();
+            begin = e.getFirst();
+            end = e.getSecond();
         }
     }
 
-    minDist.push((0.0, begin));
-    for(auto n : graph.nodeSet()){
+    minDist.push((0.0, begin));     //TODO *
+    for(auto n : graph.nodes()){
         if(n != begin)
-            minDist.push((numeric_limits<float>::max(), n));
+            minDist.push((numeric_limits<int>::max(), n));
     }
     minEdge[begin] = 0;
     parent[end] = begin;
@@ -131,7 +139,7 @@ void Algorithm::MST (Graph graph){
         node = minDist.top();
         minDist.pop();
 
-        current = node.second;
+        Node current = node.second;
 
         if(visited[current])
             continue;
@@ -150,19 +158,20 @@ void Algorithm::MST (Graph graph){
     //TODO
     //printMST(parent);
 }
+*/
 
 
-list<Edge> Algorithm::getBridges (Graph* graph){
+list<Edge*> Algorithm::getBridges (Graph graph){
 
     map<Node, bool> visited;
     map<Node, int> in;
     map<Node, int> low_link;
     map<Node, Node> parent;
 
-    list<Edge> result;
+    list<Edge*> result;
     int time = 0;
 
-    for(auto node : graph->nodeSet())
+    for(auto node : graph.nodes())
         if(visited.find(node)==visited.end())
             bridge(graph, node, visited, in, low_link, parent, time, result);
 
@@ -170,14 +179,14 @@ list<Edge> Algorithm::getBridges (Graph* graph){
 }
 
 
-void Algorithm::bridge (Graph* graph, Node node, map<Node, bool> visited,
+void Algorithm::bridge (Graph graph, Node node, map<Node, bool> visited,
                     map<Node, int> in, map<Node, int> low_link,
-                        map<Node, Node> parent, int time, list<Edge> result){
+                        map<Node, Node> parent, int time, list<Edge*> result){
 
     visited[node] = true;
     in[node] = low_link[node] = ++time;
 
-    for(auto neighb : node->neighbours()){
+    for(auto neighb : node.neighbours()){
         if(visited.find(neighb)==visited.end()){
             parent[neighb] = node;
 
@@ -186,9 +195,9 @@ void Algorithm::bridge (Graph* graph, Node node, map<Node, bool> visited,
             low_link[node] = min(low_link[node], low_link[neighb]);
 
             if(low_link[neighb] > in[node])
-                result.push_back(Edge(n, neighb));
+                result.push_back(graph.getEdge(node, neighb));
         }
-        else if(neighb != parent[node])
+        else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
     }
 
@@ -232,7 +241,7 @@ void Algorithm::articulationNodes (Node node, map<Node, bool> visited,
             if(!(parent.find(node)==parent.end()) && low_link[neighb] >= in[node])
                 result.push_back(node);
         }
-        else if(neighb != parent[node])
+        else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
     }
 
@@ -249,17 +258,17 @@ list<Node> Algorithm::Hierholzer (Graph* graph){
     stack<Node> currPath;
     vector<Node> cycle;
 
-    auto currNode = graph->randomNode;
-    currPath.push(source);
+    auto currNode = graph->randomNode();
+    currPath.push(currNode);
 
     while (!currPath.empty()) {
 
-        if (currNode->neighbours().size()) {
+        if (currNode.neighbours().size()) {
             currPath.push(currNode);
 
-            Node nextNode = currNode->neighbours().back();
+            Node nextNode = currNode.neighbours().back();
 
-            graph.removeEdge(currNode, nextNode);
+            graph->removeEdge(&currNode, &nextNode);
 
             currNode = nextNode;
         }
@@ -277,26 +286,27 @@ list<Node> Algorithm::Hierholzer (Graph* graph){
 }
 
 
-bool Algorithm::hasEulerianCircuit (Graph* graph){
+bool Algorithm::hasEulerianCircuit (Graph graph){
 
     if(!isAllConnected(graph)){
-        return False;
+        return false;
     }
 
-    for(auto node : graph->nodeSet())
-        if(graph->isDirected() && node->m_inDeg != node->m_outDeg)
-            return False;
-    if(!graph->isDirected() && node->m_Deg % 2 != 0)
-        return False;
+    for(auto node : graph.nodes()){
+        if(graph.isDirected() && node.in_deg() != node.out_deg())
+            return false;
+        if(!graph.isDirected() && node.deg() % 2 != 0)
+            return false;
+    }
 
-    return True;
+    return true;
 
 }
 
 
 list<Node> Algorithm::getEulerianCircuit (Graph* graph){
 
-    if(!hasEulerianCircuit(graph)){
+    if(!hasEulerianCircuit(*graph)){
         //ne postoji ciklus
         return list<Node>();
     }

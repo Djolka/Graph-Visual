@@ -5,25 +5,24 @@
 #include<map>
 #include "Headers/Node.h"
 
-typedef std::pair<Node*, Node*> pair;
-typedef std::map<pair, int> edges;
-
+typedef std::pair<Node*, Node*> nodePair;
+typedef std::map<nodePair, int> edges;
 
 class Edge{
 
 public:
-    Edge(pair&, int&);
+    Edge(nodePair&, int&);
 
     explicit Edge(edges::iterator&);
-    Node* first() const;
-    Node* second() const;
+    Node* getFirst() const;
+    Node* getSecond() const;
     int weight() const;
 
     friend class Graph;
 
 private:
     const int &m_weight{};
-    const pair &m_node_pair{};
+    const nodePair &m_node_pair{};
 };
 
 #endif // EDGE_H
