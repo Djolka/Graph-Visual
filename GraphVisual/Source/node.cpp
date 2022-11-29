@@ -1,4 +1,4 @@
-#include "Headers/Node.h"
+#include "Headers/node.h"
 #include<utility>
 #include<QPointF>
 
@@ -17,6 +17,7 @@ Node::Node(std::string name, QPointF position){
     this->m_name=name;
     this->m_position=position;
 }
+
 
 unsigned Node::in_deg() const{
     return this->m_in_deg;
