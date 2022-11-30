@@ -27,15 +27,14 @@ public:
 
     bool addNode(const Node &node);
     bool addNode(std::string node_name);
-    //bool removeNode(Node *node);
-    //bool removeNode(const std::string &name);
+    bool removeNode(Node *node);
+    bool removeNode(const std::string &name);
     //bool isolateNode(Node *node);
     //bool isolateNode(const std::string &name);
-    //bool setNodeName(Node *node, const std::string &new_name);
-    //bool changeNodeName(const std::string &old_name, const std::string &new_name);
-    //inline int countEdges() const;
-    //Qlist<Node *> nodeList() const;
-    //inline int countNodes() const;
+    bool setNodeName(Node *node, const std::string &new_name);
+    bool changeNodeName(const std::string &old_name, const std::string &new_name);
+    inline int countEdges() const;
+    inline int countNodes() const;
     Edge getEdge(Node *u, Node *v);
     bool setEdge(Node *u, Node *v);
     bool setEdge(Node *u, Node *v, int w);
@@ -47,8 +46,7 @@ public:
     //bool hasEdge(const std::string &uname, const std::string &vname) const;
     int weight(Node *u, Node *v) const;
     //int weight(const std::string &uname, const std::string &vname) const;
-    //void clearEdges();
-    //QString nextNodeName() const;
+    void clearEdges();
     QList<Edge> edgeSet();
     QList<Node> nodeSet();
     Node randomNode();
@@ -59,8 +57,8 @@ protected:
     const std::pair<int, int> m_weightRange;
 
 //private:
-    const bool _directed;
-    const bool _weighted;
+    const bool m_directed;
+    const bool m_weighted;
 
 };
 

@@ -26,7 +26,9 @@ public:
     //overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
 
-    QList<Node> neighbours;
+    bool operator<(const Node &second) const;
+
+    QList<Node> neighbours();
 
 
 private:
@@ -36,6 +38,8 @@ private:
     unsigned m_deg;
     std::string m_name;
     QPointF m_position;
+
+    QList<Node> m_neighbours;
 
     void inc_in_deg();
     void inc_out_deg();

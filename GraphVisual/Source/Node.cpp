@@ -1,6 +1,6 @@
 #include "Headers/node.h"
-#include<utility>
-#include<QPointF>
+#include <utility>
+#include <QPointF>
 
 
 Node::Node(){
@@ -51,6 +51,15 @@ void Node::set_position(const QPointF &position){
 bool Node::operator==(const Node &second) const{
     return this->m_name==second.m_name;
 }
+
+bool Node::operator<(const Node &second) const{
+    return this->m_name<second.m_name;
+}
+
+QList<Node> Node::neighbours(){
+    return m_neighbours;
+}
+
 
 void Node::inc_in_deg(){
     this->m_in_deg++;
