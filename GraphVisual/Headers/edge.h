@@ -1,12 +1,11 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <unordered_map>
 #include <map>
 #include "Headers/node.h"
 
 typedef std::pair<Node*, Node*> pair;
-typedef std::unordered_map<pair, int> edges;
+typedef std::map<pair, int> edges;
 
 class Edge{
 

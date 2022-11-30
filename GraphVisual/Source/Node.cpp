@@ -24,6 +24,7 @@ Node::Node(std::string name, QPointF position){
     this->m_position=position;
 }
 
+
 unsigned Node::in_deg() const{
     return this->m_in_deg;
 }
