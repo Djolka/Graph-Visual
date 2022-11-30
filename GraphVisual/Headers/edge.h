@@ -1,9 +1,9 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include<unordered_map>
-#include<map>
-#include "Headers/Node.h"
+#include <unordered_map>
+#include <map>
+#include "Headers/node.h"
 
 typedef std::pair<Node*, Node*> pair;
 typedef std::unordered_map<pair, int> edges;
@@ -17,6 +17,8 @@ public:
     Node* first() const;
     Node* second() const;
     int weight() const;
+
+    bool operator==(const pair(m_node_pair)) const;
 
     friend class Graph;
 

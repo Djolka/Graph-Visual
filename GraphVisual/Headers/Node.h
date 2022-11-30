@@ -1,18 +1,15 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include<iostream>
-#include<utility>
+#include <iostream>
+#include <utility>
 #include <QPointF>
+#include <QList>
 
 class Node{
 
 public:
-    Node(){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
-    this->m_deg=0;
-    }
+    Node();
     explicit Node(std::string);
     explicit Node(std::string, QPointF position);
 
@@ -28,6 +25,8 @@ public:
 
     //overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
+
+    QList<Node> neighbours;
 
 
 private:
