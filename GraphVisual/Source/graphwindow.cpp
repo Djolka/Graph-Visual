@@ -1,22 +1,22 @@
-#include "Headers/graph.h"
-#include "ui_graph.h"
+#include "Headers/graphwindow.h"
+#include "ui_graphwindow.h"
 
 #include <QString>
 #include <QListWidgetItem>
 
-Graph::Graph(QWidget *parent)
+GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Graph)
+    , ui(new Ui::GraphWindow)
 {
     ui->setupUi(this);
 }
 
-Graph::~Graph()
+GraphWindow::~GraphWindow()
 {
     delete ui;
 }
 
-void Graph::on_pbAddNode_clicked()
+void GraphWindow::on_pbAddNode_clicked()
 {
     QString node1 = ui->teNode1->toPlainText();
     QString node2 = ui->teNode2->toPlainText();
@@ -33,7 +33,7 @@ void Graph::on_pbAddNode_clicked()
 }
 
 
-void Graph::on_pbDeleteAll_clicked()
+void GraphWindow::on_pbDeleteAll_clicked()
 {
     if(itemSelected != -1){
         QListWidgetItem *item = ui->lw->takeItem(itemSelected);
@@ -45,7 +45,7 @@ void Graph::on_pbDeleteAll_clicked()
 }
 
 
-void Graph::on_lw_currentRowChanged(int currentRow)
+void GraphWindow::on_lw_currentRowChanged(int currentRow)
 {
     itemSelected = currentRow;
 }

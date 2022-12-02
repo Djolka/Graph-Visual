@@ -1,20 +1,20 @@
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef GRAPHWINDOW_H
+#define GRAPHWINDOW_H
 
 #include <QMainWindow>
 #include<QPointF>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Graph; }
+namespace Ui { class GraphWindow; }
 QT_END_NAMESPACE
 
-class Graph : public QMainWindow
+class GraphWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Graph(QWidget *parent = nullptr);
-    ~Graph();
+    GraphWindow(QWidget *parent = nullptr);
+    ~GraphWindow();
 
 private slots:
     void on_pbAddNode_clicked();
@@ -22,7 +22,7 @@ private slots:
     void on_lw_currentRowChanged(int currentRow);
 
 private:
-    Ui::Graph *ui;
+    Ui::GraphWindow *ui;
     int itemSelected = -1;
 };
-#endif // GRAPH_H
+#endif // GRAPHWINDOW_H
