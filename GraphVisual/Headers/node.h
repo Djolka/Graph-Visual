@@ -27,7 +27,7 @@ public:
     bool operator==(const Node &second) const;
     bool operator<(const Node &second) const;
 
-    QList<Node*> neighbors();
+    QList<Node*> neighbours();
     void addNeighbour(Node* n);
 
 private:
@@ -38,7 +38,7 @@ private:
     std::string m_name;
     QPointF m_position;
 
-    QList<Node*> m_neighbors;
+    QList<Node*> m_neighbours;
 
     void incInDeg();
     void incOutDeg();

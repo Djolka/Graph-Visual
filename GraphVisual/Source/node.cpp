@@ -57,12 +57,12 @@ bool Node::operator<(const Node &second) const{
     return this->m_name<second.m_name;
 }
 
-QList<Node*> Node::neighbors(){
-    return m_neighbors;
+QList<Node*> Node::neighbours(){
+    return m_neighbours;
 }
 
 void Node::addNeighbour(Node* n){
-    m_neighbors.append(n);
+    m_neighbours.append(n);
 }
 
 void Node::incInDeg(){
