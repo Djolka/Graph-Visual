@@ -1,20 +1,20 @@
 #include "Headers/edge.h"
 #include "Headers/node.h"
 
-Edge::Edge(pair& node_pair, int& weight):m_weight(weight), m_node_pair(node_pair){}
+Edge::Edge(std::pair<Node*, Node*> nodePair, int weight):m_weight(weight), m_nodePair(nodePair){}
 
-Edge::Edge(edges::iterator& iter): m_weight(iter->second), m_node_pair(iter->first){}
-
+Edge::Edge(edges::iterator& iter): m_weight(iter->second), m_nodePair(iter->first){}
 Node* Edge::first()const{
-    return m_node_pair.first;
+    return m_nodePair.first;
 }
 Node* Edge::second() const{
-    return m_node_pair.second;
+    return m_nodePair.second;
 }
 int Edge::weight() const{
     return m_weight;
 }
 
-bool Edge::operator==(const pair(m_node_pair)) const{
-    return (this->first()->name() == m_node_pair.first->name()) && (this->second()->name() == m_node_pair.second->name());
+std::ostream &operator<<(std::ostream &os, const Edge &e){
+    os<<e.first()->name()<<" "<<e.weight()<<std::endl;
+    return os;
 }
