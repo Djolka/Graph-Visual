@@ -14,6 +14,7 @@ public:
     explicit Edge(edges::iterator& iter);
     Node* first() const;
     Node* second() const;
+
     int weight() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Edge e);

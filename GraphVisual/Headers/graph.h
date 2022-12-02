@@ -15,10 +15,12 @@ public:
     explicit Graph(bool directed, bool weighted);
 
     static std::pair<int, int> calcWeightRange(bool weighted);
+
     bool isWeighted() const;
     bool isUnweighted() const;
     bool isDirected() const;
     bool isUndirected() const;
+
     void clear();
 
     //nodes methods
@@ -55,8 +57,6 @@ public:
 
     QList<Edge*> edgeSet();
     QList<Node*> nodeSet();
-
-
 
 protected:
     QList<Edge*> m_edges;

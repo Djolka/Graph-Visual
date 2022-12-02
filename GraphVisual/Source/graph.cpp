@@ -1,4 +1,5 @@
 #include "Headers/graph.h"
+
 #include <algorithm>
 #include <random>
 
@@ -320,14 +321,5 @@ Node* Graph::randomNode() {
 
     return n;
 }
-
-
-
-
-
-
-
-
-
 
 
