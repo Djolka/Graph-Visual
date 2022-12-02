@@ -1,7 +1,7 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include<map>
+#include <map>
 #include "Headers/node.h"
 
 typedef std::map<std::pair<Node*, Node*>, int> edges;
@@ -9,15 +9,17 @@ typedef std::map<std::pair<Node*, Node*>, int> edges;
 class Edge{
 
 public:
-    Edge(std::pair<Node*, Node*> nodePair, int weight);
+    Edge(std::pair<Node*, Node*>, int weight);
 
     explicit Edge(edges::iterator& iter);
     Node* first() const;
     Node* second() const;
     int weight() const;
 
-    friend class Graph;
     friend std::ostream &operator<<(std::ostream &os, const Edge e);
+
+    friend class Graph;
+
 
 private:
     int m_weight;
