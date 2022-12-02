@@ -4,8 +4,8 @@
 
 
 Node::Node(){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
+    this->m_inDeg=0;
+    this->m_outDeg=0;
     this->m_deg=0;
 }
 
