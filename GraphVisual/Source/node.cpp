@@ -1,13 +1,14 @@
 #include "Headers/node.h"
-#include <utility>
-#include <QPointF>
-
+#include<utility>
+#include<QPointF>
+#include<QList>
 
 Node::Node(){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
+    this->m_inDeg=0;
+    this->m_outDeg=0;
     this->m_deg=0;
 }
+
 
 Node::Node(std::string name){
     this->m_inDeg=0;

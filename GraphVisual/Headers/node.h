@@ -1,10 +1,10 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <iostream>
-#include <utility>
+#include<iostream>
+#include<utility>
 #include <QPointF>
-#include <QList>
+#include<QList>
 
 class Node{
 
