@@ -1,7 +1,6 @@
 #include "Headers/edge.h"
 #include "Headers/node.h"
 
-
 Edge::Edge(std::pair<Node*, Node*> nodePair, int weight):m_weight(weight), m_nodePair(nodePair){}
 
 Edge::Edge(edges::iterator& iter): m_weight(iter->second), m_nodePair(iter->first){}
