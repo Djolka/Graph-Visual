@@ -4,24 +4,24 @@
 #include<map>
 #include "Headers/node.h"
 
-typedef std::pair<Node*, Node*> pair;
-typedef std::map<pair, int> edges;
+typedef std::map<std::pair<Node*, Node*>, int> edges;
 
 class Edge{
 
 public:
-    Edge(pair&, int&);
+    Edge(std::pair<Node*, Node*> nodePair, int weight);
 
-    explicit Edge(edges::iterator&);
+    explicit Edge(edges::iterator& iter);
     Node* first() const;
     Node* second() const;
     int weight() const;
 
     friend class Graph;
+    friend std::ostream &operator<<(std::ostream &os, const Edge e);
 
 private:
-    const int &m_weight{};
-    const pair &m_node_pair{};
+    int m_weight;
+    const std::pair<Node*, Node*> m_nodePair{};
 };
 
 #endif // EDGE_H

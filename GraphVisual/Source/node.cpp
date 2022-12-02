@@ -1,30 +1,36 @@
 #include "Headers/node.h"
 #include<utility>
 #include<QPointF>
+#include<QList>
+
+Node::Node(){
+    this->m_inDeg=0;
+    this->m_outDeg=0;
+    this->m_deg=0;
+}
 
 
 Node::Node(std::string name){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
+    this->m_inDeg=0;
+    this->m_outDeg=0;
     this->m_deg=0;
     this->m_name=name;
 }
 
 Node::Node(std::string name, QPointF position){
-    this->m_in_deg=0;
-    this->m_out_deg=0;
+    this->m_inDeg=0;
+    this->m_outDeg=0;
     this->m_deg=0;
     this->m_name=name;
     this->m_position=position;
 }
 
-
-unsigned Node::in_deg() const{
-    return this->m_in_deg;
+unsigned Node::inDeg() const{
+    return this->m_inDeg;
 }
 
-unsigned Node::out_deg() const{
-    return this->m_out_deg;
+unsigned Node::outDeg() const{
+    return this->m_outDeg;
 }
 
 unsigned Node::deg() const{
@@ -39,7 +45,7 @@ std::string Node::name() const{
     return m_name;
 }
 
-void Node::set_position(const QPointF &position){
+void Node::setPosition(const QPointF &position){
     this->m_position=position;
 }
 
@@ -47,35 +53,47 @@ bool Node::operator==(const Node &second) const{
     return this->m_name==second.m_name;
 }
 
-void Node::inc_in_deg(){
-    this->m_in_deg++;
+bool Node::operator<(const Node &second) const{
+    return this->m_name<second.m_name;
 }
 
-void Node::inc_out_deg(){
-    this->m_out_deg++;
+QList<Node*> Node::neighbours(){
+    return m_neighbours;
 }
 
-void Node::dec_in_deg(){
-    if(m_in_deg>0){
-        this->m_in_deg--;
+void Node::addNeighbour(Node* n){
+    m_neighbours.append(n);
+}
+
+void Node::incInDeg(){
+    this->m_inDeg++;
+}
+
+void Node::incOutDeg(){
+    this->m_outDeg++;
+}
+
+void Node::decInDeg(){
+    if(m_inDeg>0){
+        this->m_inDeg--;
     }else{
         std::cerr<<"Ovaj cvor nema ulaznih grana koje se mogu obrisati!!!"<<std::endl;
     }
 }
 
-void Node::dec_out_deg(){
-    if(m_out_deg>0){
-        this->m_out_deg--;
+void Node::decOutDeg(){
+    if(m_outDeg>0){
+        this->m_outDeg--;
     }else{
         std::cerr<<"Ovaj cvor nema izlaznih grana koje se mogu obrisati!!!"<<std::endl;
     }
 }
 
-void Node::inc_deg(){
+void Node::incDeg(){
     this->m_deg++;
 }
 
-void Node::dec_deg(){
+void Node::decDeg(){
     if(m_deg>0){
         this->m_deg--;
     }else{
@@ -83,6 +101,13 @@ void Node::dec_deg(){
     }
 }
 
-void Node::set_name(const std::string name){
+void Node::setName(const std::string name){
     this->m_name=name;
+}
+
+
+
+std::ostream &operator<< (std::ostream &os, const Node &n){
+    os<<n.name()<<" "<< n.inDeg()<<" "<< n.outDeg()<<" "<<n.deg()<<std::endl;
+    return os;
 }
