@@ -35,7 +35,7 @@ void Graph::clear() {
 bool Graph::hasNode(Node *node) const {
     auto iterator = std::find_if(
       m_nodes.begin(), m_nodes.end(),
-                [node](Node* x) { return x->name() == node->name();}
+                [&node](Node x) { return x.name() == node->name();}
     );
     if (iterator != m_nodes.end()){
         return true;
@@ -46,7 +46,7 @@ bool Graph::hasNode(Node *node) const {
 bool Graph::hasNode(const std::string &node_name) const {
     auto iterator = std::find_if(
       m_nodes.begin(), m_nodes.end(),
-                [node_name](Node* x) { return x->name() == node_name;}
+                [node_name](Node x) { return x.name() == node_name;}
     );
     if (iterator != m_nodes.end()){
         return true;
@@ -54,22 +54,27 @@ bool Graph::hasNode(const std::string &node_name) const {
     return false;
 }
 
+//TOCHECK
 bool Graph::hasDirectedEdge(Node *u, Node *v) const {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            return true;
-        }
+
+    auto begin = m_edges.begin();
+    auto end = m_edges.end();
+    auto index = m_edges.indexOf(std::make_pair(u, v));
+
+    if (end-begin > index){
+        return false;
     }
-    return false;
+    return true;
 }
 
+//TOCHECK
 bool Graph::hasEdge(Node *u, Node *v) const {
-    return m_directed ? hasDirectedEdge(u, v) : (hasDirectedEdge(u, v) || hasDirectedEdge(v, u));
+     return m_directed ? hasDirectedEdge(u, v) : (hasDirectedEdge(u, v) || hasDirectedEdge(v, u));
 }
 
-bool Graph::addNode(Node* node){
-    if (hasNode(node->name())){
+
+bool Graph::addNode(const Node &node) {
+    if (hasNode(node.name())){
         return false;
     }
     m_nodes.append(node);
@@ -83,13 +88,12 @@ bool Graph::addNode(std::string node_name) {
     if (hasNode(node_name)){
         return false;
     }
-    Node* n = new Node(node_name);
-    return addNode(n);
+    return addNode(Node(node_name));
 }
 
 
 bool Graph::removeNode(Node *node) {
-    auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
+    auto it = std::find(m_nodes.begin(), m_nodes.end(), *node);
 
     if (it != m_nodes.end()){
         m_nodes.erase(it);
@@ -101,32 +105,30 @@ bool Graph::removeNode(Node *node) {
 
 
 bool Graph::removeNode(const std::string &name) {
-    QList<Node*>::iterator it;
+    QList<Node>::iterator it;
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
-        if((*it)->name() == name){
+        if(it->name() == name){
             m_nodes.erase(it);
             return true;
         }
     return false;
 }
 
-
 bool Graph::setNodeName(Node *node, const std::string &new_name) {
-    QList<Node*>::iterator it;
-    for (it = m_nodes.begin(); it != m_nodes.end(); ++it){
-        if((*it)->name() == node->name()){
-            (*it)->setName(new_name);
+    QList<Node>::iterator it;
+    for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
+        if(it->name() == node->name()){
+            it->set_name(new_name);
             return true;
         }
-    }
     return false;
 }
 
 bool Graph::changeNodeName(const std::string &old_name, const std::string &new_name) {
-    QList<Node*>::iterator it;
+    QList<Node>::iterator it;
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
-        if((*it)->name() == old_name){
-            (*it)->setName(new_name);
+        if(it->name() == old_name){
+            it->set_name(new_name);
             return true;
         }
     return false;
@@ -140,161 +142,44 @@ int Graph::countNodes() const {
     return m_nodes.size();
 }
 
-//TOCHECK(some cases)
-bool Graph::setEdge(Node *u, Node *v, int w){
-    if (w < m_weightRange.first || w > m_weightRange.second){
-        return false;
-    }
-
-    if(u == v || !hasNode(u) || !hasNode(v)){
-        return false;
-    }
-
-    if(hasDirectedEdge(u,v)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == u && (*it)->second() == v){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(u,v), w);
-        m_edges.append(e);
-        return true;
-    }
-
-    if(!m_directed && hasDirectedEdge(v,u)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == v && (*it)->second() == u){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(v,u), w);
-        m_edges.append(e);
-        return true;
-    }
-
-    addEdge(u,v,w);
-    return true;
-}
 
 
-bool Graph::setEdge(Node *u, Node *v) {
-    return setEdge(u, v, 1);
-}
+//TOCHECK
+//bool Graph::setEdge(Node *u, Node *v) {
+//    return setEdge(u, v, 1);
+//}
 
+//TODO
+//bool Graph::setEdge(Node *u, Node *v, int w){
 
-//potential problem:memory leake
-bool Graph::setEdge(const std::string &uname, const std::string &vname) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, 1);
-}
+//}
 
+//TOCHECK
+//Edge Graph::getEdge(Node *u, Node *v) {
+//    auto it = std::find(m_edges.begin(), m_edges.end(), std::pair(u,v));
+//    if(it != m_edges.end()){
+//        return *it;
+//    }
+//    (what is return for failure?)
+//    return *it;
+//}
 
-bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, w);
-}
-
-
-Edge* Graph::getEdge(Node *u, Node *v) {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            return *it;
-        }
-    }
-    return nullptr;
-}
-
-bool Graph::addEdge(Node *u, Node *v) {
-    if(hasEdge(u,v)){
-        return false;
-    }
-    return addEdge(u,v,1);
-}
-
-bool Graph::addEdge(Node *u, Node *v, int w) {
-    if(hasEdge(u,v)){
-        return false;
-    }
-    Edge *e = new Edge(std::make_pair(u,v), w);
-    m_edges.insert(m_edges.size(), e);
-    if (m_directed) {
-        u->incOutDeg();
-        v->incInDeg();
-    } else {
-        u->incDeg();
-        v->incDeg();
-    }
-
-    if(m_directed){
-        u->m_neighbours.append(v);
-    }else{
-        u->m_neighbours.append(v);
-        v->m_neighbours.append(u);
-    }
-    return true;
-}
-
+//TOCHECK
 bool Graph::removeEdge(Node *u, Node *v) {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            break;
-        }
-    }
+    auto it = std::find(m_edges.begin(), m_edges.end(), std::pair(u,v));
     if(it != m_edges.end()){
-        m_edges.erase(it);
+        m_edges.removeAt(it-m_edges.begin());
         return true;
     }
     return false;
 }
 
-
-bool Graph::removeEdge(const std::string &uname, const std::string &vname) {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first()->name() == uname && (*it)->second()->name() == vname){
-            break;
-        }
-    }
-    if(it != m_edges.end()){
-        m_edges.erase(it);
-        return true;
-    }
-    return false;
-}
-
-bool Graph::setWeight(Node *u, Node *v, int w) {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            (*it)->m_weight = w;
-            return true;
-        }
-    }
-    return false;
-}
-
+//TOCHECK
 int Graph::weight(Node *u, Node *v) const {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            return (*it)->weight();
-        }
-    }
-    return -1;
-}
+    auto it = std::find(m_edges.begin(), m_edges.end(), std::pair(u,v));
 
-int Graph::weight(const std::string &uname, const std::string &vname) const {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first()->name() == uname && (*it)->second()->name() == vname){
-            return (*it)->weight();
-        }
+    if(it != m_edges.end()){
+        return it->weight();
     }
     return -1;
 }
@@ -304,19 +189,19 @@ void Graph::clearEdges() {
 }
 
 
-QList<Edge*> Graph::edgeSet() {
+QList<Edge> Graph::edgeSet() {
     return m_edges;
 }
 
-QList<Node*> Graph::nodeSet() {
+QList<Node> Graph::nodeSet() {
     return m_nodes;
 }
 
-Node* Graph::randomNode() {
+Node Graph::randomNode() {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(m_nodes.begin(), m_nodes.end(), g);
-    Node* n = m_nodes.takeFirst();
+    Node n = m_nodes.takeFirst();
 
     return n;
 }

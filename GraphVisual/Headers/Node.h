@@ -26,11 +26,10 @@ public:
     //overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
     bool operator<(const Node &second) const;
-    friend std::ostream &operator<< (std::ostream &os, const Node &n);
 
     QList<Node*> neighbours();
     void addNeighbour(Node* n);
-
+    friend std::ostream &operator<< (std::ostream &os, const Node &n);
 
 private:
 
