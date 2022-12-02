@@ -3,7 +3,7 @@
 
 #include<unordered_map>
 #include<map>
-#include "Headers/Node.h"
+#include "Headers/node.h"
 
 typedef std::pair<Node*, Node*> nodePair;
 typedef std::map<nodePair, int> edges;

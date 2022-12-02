@@ -1,4 +1,4 @@
-#include "Headers/Graph.h"
+#include "Headers/graph.h"
 
 
 bool Graph::isWeighted() const {

@@ -2,7 +2,7 @@
 #define GRAPH_H
 
 #include "Headers/edge.h"
-#include "Headers/Node.h"
+#include "Headers/node.h"
 
 #include <QList>
 #include <QString>

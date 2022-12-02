@@ -1,4 +1,4 @@
-#include "Headers/Node.h"
+#include "Headers/node.h"
 #include<utility>
 #include<QPointF>
 

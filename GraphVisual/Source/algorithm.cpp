@@ -6,11 +6,11 @@
 
 using namespace std;
 
-list<Node> Algorithm::BFS (Node current){
+list<Node*> Algorithm::BFS (Node* current){
 
-    list<Node> steps;
-    queue<Node> q;
-    map<Node, bool> visited;
+    list<Node*> steps;
+    queue<Node*> q;
+    map<Node*, bool> visited;
 
     q.push(current);
     visited[current] = true;
@@ -20,7 +20,7 @@ list<Node> Algorithm::BFS (Node current){
         q.pop();
         steps.push_back(current);
 
-        for(auto neighb : current.neighbours())
+        for(auto neighb : current->neighbours())
             if(visited.find(neighb)==visited.end()){
                 visited[neighb] = true;
                 q.push(neighb);
@@ -30,33 +30,34 @@ list<Node> Algorithm::BFS (Node current){
     return steps;
 }
 
-void Algorithm::DFS (Node current, map<Node, bool> visited, list<Node> steps){
+
+void Algorithm::DFS (Node* current, map<Node*, bool> &visited, list<Node*> &steps){
 
     visited[current] = true;
     steps.push_back(current);
 
-    for(auto neighb : current.neighbours())
-        DFS(neighb, visited, steps);
+    for(Node* neighb : current->neighbours())
+        if(visited.find(neighb)==visited.end())
+            DFS(neighb, visited, steps);
 
 }
 
-bool Algorithm::isConnected (Node u, Node v){
+bool Algorithm::isConnected (Node &u, Node &v){
 
-    map<Node, bool> visited;
-    list<Node> steps;
+    map<Node*, bool> visited;
+    list<Node*> steps;
 
-    DFS(u, visited, steps);
+    DFS(&u, visited, steps);
 
-    return visited[v];
-
+    return visited[&v];
 }
 
-bool Algorithm::isAllConnected (Graph graph){
+bool Algorithm::isAllConnected (Graph &graph){
 
     for (auto node : graph.nodes()) {
 
-        map<Node, bool> visited;
-        list<Node> steps;
+        map<Node*, bool> visited;
+        list<Node*> steps;
 
         DFS(node, visited, steps);
 
@@ -68,36 +69,36 @@ bool Algorithm::isAllConnected (Graph graph){
     return true;
 }
 
-float Algorithm::Dijkstra (Graph graph, Node start, Node end){
+int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
 
-    map<Node, bool> visited;
-    map<Node, float> dist;
-    map<Node, Node> parent;
+    map<Node*, bool> visited;
+    map<Node*, int> dist;
+    map<Node*, Node*> parent;
 
     dist[start] = 0;
 
-    Node current = start;
+    Node* current = start;
 
     while(! (current == end)){
         visited[current] = true;
 
-        for(auto neighb : current.neighbours()){
-            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {
-                dist[neighb] = dist[current] + graph.weight(current, neighb);
+        for(auto neighb : current->neighbours()){
+            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(*current, *neighb) < dist[neighb])) {
+                dist[neighb] = dist[current] + graph.weight(*current, *neighb);
                 parent[neighb] = current;
             }
 
         }
 
-        current = minDist(dist, visited);     // najmanje udaljen cvor od svih neposecenih
+        current = minDist(dist, visited);
     }
 
     return dist[end];
 }
 
-Node Algorithm::minDist(map<Node, float> dist, map<Node, bool> visited){
-    float min = numeric_limits<float>::max();
-    Node minNode;
+Node* Algorithm::minDist(map<Node*, int> dist, map<Node*, bool> visited){
+    int min = numeric_limits<int>::max();
+    Node* minNode;
     for(auto i : dist)
         if (visited.find(i.first)==visited.end() && i.second<min){
             min = i.second;
@@ -160,13 +161,12 @@ void Algorithm::MST (Graph graph){
 }
 */
 
+list<Edge*> Algorithm::getBridges (Graph &graph){ //TODO test when graph.getEdge() is done
 
-list<Edge*> Algorithm::getBridges (Graph graph){
-
-    map<Node, bool> visited;
-    map<Node, int> in;
-    map<Node, int> low_link;
-    map<Node, Node> parent;
+    map<Node*, bool> visited;
+    map<Node*, int> in;
+    map<Node*, int> low_link;
+    map<Node*, Node*> parent;
 
     list<Edge*> result;
     int time = 0;
@@ -179,14 +179,14 @@ list<Edge*> Algorithm::getBridges (Graph graph){
 }
 
 
-void Algorithm::bridge (Graph graph, Node node, map<Node, bool> visited,
-                    map<Node, int> in, map<Node, int> low_link,
-                        map<Node, Node> parent, int time, list<Edge*> result){
+void Algorithm::bridge (Graph &graph, Node* node, map<Node*, bool> &visited,
+                    map<Node*, int> &in, map<Node*, int> &low_link,
+                        map<Node*, Node*> &parent, int time, list<Edge*> &result){
 
     visited[node] = true;
     in[node] = low_link[node] = ++time;
 
-    for(auto neighb : node.neighbours()){
+    for(auto neighb : node->neighbours()){
         if(visited.find(neighb)==visited.end()){
             parent[neighb] = node;
 
@@ -195,7 +195,7 @@ void Algorithm::bridge (Graph graph, Node node, map<Node, bool> visited,
             low_link[node] = min(low_link[node], low_link[neighb]);
 
             if(low_link[neighb] > in[node])
-                result.push_back(graph.getEdge(node, neighb));
+                result.push_back(graph.getEdge(*node, *neighb));
         }
         else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
@@ -203,14 +203,15 @@ void Algorithm::bridge (Graph graph, Node node, map<Node, bool> visited,
 
 }
 
-list<Node> Algorithm::getArticulationNodes(Graph graph){
 
-    map<Node, bool> visited;
-    map<Node, int> in;
-    map<Node, int> low_link;
-    map<Node, Node> parent;
+list<Node*> Algorithm::getArticulationNodes(Graph &graph){
 
-    list<Node> result;
+    map<Node*, bool> visited;
+    map<Node*, int> in;
+    map<Node*, int> low_link;
+    map<Node*, Node*> parent;
+
+    list<Node*> result;
     int time = 0;
 
     for(auto node : graph.nodes())
@@ -221,15 +222,15 @@ list<Node> Algorithm::getArticulationNodes(Graph graph){
 }
 
 
-void Algorithm::articulationNodes (Node node, map<Node, bool> visited,
-                                 map<Node, int> in, map<Node, int> low_link,
-                                   map<Node, Node> parent, int time, list<Node> result){
+void Algorithm::articulationNodes (Node* node, map<Node*, bool> &visited,
+                                 map<Node*, int> &in, map<Node*, int> &low_link,
+                                   map<Node*, Node*> &parent, int time, list<Node*> &result){
 
     int children = 0;
     visited[node] = true;
     in[node] = low_link[node] = ++time;
 
-    for(auto neighb : node.neighbours()){
+    for(auto neighb : node->neighbours()){
         if(visited.find(neighb)==visited.end()){
             children++;
             parent[neighb] = node;
@@ -250,7 +251,7 @@ void Algorithm::articulationNodes (Node node, map<Node, bool> visited,
 
 }
 
-
+/*
 list<Node> Algorithm::Hierholzer (Graph* graph){
 
     list<Node> result;
@@ -284,26 +285,28 @@ list<Node> Algorithm::Hierholzer (Graph* graph){
     return result;
 
 }
+*/
 
-
-bool Algorithm::hasEulerianCircuit (Graph graph){
+bool Algorithm::hasEulerianCircuit (Graph &graph){
 
     if(!isAllConnected(graph)){
         return false;
     }
 
     for(auto node : graph.nodes()){
-        if(graph.isDirected() && node.in_deg() != node.out_deg())
+        if(graph.isDirected() && node->in_deg() != node->out_deg())
             return false;
-        if(!graph.isDirected() && node.deg() % 2 != 0)
+
+        if(!graph.isDirected() && node->deg() % 2 != 0)
             return false;
+
     }
 
     return true;
 
 }
 
-
+/*
 list<Node> Algorithm::getEulerianCircuit (Graph* graph){
 
     if(!hasEulerianCircuit(*graph)){
@@ -318,5 +321,6 @@ list<Node> Algorithm::getEulerianCircuit (Graph* graph){
 }
 
 
+*/
 
 

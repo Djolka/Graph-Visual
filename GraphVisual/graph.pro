@@ -10,17 +10,17 @@ CONFIG += c++17
 
 SOURCES += \
     Source/edge.cpp \
-    Source/Graph.cpp \
+    Source/graph.cpp \
     Source/main.cpp \
     Source/graphwindow.cpp \
-    Source/Node.cpp \
+    Source/node.cpp \
     Source/algorithm.cpp
 
 HEADERS += \
     Headers/edge.h \
-    Headers/Graph.h \
+    Headers/graph.h \
     Headers/graphwindow.h \
-    Headers/Node.h \
+    Headers/node.h \
     Headers/algorithm.h
 
 FORMS += \
