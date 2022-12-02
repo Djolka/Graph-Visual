@@ -9,17 +9,18 @@ typedef std::map<std::pair<Node*, Node*>, int> edges;
 class Edge{
 
 public:
-    Edge(std::pair<Node*, Node*>, int);
+    Edge(std::pair<Node*, Node*> nodePair, int weight);
 
-    explicit Edge(edges::iterator&);
+    explicit Edge(edges::iterator& iter);
     Node* first() const;
     Node* second() const;
     int weight() const;
 
     friend class Graph;
+    friend std::ostream &operator<<(std::ostream &os, const Edge e);
 
 private:
-    const int m_weight{};
+    int m_weight;
     const std::pair<Node*, Node*> m_nodePair{};
 };
 

@@ -10,8 +10,8 @@ class Node{
 
 public:
     Node();
-    explicit Node(std::string);
-    explicit Node(std::string, QPointF position);
+    explicit Node(std::string name);
+    explicit Node(std::string name, QPointF position);
 
     //getters
     unsigned inDeg() const;
@@ -29,6 +29,7 @@ public:
 
     QList<Node*> neighbours();
     void addNeighbour(Node* n);
+    friend std::ostream &operator<< (std::ostream &os, const Node &n);
 
 private:
 
