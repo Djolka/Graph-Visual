@@ -220,6 +220,11 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
     if(hasEdge(u,v)){
         return false;
     }
+
+    if(isUndirected() && (hasEdge(u,v) || hasEdge(v,u))){
+        return false;
+    }
+
     Edge *e = new Edge(std::make_pair(u,v), w);
     m_edges.insert(m_edges.size(), e);
     if (m_directed) {
@@ -230,11 +235,12 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
         v->incDeg();
     }
 
+
     if(m_directed){
-        u->m_neighbours.append(v);
+        u->addNeighbour(v);
     }else{
-        u->m_neighbours.append(v);
-        v->m_neighbours.append(u);
+        u->addNeighbour(v);
+        v->addNeighbour(u);
     }
     return true;
 }
@@ -243,12 +249,10 @@ bool Graph::removeEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
         if ((*it)->first() == u && (*it)->second() == v){
-            break;
+            m_edges.erase(it);
+            //TODO: delete nodes from each others neighbour list and split cases when is directed and undirected
+            return true;
         }
-    }
-    if(it != m_edges.end()){
-        m_edges.erase(it);
-        return true;
     }
     return false;
 }
@@ -258,12 +262,10 @@ bool Graph::removeEdge(const std::string &uname, const std::string &vname) {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
         if ((*it)->first()->name() == uname && (*it)->second()->name() == vname){
-            break;
+            m_edges.erase(it);
+            //TODO: delete nodes from each others neighbour list and split cases when is directed and undirected
+            return true;
         }
-    }
-    if(it != m_edges.end()){
-        m_edges.erase(it);
-        return true;
     }
     return false;
 }
@@ -282,7 +284,7 @@ bool Graph::setWeight(Node *u, Node *v, int w) {
 int Graph::weight(Node *u, Node *v) const {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
+        if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
             return (*it)->weight();
         }
     }

@@ -15,6 +15,6 @@ int Edge::weight() const{
 }
 
 std::ostream &operator<<(std::ostream &os, const Edge &e){
-    os<<e.first()->name()<<" "<<e.weight()<<std::endl;
+    os << e.first()->name() << " " << e.second()->name() << e.weight() << std::endl;
     return os;
 }

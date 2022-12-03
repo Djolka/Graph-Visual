@@ -56,12 +56,27 @@ bool Node::operator<(const Node &second) const{
     return this->m_name<second.m_name;
 }
 
+bool Node::removeNeighbour(Node *n){
+    auto it = std::find(m_neighbours.begin(), m_neighbours.end(), n);
+    if(it != m_neighbours.end()){
+        m_neighbours.erase(it);
+        return true;
+    }
+    return false;
+}
+
 QList<Node*> Node::neighbours(){
     return m_neighbours;
 }
 
-void Node::addNeighbour(Node* n){
-    m_neighbours.append(n);
+bool Node::addNeighbour(Node* n){
+    auto it = std::find(m_neighbours.begin(), m_neighbours.end(), n);
+    if(it == m_neighbours.end()){
+        m_neighbours.append(n);
+        return true;
+    }
+    return false;
+
 }
 
 void Node::incInDeg(){
@@ -104,9 +119,7 @@ void Node::setName(const std::string name){
     this->m_name=name;
 }
 
-
-
 std::ostream &operator<< (std::ostream &os, const Node &n){
-    os<<n.name()<<" "<< n.inDeg()<<" "<< n.outDeg()<<" "<<n.deg()<<std::endl;
+    os<<n.name() << " " << n.inDeg() << " " << n.outDeg() << " " << n.deg() << std::endl;
     return os;
 }

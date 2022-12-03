@@ -5,7 +5,7 @@
 #include"Headers/edge.h"
 #include"Headers/graph.h"
 #include<iostream>
-#include<list>
+//#include<list>
 
 using namespace std;
 
@@ -13,24 +13,24 @@ class Algorithm{
 public:
     Algorithm(){};
 
-    list<Node*> BFS (Node* current);
-    void DFS (Node* current, map<Node*, bool> &visited, list<Node*> &steps);
+    QList<Node*> BFS (Node* current);
+    void DFS (Node* current, QHash<Node*, bool> &visited, QList<Node*> &steps);
     bool isConnected (Node &u, Node &v);
     bool isAllConnected (Graph &graph);
     int Dijkstra (Graph &graph, Node* start, Node* end);
-    Node* minDist(map<Node*, int> dist, map<Node*, bool> visited);
+    Node* minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited);
     void MST (Graph graph);
-    list<Edge*> getBridges (Graph &graph);
-    void bridge (Graph &graph, Node* node, map<Node*, bool> &visited,
-                  map<Node*, int> &in, map<Node*, int> &low_link,
-                  map<Node*, Node*> &parent, int time, list<Edge*> &result);
-    list<Node*> getArticulationNodes(Graph &graph);
-    void articulationNodes (Node* node, map<Node*, bool> &visited,
-                            map<Node*, int> &in, map<Node*, int> &low_link,
-                            map<Node*, Node*> &parent, int time, list<Node*> &result);
-    list<Node> Hierholzer (Graph* graph);
+    QList<Edge*> getBridges (Graph &graph);
+    void bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
+                  QHash<Node*, int> &in, QHash<Node*, int> &low_link,
+                  QHash<Node*, Node*> &parent, int time, QList<Edge*> &result);
+    QList<Node*> getArticulationNodes(Graph &graph);
+    void articulationNodes (Node* node, QHash<Node*, bool> &visited,
+                            QHash<Node*, int> &in, QHash<Node*, int> &low_link,
+                            QHash<Node*, Node*> &parent, int time, QList<Node*> &result);
+    QList<Node*> Hierholzer (Graph* graph);
     bool hasEulerianCircuit (Graph &graph);
-    list<Node> getEulerianCircuit (Graph* graph);
+    QList<Node*> getEulerianCircuit (Graph* graph);
 };
 
 

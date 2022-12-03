@@ -1,29 +1,31 @@
 #include"Headers/algorithm.h"
 
-#include<limits>
-#include<stack>
 #include<queue>
+#include<QList>
+#include<QHash>
+#include<QQueue>
+#include<QStack>
 
 using namespace std;
 
-list<Node*> Algorithm::BFS (Node* current){
+QList<Node*> Algorithm::BFS (Node* current){
 
-    list<Node*> steps;
-    queue<Node*> q;
-    map<Node*, bool> visited;
+    QList<Node*> steps;
+    QQueue<Node*> q;
+    QHash<Node*, bool> visited;
 
-    q.push(current);
+    q.push_back(current);
     visited[current] = true;
 
     while(!q.empty()){
         current = q.front();
-        q.pop();
+        q.pop_front();
         steps.push_back(current);
 
         for(auto neighb : current->neighbours())
             if(visited.find(neighb)==visited.end()){
                 visited[neighb] = true;
-                q.push(neighb);
+                q.push_back(neighb);
             }
     }
 
@@ -31,7 +33,7 @@ list<Node*> Algorithm::BFS (Node* current){
 }
 
 
-void Algorithm::DFS (Node* current, map<Node*, bool> &visited, list<Node*> &steps){
+void Algorithm::DFS (Node* current, QHash<Node*, bool> &visited, QList<Node*> &steps){
 
     visited[current] = true;
     steps.push_back(current);
@@ -39,29 +41,30 @@ void Algorithm::DFS (Node* current, map<Node*, bool> &visited, list<Node*> &step
     for(Node* neighb : current->neighbours())
         if(visited.find(neighb)==visited.end())
             DFS(neighb, visited, steps);
-
 }
+
 
 bool Algorithm::isConnected (Node &u, Node &v){
 
-    map<Node*, bool> visited;
-    list<Node*> steps;
+    QHash<Node*, bool> visited;
+    QList<Node*> steps;
 
     DFS(&u, visited, steps);
 
     return visited[&v];
 }
 
+
 bool Algorithm::isAllConnected (Graph &graph){
 
-    for (auto node : graph.nodes()) {
+    for (auto node : graph.nodeSet()) {  //ispravio u graph.nodeSet, bilo graph.nodes()
 
-        map<Node*, bool> visited;
-        list<Node*> steps;
+        QHash<Node*, bool> visited;
+        QList<Node*> steps;
 
         DFS(node, visited, steps);
 
-        for(auto v : graph.nodes())
+        for(auto v : graph.nodeSet()) //ispravio u graph.nodeSet, bilo graph.nodes()
             if(visited.find(v)==visited.end())
                 return false;
     }
@@ -69,11 +72,12 @@ bool Algorithm::isAllConnected (Graph &graph){
     return true;
 }
 
+
 int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
 
-    map<Node*, bool> visited;
-    map<Node*, int> dist;
-    map<Node*, Node*> parent;
+    QHash<Node*, bool> visited;
+    QHash<Node*, int> dist;
+    QHash<Node*, Node*> parent;
 
     dist[start] = 0;
 
@@ -83,105 +87,107 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
         visited[current] = true;
 
         for(auto neighb : current->neighbours()){
-            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(*current, *neighb) < dist[neighb])) {
-                dist[neighb] = dist[current] + graph.weight(*current, *neighb);
-                parent[neighb] = current;
+            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {// prebacio iz (*current, *neighb) u (current, neighb)
+                dist[neighb] = dist[current] + graph.weight(current, neighb); // prebacio iz (*current, *neighb) u (current, neighb)
+                parent[neighb] = current;                
             }
-
         }
 
         current = minDist(dist, visited);
     }
-
     return dist[end];
 }
 
-Node* Algorithm::minDist(map<Node*, int> dist, map<Node*, bool> visited){
+
+Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
     int min = numeric_limits<int>::max();
     Node* minNode;
-    for(auto i : dist)
-        if (visited.find(i.first)==visited.end() && i.second<min){
-            min = i.second;
-            minNode = i.first;
+    for (auto iter = dist.constBegin(); iter != dist.constEnd(); ++iter) {
+        if(visited.find(iter.key()) == visited.end() && iter.value()<min){
+            min = iter.value();
+            minNode = iter.key();
         }
+    }
     return minNode;
 }
 
-/*
-void Algorithm::MST (Graph graph){
 
-    map<Node, bool> visited;
-    map<Node, Node> parent;
-    map<Node, int> minEdge;
+//void Algorithm::MST (Graph graph){
 
-    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
+//    map<Node, bool> visited;
+//    map<Node, Node> parent;
+//    map<Node, int> minEdge;
 
-    int min = numeric_limits<int>::max();
-    Node* begin;
-    Node* end;
+//    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
 
-    for(Edge e : graph.edges()){
-        if(e.weight() < min){
-            min = e.weight();
-            begin = e.getFirst();
-            end = e.getSecond();
-        }
-    }
+//    int min = numeric_limits<int>::max();
+//    Node* begin;
+//    Node* end;
 
-    minDist.push((0.0, begin));     //TODO *
-    for(auto n : graph.nodes()){
-        if(n != begin)
-            minDist.push((numeric_limits<int>::max(), n));
-    }
-    minEdge[begin] = 0;
-    parent[end] = begin;
+//    for(Edge *e : graph.edgeSet()){ //.edges() u .edgeSet()
+//        if(e->weight() < min){
+//            min = e->weight();
+//            begin = e->first();
+//            end = e->second();
+//        }
+//    }
 
-    while(minDist) {
-        node = minDist.top();
-        minDist.pop();
+//    minDist.push((0.0, begin));     //TODO *
+//    for(auto n : graph.nodes()){
+//        if(n != begin)
+//            minDist.push((numeric_limits<int>::max(), n));
+//    }
+//    minEdge[begin] = 0;
+//    parent[end] = begin;
 
-        Node current = node.second;
+//    while(minDist) {
+//        node = minDist.top();
+//        minDist.pop();
 
-        if(visited[current])
-            continue;
+//        Node current = node.second;
 
-        visited[current] = true;
-        minEdge[current] = node.first;
+//        if(visited[current])
+//            continue;
 
-        for(auto neighb : current.neighbours()){
-            if(visited.find(neighb)==visited.end() && minEdge[neighb] > graph.weight(current, neighb)){
-                parent[neighb] = current;
-                minDist.push((graph.weight(current, neighb), neighb));
-            }
-        }
-    }
+//        visited[current] = true;
+//        minEdge[current] = node.first;
 
-    //TODO
-    //printMST(parent);
-}
-*/
+//        for(auto neighb : current.neighbours()){
+//            if(visited.find(neighb)==visited.end() && minEdge[neighb] > graph.weight(current, neighb)){
+//                parent[neighb] = current;
+//                minDist.push((graph.weight(*current, *neighb), neighb));
+//            }
+//        }
+//    }
 
-list<Edge*> Algorithm::getBridges (Graph &graph){ //TODO test when graph.getEdge() is done
+//    //TODO
+//    printMST(parent);
+//}
 
-    map<Node*, bool> visited;
-    map<Node*, int> in;
-    map<Node*, int> low_link;
-    map<Node*, Node*> parent;
 
-    list<Edge*> result;
+
+QList<Edge*> Algorithm::getBridges (Graph &graph){
+
+    QHash<Node*, bool> visited;
+    QHash<Node*, int> in;
+    QHash<Node*, int> low_link;
+    QHash<Node*, Node*> parent;
+
+    QList<Edge*> result;
     int time = 0;
 
-    for(auto node : graph.nodes())
-        if(visited.find(node)==visited.end())
+    for(auto node : graph.nodeSet())  //.nodes() u .nodeSet()
+        if(visited.find(node)==visited.end()){
             bridge(graph, node, visited, in, low_link, parent, time, result);
+        }
 
     return result;
 }
 
 
-void Algorithm::bridge (Graph &graph, Node* node, map<Node*, bool> &visited,
-                    map<Node*, int> &in, map<Node*, int> &low_link,
-                        map<Node*, Node*> &parent, int time, list<Edge*> &result){
+void Algorithm::bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
+                    QHash<Node*, int> &in, QHash<Node*, int> &low_link,
+                        QHash<Node*, Node*> &parent, int time, QList<Edge*> &result){
 
     visited[node] = true;
     in[node] = low_link[node] = ++time;
@@ -195,36 +201,40 @@ void Algorithm::bridge (Graph &graph, Node* node, map<Node*, bool> &visited,
             low_link[node] = min(low_link[node], low_link[neighb]);
 
             if(low_link[neighb] > in[node])
-                result.push_back(graph.getEdge(*node, *neighb));
+                result.push_back(graph.getEdge(node, neighb)); //prebacio iz (*node, *neighb) u (node, neighb)
         }
         else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
     }
 
+
 }
 
 
-list<Node*> Algorithm::getArticulationNodes(Graph &graph){
+// elements repeating in some cases
+QList<Node*> Algorithm::getArticulationNodes(Graph &graph){
 
-    map<Node*, bool> visited;
-    map<Node*, int> in;
-    map<Node*, int> low_link;
-    map<Node*, Node*> parent;
+    QHash<Node*, bool> visited;
+    QHash<Node*, int> in;
+    QHash<Node*, int> low_link;
+    QHash<Node*, Node*> parent;
 
-    list<Node*> result;
+    QList<Node*> result;
     int time = 0;
 
-    for(auto node : graph.nodes())
-        if(visited.find(node)==visited.end())
+    for(auto node : graph.nodeSet()){
+        if(visited.find(node)==visited.end()){
             articulationNodes(node, visited, in, low_link, parent, time, result);
+        }
+    }
 
     return result;
 }
 
-
-void Algorithm::articulationNodes (Node* node, map<Node*, bool> &visited,
-                                 map<Node*, int> &in, map<Node*, int> &low_link,
-                                   map<Node*, Node*> &parent, int time, list<Node*> &result){
+// elements repeating in some cases
+void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
+                                 QHash<Node*, int> &in, QHash<Node*, int> &low_link,
+                                   QHash<Node*, Node*> &parent, int time, QList<Node*> &result){
 
     int children = 0;
     visited[node] = true;
@@ -248,44 +258,47 @@ void Algorithm::articulationNodes (Node* node, map<Node*, bool> &visited,
 
     if(parent.find(node)==parent.end() && children > 1)
         result.push_back(node);
-
 }
 
-/*
-list<Node> Algorithm::Hierholzer (Graph* graph){
 
-    list<Node> result;
+//list<Node*> Algorithm::Hierholzer (Graph* graph){
 
-    stack<Node> currPath;
-    vector<Node> cycle;
+//    list<Node*> result;
 
-    auto currNode = graph->randomNode();
-    currPath.push(currNode);
+//    stack<Node*> currPath;
+//    vector<Node*> cycle;
 
-    while (!currPath.empty()) {
+//    Node* nextNode;
 
-        if (currNode.neighbours().size()) {
-            currPath.push(currNode);
+//    Node* currNode = graph->randomNode();
+//    std::cout << *currNode << std::endl;
+//    currPath.push(currNode);
 
-            Node nextNode = currNode.neighbours().back();
+//    while (!currPath.empty()) {
+//        if (currNode->neighbours().size()) {
+//            currPath.push(currNode);
 
-            graph->removeEdge(&currNode, &nextNode);
+//            nextNode = currNode->neighbours().back();
 
-            currNode = nextNode;
-        }
-        else {
-            cycle.push_back(currNode);
-            currNode = currPath.top();
-            currPath.pop();
-        }
-    }
-    for (int i = (int) cycle.size() - 1; i >= 0; --i)
-        result.push_back(cycle[i]);
+//            graph->removeEdge(currNode, nextNode);
+//            currNode->removeNeighbour(nextNode); //need to delete from neighbours list currNode-a nextNode
 
-    return result;
+//            currNode = nextNode;
+//        } else {
+//            cycle.push_back(currNode);
+//            currNode = currPath.top();
+//            currPath.pop();
+//        }
+//    }
+//    for (int i = (int) cycle.size() - 1; i >= 1; --i){
+//        std::cout << *cycle[i];
+//        result.push_back(cycle[i]);
+//    }
 
-}
-*/
+//    return result;
+//}
+
+
 
 bool Algorithm::hasEulerianCircuit (Graph &graph){
 
@@ -293,34 +306,28 @@ bool Algorithm::hasEulerianCircuit (Graph &graph){
         return false;
     }
 
-    for(auto node : graph.nodes()){
-        if(graph.isDirected() && node->in_deg() != node->out_deg())
+    for(auto node : graph.nodeSet()){
+        if(graph.isDirected() && node->inDeg() != node->outDeg())
             return false;
 
         if(!graph.isDirected() && node->deg() % 2 != 0)
             return false;
-
     }
 
     return true;
-
 }
 
-/*
-list<Node> Algorithm::getEulerianCircuit (Graph* graph){
+//TODO Hierholzer before testing
+//QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-    if(!hasEulerianCircuit(*graph)){
-        //ne postoji ciklus
-        return list<Node>();
-    }
+//    if(!hasEulerianCircuit(*graph)){
+//        //ne postoji ciklus
+//        return QList<Node*>();
+//    }
 
-    list<Node> result = Hierholzer (graph);
+//    QList<Node*> result = Hierholzer (graph);
 
-    return result;
-
-}
-
-
-*/
+//    return result;
+//}
 
 

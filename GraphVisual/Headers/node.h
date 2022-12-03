@@ -27,9 +27,10 @@ public:
     bool operator==(const Node &second) const;
     bool operator<(const Node &second) const;
     friend std::ostream &operator<< (std::ostream &os, const Node &n);
+    bool removeNeighbour(Node *v);
 
     QList<Node*> neighbours();
-    void addNeighbour(Node* n);
+    bool addNeighbour(Node* n);
 
 
 private:
