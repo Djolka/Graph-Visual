@@ -112,57 +112,70 @@ Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
 }
 
 
-//void Algorithm::MST (Graph graph){
+void Algorithm::MST (Graph graph){
 
-//    map<Node, bool> visited;
-//    map<Node, Node> parent;
-//    map<Node, int> minEdge;
+    map<Node*, bool> visited;
+    map<Node*, Node*> parent;
+    map<Node*, int> minEdge;
 
-//    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
+    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
 
-//    int min = numeric_limits<int>::max();
-//    Node* begin;
-//    Node* end;
+    int min = numeric_limits<int>::max();
+    Node* begin;
+    Node* end;
 
-//    for(Edge *e : graph.edgeSet()){ //.edges() u .edgeSet()
-//        if(e->weight() < min){
-//            min = e->weight();
-//            begin = e->first();
-//            end = e->second();
-//        }
-//    }
+    for(Edge *e : graph.edgeSet()){
+        if(e->weight() < min){
+            min = e->weight();
+            begin = e->first();
+            end = e->second();
+        }
+    }
 
-//    minDist.push((0.0, begin));     //TODO *
-//    for(auto n : graph.nodes()){
-//        if(n != begin)
-//            minDist.push((numeric_limits<int>::max(), n));
-//    }
-//    minEdge[begin] = 0;
-//    parent[end] = begin;
+    minDist.push(make_pair(0, begin));
 
-//    while(minDist) {
-//        node = minDist.top();
-//        minDist.pop();
+    for(Node* n : graph.nodeSet()){
+        if(!(n == begin)){
+            minDist.push(make_pair(numeric_limits<int>::max(), n));
+            minEdge[n] = numeric_limits<int>::max();
+        }
+    }
 
-//        Node current = node.second;
+    minEdge[begin] = 0;
+    parent[end] = begin;
 
-//        if(visited[current])
-//            continue;
 
-//        visited[current] = true;
-//        minEdge[current] = node.first;
+    while(!minDist.empty()) {
+        cout<<"while"<<endl;
+        auto node = minDist.top();
+        minDist.pop();
 
-//        for(auto neighb : current.neighbours()){
-//            if(visited.find(neighb)==visited.end() && minEdge[neighb] > graph.weight(current, neighb)){
-//                parent[neighb] = current;
-//                minDist.push((graph.weight(*current, *neighb), neighb));
-//            }
-//        }
-//    }
+        Node* current = node.second;
 
-//    //TODO
-//    printMST(parent);
-//}
+        if(visited.find(current) != visited.end())
+            continue;
+
+
+        visited[current] = true;
+        minEdge[current] = node.first;
+
+        for(auto neighb : current->neighbours()){
+            if(visited.find(neighb)==visited.end() && minEdge[neighb] > graph.weight(current, neighb)){
+                parent[neighb] = current;
+                minDist.push(make_pair(graph.weight(current, neighb), neighb));
+                minEdge[neighb] = graph.weight(current, neighb);
+            }
+        }
+    }
+
+    //print MST
+    for (auto node : graph.nodeSet()){
+        if (node != begin){
+            cout<< node->name() << " -> " << parent[node]->name() << endl;
+        }
+    }
+}
+
 
 
 
