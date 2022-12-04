@@ -105,6 +105,7 @@ bool Graph::removeNode(const std::string &name) {
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
         if((*it)->name() == name){
             m_nodes.erase(it);
+//            isolateNode(node);
             return true;
         }
     return false;
@@ -191,7 +192,7 @@ bool Graph::setEdge(const std::string &uname, const std::string &vname) {
     return setEdge(u, v, 1);
 }
 
-
+//potential problem:memory leake
 bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
     Node *u = new Node(uname);
     Node *v = new Node(vname);
@@ -248,10 +249,19 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
 bool Graph::removeEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
-        if ((*it)->first() == u && (*it)->second() == v){
-            m_edges.erase(it);
-            //TODO: delete nodes from each others neighbour list and split cases when is directed and undirected
-            return true;
+        if(isUndirected()){
+            if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
+                m_edges.erase(it);
+                u->removeNeighbour(v);
+                v->removeNeighbour(u);
+                return true;
+            }
+        }else{
+            if ((*it)->first() == u && (*it)->second() == v){
+                m_edges.erase(it);
+                u->removeNeighbour(v);
+                return true;
+            }
         }
     }
     return false;
@@ -259,15 +269,9 @@ bool Graph::removeEdge(Node *u, Node *v) {
 
 
 bool Graph::removeEdge(const std::string &uname, const std::string &vname) {
-    auto it = m_edges.begin();
-    for(;it != m_edges.end(); ++it){
-        if ((*it)->first()->name() == uname && (*it)->second()->name() == vname){
-            m_edges.erase(it);
-            //TODO: delete nodes from each others neighbour list and split cases when is directed and undirected
-            return true;
-        }
-    }
-    return false;
+    Node *n1 = new Node(uname);
+    Node *n2 = new Node(vname);
+    return removeEdge(n1, n2);
 }
 
 bool Graph::setWeight(Node *u, Node *v, int w) {

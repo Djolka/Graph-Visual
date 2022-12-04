@@ -5,7 +5,6 @@
 #include"Headers/edge.h"
 #include"Headers/graph.h"
 #include<iostream>
-//#include<list>
 
 using namespace std;
 

@@ -6,8 +6,6 @@
 #include<QQueue>
 #include<QStack>
 
-using namespace std;
-
 QList<Node*> Algorithm::BFS (Node* current){
 
     QList<Node*> steps;
@@ -57,14 +55,14 @@ bool Algorithm::isConnected (Node &u, Node &v){
 
 bool Algorithm::isAllConnected (Graph &graph){
 
-    for (auto node : graph.nodeSet()) {  //ispravio u graph.nodeSet, bilo graph.nodes()
+    for (auto node : graph.nodeSet()) {
 
         QHash<Node*, bool> visited;
         QList<Node*> steps;
 
         DFS(node, visited, steps);
 
-        for(auto v : graph.nodeSet()) //ispravio u graph.nodeSet, bilo graph.nodes()
+        for(auto v : graph.nodeSet())
             if(visited.find(v)==visited.end())
                 return false;
     }
@@ -83,12 +81,12 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
 
     Node* current = start;
 
-    while(! (current == end)){
+    while(!(current == end)){
         visited[current] = true;
 
         for(auto neighb : current->neighbours()){
-            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {// prebacio iz (*current, *neighb) u (current, neighb)
-                dist[neighb] = dist[current] + graph.weight(current, neighb); // prebacio iz (*current, *neighb) u (current, neighb)
+            if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {
+                dist[neighb] = dist[current] + graph.weight(current, neighb);
                 parent[neighb] = current;                
             }
         }
@@ -146,7 +144,7 @@ void Algorithm::MST (Graph graph){
 
 
     while(!minDist.empty()) {
-        cout<<"while"<<endl;
+//        cout<<"while"<<endl;
         auto node = minDist.top();
         minDist.pop();
 
@@ -272,42 +270,39 @@ void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
 }
 
 
-//list<Node*> Algorithm::Hierholzer (Graph* graph){
+QList<Node*> Algorithm::Hierholzer (Graph* graph){
 
-//    list<Node*> result;
+    QList<Node*> result;
 
-//    stack<Node*> currPath;
-//    vector<Node*> cycle;
+    QStack<Node*> currPath;
+    vector<Node*> cycle;
 
-//    Node* nextNode;
+    Node* nextNode;
 
-//    Node* currNode = graph->randomNode();
-//    std::cout << *currNode << std::endl;
-//    currPath.push(currNode);
+    Node* currNode = graph->randomNode();
+    currPath.push(currNode);
 
-//    while (!currPath.empty()) {
-//        if (currNode->neighbours().size()) {
-//            currPath.push(currNode);
+    while (!currPath.empty()) {
+        if (currNode->neighbours().size()) {
+            currPath.push(currNode);
 
-//            nextNode = currNode->neighbours().back();
+            nextNode = currNode->neighbours().back();
 
-//            graph->removeEdge(currNode, nextNode);
-//            currNode->removeNeighbour(nextNode); //need to delete from neighbours list currNode-a nextNode
+            graph->removeEdge(currNode, nextNode);
 
-//            currNode = nextNode;
-//        } else {
-//            cycle.push_back(currNode);
-//            currNode = currPath.top();
-//            currPath.pop();
-//        }
-//    }
-//    for (int i = (int) cycle.size() - 1; i >= 1; --i){
-//        std::cout << *cycle[i];
-//        result.push_back(cycle[i]);
-//    }
+            currNode = nextNode;
+        } else {
+            cycle.push_back(currNode);
+            currNode = currPath.top();
+            currPath.pop();
+        }
+    }
+    for (int i = (int) cycle.size() - 1; i >= 1; --i){
+        result.push_back(cycle[i]);
+    }
 
-//    return result;
-//}
+    return result;
+}
 
 
 
@@ -321,24 +316,23 @@ bool Algorithm::hasEulerianCircuit (Graph &graph){
         if(graph.isDirected() && node->inDeg() != node->outDeg())
             return false;
 
-        if(!graph.isDirected() && node->deg() % 2 != 0)
+        if(graph.isUndirected() && node->deg() % 2 != 0)
             return false;
     }
 
     return true;
 }
 
-//TODO Hierholzer before testing
-//QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-//    if(!hasEulerianCircuit(*graph)){
-//        //ne postoji ciklus
-//        return QList<Node*>();
-//    }
+QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-//    QList<Node*> result = Hierholzer (graph);
+    if(!hasEulerianCircuit(*graph)){
+        return QList<Node*>();
+    }
 
-//    return result;
-//}
+    QList<Node*> result = Hierholzer (graph);
+
+    return result;
+}
 
 

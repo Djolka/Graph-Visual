@@ -57,7 +57,7 @@ bool Node::operator<(const Node &second) const{
 }
 
 bool Node::removeNeighbour(Node *n){
-    auto it = std::find(m_neighbours.begin(), m_neighbours.end(), n);
+    QList<Node*>::iterator it = std::find(m_neighbours.begin(), m_neighbours.end(), n);
     if(it != m_neighbours.end()){
         m_neighbours.erase(it);
         return true;
@@ -120,6 +120,6 @@ void Node::setName(const std::string name){
 }
 
 std::ostream &operator<< (std::ostream &os, const Node &n){
-    os<<n.name() << " " << n.inDeg() << " " << n.outDeg() << " " << n.deg() << std::endl;
+    os<< n.name() << " " << n.inDeg() << " " << n.outDeg() << " " << n.deg() << std::endl;
     return os;
 }
