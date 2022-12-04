@@ -24,10 +24,10 @@ public:
     void bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
                   QHash<Node*, int> &in, QHash<Node*, int> &low_link,
                   QHash<Node*, Node*> &parent, int time, QList<Edge*> &result);
-    QList<Node*> getArticulationNodes(Graph &graph);
+    QSet<Node*> getArticulationNodes(Graph &graph);
     void articulationNodes (Node* node, QHash<Node*, bool> &visited,
                             QHash<Node*, int> &in, QHash<Node*, int> &low_link,
-                            QHash<Node*, Node*> &parent, int time, QList<Node*> &result);
+                            QHash<Node*, Node*> &parent, int time, QSet<Node*> &result);
     QList<Node*> Hierholzer (Graph* graph);
     bool hasEulerianCircuit (Graph &graph);
     QList<Node*> getEulerianCircuit (Graph* graph);

@@ -189,7 +189,7 @@ QList<Edge*> Algorithm::getBridges (Graph &graph){
     QList<Edge*> result;
     int time = 0;
 
-    for(auto node : graph.nodeSet())  //.nodes() u .nodeSet()
+    for(auto node : graph.nodeSet())
         if(visited.find(node)==visited.end()){
             bridge(graph, node, visited, in, low_link, parent, time, result);
         }
@@ -214,7 +214,7 @@ void Algorithm::bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
             low_link[node] = min(low_link[node], low_link[neighb]);
 
             if(low_link[neighb] > in[node])
-                result.push_back(graph.getEdge(node, neighb)); //prebacio iz (*node, *neighb) u (node, neighb)
+                result.push_back(graph.getEdge(node, neighb));
         }
         else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
@@ -223,16 +223,14 @@ void Algorithm::bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
 
 }
 
-
-// elements repeating in some cases
-QList<Node*> Algorithm::getArticulationNodes(Graph &graph){
+QSet<Node*> Algorithm::getArticulationNodes(Graph &graph){
 
     QHash<Node*, bool> visited;
     QHash<Node*, int> in;
     QHash<Node*, int> low_link;
     QHash<Node*, Node*> parent;
 
-    QList<Node*> result;
+    QSet<Node*> result;
     int time = 0;
 
     for(auto node : graph.nodeSet()){
@@ -244,10 +242,10 @@ QList<Node*> Algorithm::getArticulationNodes(Graph &graph){
     return result;
 }
 
-// elements repeating in some cases
+
 void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
                                  QHash<Node*, int> &in, QHash<Node*, int> &low_link,
-                                   QHash<Node*, Node*> &parent, int time, QList<Node*> &result){
+                                   QHash<Node*, Node*> &parent, int time, QSet<Node*> &result){
 
     int children = 0;
     visited[node] = true;
@@ -263,14 +261,14 @@ void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
             low_link[node] = min(low_link[node], low_link[neighb]);
 
             if(!(parent.find(node)==parent.end()) && low_link[neighb] >= in[node])
-                result.push_back(node);
+                result.insert(node);
         }
         else if(!(neighb == parent[node]))
             low_link[node] = min(low_link[node], in[neighb]);
     }
 
     if(parent.find(node)==parent.end() && children > 1)
-        result.push_back(node);
+        result.insert(node);
 }
 
 
