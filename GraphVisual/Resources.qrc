@@ -1,8 +1,9 @@
 <RCC>
-    <qresource prefix="/rec">
-        <file>Resources/open.png</file>
+    <qresource prefix="/new/rec">
+        <file>Resources/saveaspng.png</file>
+        <file>Resources/saveasjpg.png</file>
         <file>Resources/save.png</file>
-        <file>Resources/saveas.png</file>
+        <file>Resources/open.png</file>
         <file>Resources/close.png</file>
     </qresource>
 </RCC>
