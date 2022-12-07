@@ -4,6 +4,13 @@
 #include <QMainWindow>
 #include<QPointF>
 
+#include"Headers/graphicedge.h"
+
+class Node;
+class GraphicNode;
+class QGraphicsScene;
+//class GraphicEdge;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class GraphWindow; }
 QT_END_NAMESPACE
@@ -16,13 +23,19 @@ public:
     GraphWindow(QWidget *parent = nullptr);
     ~GraphWindow();
 
+signals:
+    void AddedNewNode(GraphicNode *);
+    void AddedNewEdge(GraphicEdge *);
+    void DeletedAllNodes();
+
 private slots:
-    void on_pbAddNode_clicked();
-    void on_pbDeleteAll_clicked();
-    void on_lw_currentRowChanged(int currentRow);
+    void AddNewNode();
+    void DeleteAllNodes();
 
 private:
     Ui::GraphWindow *ui;
-    int itemSelected = -1;
+    QGraphicsScene *m_GraphTable;
+    QVector<Node *> m_Nodes;
+    QVector<GraphicNode* > m_GNodes;
 };
 #endif // GRAPHWINDOW_H
