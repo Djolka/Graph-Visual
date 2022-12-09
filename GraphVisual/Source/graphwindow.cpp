@@ -1,54 +1,117 @@
 #include "Headers/graphwindow.h"
 #include "ui_graphwindow.h"
 
+#include "Headers/graphtable.h"
+#include "Headers/node.h"
+#include "Headers/graphicnode.h"
+
+#include "Headers/edge.h"
+#include "Headers/graphicedge.h"
+
 #include <QString>
 #include <QListWidgetItem>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
+    , m_GraphTable(new GraphTable(this))
+    , m_graph(new Graph(false, false))
 {
     ui->setupUi(this);
+
+//    connecting scene and view
+    m_GraphTable->setSceneRect(ui->gv_graphTable->rect());
+    ui->gv_graphTable->setScene(m_GraphTable);
+    ui->gv_graphTable->setRenderHint(QPainter::Antialiasing);
+    ui->gv_graphTable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+
+//    connecting singals and slots
+    connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewNode);
+    connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
+
+    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
+    connect(this, &GraphWindow::DeletedAllNodes, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteAllNodesFromTable);
+
+    connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
+
+    connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 }
 
 GraphWindow::~GraphWindow()
 {
     delete ui;
+
+//    for(auto node : m_Nodes) {
+//        delete node;
+//    }
+
 }
 
-void GraphWindow::on_pbAddNode_clicked()
-{
-    QString node1 = ui->teNode1->toPlainText();
-    QString node2 = ui->teNode2->toPlainText();
-    QString weight = ui->teWeight->toPlainText();
 
-    if (node1 == "" || node2 == "" || weight == ""){
-        return;
+void GraphWindow::AddNewNode() {
+    const auto name1 = ui->teNode1->toPlainText();
+
+    GraphicNode* graphicNode1;
+    if(!m_graph->hasNode(name1.toStdString())){
+        const auto node1 = new Node(name1.toStdString());
+
+        m_graph->addNode(node1);
+
+        graphicNode1 = new GraphicNode(node1);
+        m_GraphTable->addItem(graphicNode1);
+
+        emit AddedNewNode(graphicNode1);
     }
-    ui->lw->addItem(node1 + " -> " + node2 + " : " + weight);
-
-    ui->teNode1->clear();
-    ui->teNode2->clear();
-    ui->teWeight->clear();
-}
-
-
-void GraphWindow::on_pbDeleteAll_clicked()
-{
-    if(itemSelected != -1){
-        QListWidgetItem *item = ui->lw->takeItem(itemSelected);
-        delete item;
-
-        ui->lw->setCurrentRow(-1);
+    else{
+        for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
+            if(n->getNode()->name() == name1.toStdString()){
+                graphicNode1 = n;
+                break;
+            }
+        }
     }
 
-}
+
+    const auto name2 = ui->teNode2->toPlainText();
 
 
-void GraphWindow::on_lw_currentRowChanged(int currentRow)
-{
-    itemSelected = currentRow;
+    GraphicNode* graphicNode2;
+    if(!m_graph->hasNode(name2.toStdString())){
+        const auto node2 = new Node(name2.toStdString());
+
+        m_graph->addNode(node2);
+
+        graphicNode2 = new GraphicNode(node2);
+        m_GraphTable->addItem(graphicNode2);
+
+        emit AddedNewNode(graphicNode2);
+    }
+    else{
+        for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
+            if(n->getNode()->name() == name2.toStdString()){
+                graphicNode2 = n;
+                break;
+            }
+        }
+    }
+
+    const auto weight = ui->teWeight->toPlainText().toInt();
+    //m_graph->addEdge() TODO
+
+    const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+    m_GraphTable->addItem(graphicEdge);
+
+    emit AddedNewEdge(graphicEdge);
+    emit NeedRedraw();
 }
+
+void GraphWindow::DeleteAllNodes() {
+//    for(auto node : m_Nodes) {
+//        delete node;
+//    }
+//    m_Nodes.clear();
+}
+
 
 
 
