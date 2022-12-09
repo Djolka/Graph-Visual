@@ -120,6 +120,7 @@ void GraphWindow::ChangeMode(int index) {
     }
     else{
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
+        dynamic_cast<GraphTable*>(m_GraphTable)->deleteTmp();
     }
 }
 

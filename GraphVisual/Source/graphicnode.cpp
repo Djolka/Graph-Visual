@@ -41,4 +41,8 @@ void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsObject::mouseMoveEvent(event);
 }
 
+int GraphicNode::type() const{
+    return 1;
+}
+
 

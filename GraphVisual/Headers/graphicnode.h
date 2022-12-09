@@ -15,10 +15,12 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    inline const Node *getNode() { return m_Node; };
+    inline const Node *getNode() { return m_Node; }
 
-    inline int Width() const { return 50; };
-    inline int Height() const { return 50; };
+    inline int Width() const { return 50; }
+    inline int Height() const { return 50; }
+
+    int type() const override;
 
     QPointF TopCenterPosition();
     QPointF BottomCenterPosition();

@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include<QGraphicsSceneMouseEvent>
+#include<QGraphicsLineItem>
 
 #include"Headers/node.h"
 class GraphicNode;
@@ -18,7 +19,9 @@ public:
     QVector<GraphicEdge *> getEdges();
 
     void mousePressEvent ( QGraphicsSceneMouseEvent * event ) override;
+//    void mouseMoveEvent (QGraphicsSceneMouseEvent * event ) override;
     void setDrawingMode(bool x);
+    void deleteTmp(){tmp=nullptr;}
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
@@ -36,6 +39,8 @@ private:
     QVector<GraphicEdge *> m_Edges;
 
     bool m_drawingMode = true;
+    GraphicNode* tmp = nullptr;
+//    QGraphicsLineItem* lineToDraw;
 };
 
 
