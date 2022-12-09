@@ -20,13 +20,13 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->setupUi(this);
 
 //    connecting scene and view
-    m_GraphTable->setSceneRect(ui->gv_graphTable->rect());
-    ui->gv_graphTable->setScene(m_GraphTable);
-    ui->gv_graphTable->setRenderHint(QPainter::Antialiasing);
-    ui->gv_graphTable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    m_GraphTable->setSceneRect(ui->graphicsView->rect());
+    ui->graphicsView->setScene(m_GraphTable);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
 //    connecting singals and slots
-    connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewNode);
+    connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
 
     connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
@@ -35,6 +35,9 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
 
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
+
+    connect(ui->menu_right, &QTabWidget::currentChanged, this, &GraphWindow::ChangeMode);
+//    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
 }
 
 GraphWindow::~GraphWindow()
@@ -48,7 +51,7 @@ GraphWindow::~GraphWindow()
 }
 
 
-void GraphWindow::AddNewNode() {
+void GraphWindow::AddNewEdge() {
     const auto name1 = ui->teNode1->toPlainText();
 
     GraphicNode* graphicNode1;
@@ -99,7 +102,6 @@ void GraphWindow::AddNewNode() {
     //m_graph->addEdge() TODO
 
     const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
-    m_GraphTable->addItem(graphicEdge);
 
     emit AddedNewEdge(graphicEdge);
     emit NeedRedraw();
@@ -112,6 +114,18 @@ void GraphWindow::DeleteAllNodes() {
 //    m_Nodes.clear();
 }
 
+void GraphWindow::ChangeMode(int index) {
+    if(index == 2){
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(true);
+    }
+    else{
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
+    }
+}
+
+void GraphWindow::AddNode(Node* node) {
+    m_graph->addNode(node);
+}
 
 
 

@@ -30,8 +30,10 @@ signals:
     void NeedRedraw();
 
 private slots:
-    void AddNewNode();
+    void AddNewEdge();
     void DeleteAllNodes();
+    void ChangeMode(int index);
+    void AddNode(Node* node);
 
 private:
     Ui::GraphWindow *ui;
