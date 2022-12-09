@@ -13,7 +13,6 @@ void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
     connect(node, &GraphicNode::needRedraw, this, &GraphTable::Redraw);
 
     PlaceNodeOnTable(node);
-    DrawNewEdges();
 }
 
 void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
@@ -41,6 +40,10 @@ void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     node->setPos(xPos, yPos);
 }
 
-void GraphTable::DrawNewEdges() {
-    // TODO: implement
+
+QVector<GraphicNode *> GraphTable::getNodes(){
+    return m_Nodes;
+}
+QVector<GraphicEdge *> GraphTable::getEdges(){
+    return m_Edges;
 }

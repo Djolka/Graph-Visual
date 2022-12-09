@@ -5,9 +5,6 @@
 
 class Node;
 
-// TODO: redrawing edges when a node is moved
-// FIXME: when Q_OBJECT is added it behaves wierd
-
 class GraphicNode : public QGraphicsObject {
     Q_OBJECT
 public:

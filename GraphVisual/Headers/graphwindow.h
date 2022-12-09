@@ -5,11 +5,11 @@
 #include<QPointF>
 
 #include"Headers/graphicedge.h"
+#include"Headers/graph.h"
 
 class Node;
 class GraphicNode;
 class QGraphicsScene;
-//class GraphicEdge;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GraphWindow; }
@@ -27,6 +27,7 @@ signals:
     void AddedNewNode(GraphicNode *);
     void AddedNewEdge(GraphicEdge *);
     void DeletedAllNodes();
+    void NeedRedraw();
 
 private slots:
     void AddNewNode();
@@ -35,7 +36,6 @@ private slots:
 private:
     Ui::GraphWindow *ui;
     QGraphicsScene *m_GraphTable;
-    QVector<Node *> m_Nodes;
-    QVector<GraphicNode* > m_GNodes;
+    Graph *m_graph;
 };
 #endif // GRAPHWINDOW_H

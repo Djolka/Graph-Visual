@@ -15,6 +15,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
     , m_GraphTable(new GraphTable(this))
+    , m_graph(new Graph(false, false))
 {
     ui->setupUi(this);
 
@@ -33,59 +34,82 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
 
+    connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 }
 
 GraphWindow::~GraphWindow()
 {
     delete ui;
 
-    for(auto node : m_Nodes) {
-        delete node;
-    }
+//    for(auto node : m_Nodes) {
+//        delete node;
+//    }
 
 }
 
-//TODO: provera da li cvor vec postoji
+
 void GraphWindow::AddNewNode() {
     const auto name1 = ui->teNode1->toPlainText();
-    const auto node1 = new Node(name1.toStdString());
 
-    m_Nodes.push_back(node1);
+    GraphicNode* graphicNode1;
+    if(!m_graph->hasNode(name1.toStdString())){
+        const auto node1 = new Node(name1.toStdString());
 
-    const auto graphicNode1 = new GraphicNode(node1);
-    m_GraphTable->addItem(graphicNode1);
+        m_graph->addNode(node1);
 
-    emit AddedNewNode(graphicNode1);
+        graphicNode1 = new GraphicNode(node1);
+        m_GraphTable->addItem(graphicNode1);
 
+        emit AddedNewNode(graphicNode1);
+    }
+    else{
+        for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
+            if(n->getNode()->name() == name1.toStdString()){
+                graphicNode1 = n;
+                break;
+            }
+        }
+    }
 
 
     const auto name2 = ui->teNode2->toPlainText();
-    const auto node2 = new Node(name2.toStdString());
 
-    m_Nodes.push_back(node2);
 
-    const auto graphicNode2 = new GraphicNode(node2);
-    m_GraphTable->addItem(graphicNode2);
+    GraphicNode* graphicNode2;
+    if(!m_graph->hasNode(name2.toStdString())){
+        const auto node2 = new Node(name2.toStdString());
 
-    m_GNodes.push_back(graphicNode2);
+        m_graph->addNode(node2);
 
-    emit AddedNewNode(graphicNode2);
+        graphicNode2 = new GraphicNode(node2);
+        m_GraphTable->addItem(graphicNode2);
+
+        emit AddedNewNode(graphicNode2);
+    }
+    else{
+        for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
+            if(n->getNode()->name() == name2.toStdString()){
+                graphicNode2 = n;
+                break;
+            }
+        }
+    }
 
     const auto weight = ui->teWeight->toPlainText().toInt();
-    //const auto edge = new Edge(std::make_pair(node, node2), 1);
-    //m_Edges.push_back(edge);
+    //m_graph->addEdge() TODO
 
     const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
     m_GraphTable->addItem(graphicEdge);
 
     emit AddedNewEdge(graphicEdge);
+    emit NeedRedraw();
 }
 
 void GraphWindow::DeleteAllNodes() {
-    for(auto node : m_Nodes) {
-        delete node;
-    }
-    m_Nodes.clear();
+//    for(auto node : m_Nodes) {
+//        delete node;
+//    }
+//    m_Nodes.clear();
 
     emit DeletedAllNodes();
 }
