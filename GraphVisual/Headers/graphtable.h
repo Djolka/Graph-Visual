@@ -6,6 +6,7 @@
 #include<QGraphicsLineItem>
 #include<QLineEdit>
 #include<QWidget>
+#include<QGraphicsProxyWidget>
 
 #include"Headers/node.h"
 class GraphicNode;
@@ -24,6 +25,7 @@ public:
 //    void mouseMoveEvent (QGraphicsSceneMouseEvent * event ) override;
     void setDrawingMode(bool x);
     void setHasTmp(bool x);
+    void setDeleteMode(bool x);
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
@@ -36,6 +38,7 @@ signals:
     void addedNewNode(Node* node);
     void addedNewEdge(Node* node1, Node* node2);
     void edgeWeightChanged(Node* node1, Node* node2, int weight);
+    void deletedNode(Node* node);
 
 private:
     void PlaceNodeOnTable(GraphicNode *node);
@@ -47,6 +50,8 @@ private:
     bool m_hasTmp = false;
     GraphicNode* m_tmp;
     QGraphicsLineItem* m_lineToDraw;
+
+    bool m_deleteMode = false;
 
 //    QVector<QGraphicsLineItem *> _veze;
 };

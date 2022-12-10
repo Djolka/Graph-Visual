@@ -40,6 +40,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewEdge, this, &GraphWindow::AddEdge);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::edgeWeightChanged, this, &GraphWindow::changeWeight);
+
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
 }
 
 GraphWindow::~GraphWindow()
@@ -55,6 +57,7 @@ GraphWindow::~GraphWindow()
 
 void GraphWindow::AddNewEdge() {
     const auto name1 = ui->teNode1->toPlainText();
+    ui->teNode1->clear();
 
     GraphicNode* graphicNode1;
     if(!m_graph->hasNode(name1.toStdString())){
@@ -78,7 +81,7 @@ void GraphWindow::AddNewEdge() {
 
 
     const auto name2 = ui->teNode2->toPlainText();
-
+    ui->teNode2->clear();
 
     GraphicNode* graphicNode2;
     if(!m_graph->hasNode(name2.toStdString())){
@@ -119,10 +122,17 @@ void GraphWindow::DeleteAllNodes() {
 void GraphWindow::ChangeMode(int index) {
     if(index == 2){
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(true);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
+    }
+    else if(index == 3){
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(true);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
     }
     else{
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
         dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
     }
 }
 
@@ -136,4 +146,6 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 
-
+void GraphWindow::deleteNode(Node* node) {
+    m_graph->removeNode(node);
+}

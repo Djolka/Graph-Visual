@@ -59,3 +59,7 @@ void GraphicEdge::editWeight(const QString &text){
         }
     }
 }
+
+int GraphicEdge::type() const {
+    return 2;
+}

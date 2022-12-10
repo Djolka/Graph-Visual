@@ -14,6 +14,8 @@ public:
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    int type() const override;
+
     int getWeight(){return m_weight;}
     GraphicNode* getStart(){return m_start;}
     GraphicNode* getEnd(){return m_end;}
