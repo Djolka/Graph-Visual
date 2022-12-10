@@ -37,6 +37,10 @@ private slots:
     void AddEdge(Node* n1, Node* n2);
     void changeWeight(Node* n1, Node* n2, int weight);
 
+    void on_actionSaveAsPng_triggered();
+
+    void on_actionSaveAsJpg_triggered();
+
 private:
     Ui::GraphWindow *ui;
     QGraphicsScene *m_GraphTable;
