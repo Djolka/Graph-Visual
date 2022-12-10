@@ -18,7 +18,10 @@ void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
 void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     m_Edges.append(edge);
     edge->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight);
+    connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
     addItem(edge);
+    addWidget(edge->getLineEdit());
 }
 
 void GraphTable::DeleteAllNodesFromTable() {
@@ -53,35 +56,51 @@ QVector<GraphicEdge *> GraphTable::getEdges(){
 }
 
 
-//TODO: add nodes and edges to graph
+void GraphTable::editWeight(GraphicEdge* edge, int w){
+    emit edgeWeightChanged(edge->getStart()->getNode(), edge->getEnd()->getNode(), w);
+}
+
+
+
 void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
     if(m_drawingMode && itemAt(event->scenePos(), QTransform()) == NULL){
-        deleteTmp();
+        if(m_hasTmp){
+            setHasTmp(false);
+        }
+        else{
+            Node* node = new Node();
+            GraphicNode* graphicNode = new GraphicNode(node);
 
-        Node* node = new Node();
-        GraphicNode* graphicNode = new GraphicNode(node);
+            AddNewNodeOnTable(graphicNode);
+            graphicNode->setPos(event->scenePos());
+            addItem(graphicNode);
 
-        AddNewNodeOnTable(graphicNode);
-        graphicNode->setPos(event->scenePos());
-        addItem(graphicNode);
-
-//        emit addedNewNode(node);
+            emit addedNewNode(node);
+        }
     }
     else if(m_drawingMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){
-        if(this->tmp == nullptr){
-            this->tmp = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+        if(!m_hasTmp){
+            this->m_tmp = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+            setHasTmp(true);
         }
         else{
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
-            GraphicEdge* edge = new GraphicEdge(tmp, node, 1);
+
+            // open window to insert weight
+//            insertWeight();
+
+            GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
             AddNewEdgeOnTable(edge);
-            deleteTmp();
+
+            emit addedNewEdge(m_tmp->getNode(), node->getNode());
+
+            setHasTmp(false);
         }
         this->update();
     }
     else{
-        deleteTmp();
+        setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
     }
 }
@@ -90,24 +109,33 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 //TODO: drawing a line when clicked on a node
 
 //void GraphTable::mouseMoveEvent (QGraphicsSceneMouseEvent * event ){
-//    if(m_drawingMode && tmp != nullptr){
-//        this->removeItem(lineToDraw);
 
-//        QLineF line(event->scenePos().x(), event->scenePos().y(), tmp->x(), tmp->y());
-//        lineToDraw = new QGraphicsLineItem(line);
-//        this->addItem(lineToDraw);
+
+//    if(m_drawingMode && m_hasTmp){
+//        for (auto veza : _veze){
+//            this->removeItem(veza);
+//            delete veza;
+//        }
+//        _veze.clear();
+
+
+//        QLineF linija(m_tmp->TopCenterPosition(), event->scenePos());
+//        auto veza = new QGraphicsLineItem(linija);
+//        _veze.append(veza);
+//        this->addItem(veza);
+
 //        this->update();
 //    }
-//    else
-//        QGraphicsScene::mouseMoveEvent(event);
+//    QGraphicsScene::mouseMoveEvent(event);
 
 //}
 
 void GraphTable::setDrawingMode(bool x) {
     m_drawingMode = x;
 }
-
-
+void GraphTable::setHasTmp(bool x) {
+    m_hasTmp = x;
+}
 
 
 

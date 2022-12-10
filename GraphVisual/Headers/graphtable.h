@@ -1,19 +1,21 @@
 #ifndef GRAPHTABLE_H
 #define GRAPHTABLE_H
 
-#include <QGraphicsScene>
+#include<QGraphicsScene>
 #include<QGraphicsSceneMouseEvent>
 #include<QGraphicsLineItem>
+#include<QLineEdit>
+#include<QWidget>
 
 #include"Headers/node.h"
 class GraphicNode;
 class GraphicEdge;
 
 class GraphTable : public QGraphicsScene {
-//Q_OBJECT
+Q_OBJECT
 public:
     GraphTable(QObject *parenet = nullptr);
-//    virtual ~GraphTable(){}
+    virtual ~GraphTable(){}
 
     QVector<GraphicNode *> getNodes();
     QVector<GraphicEdge *> getEdges();
@@ -21,16 +23,19 @@ public:
     void mousePressEvent ( QGraphicsSceneMouseEvent * event ) override;
 //    void mouseMoveEvent (QGraphicsSceneMouseEvent * event ) override;
     void setDrawingMode(bool x);
-    void deleteTmp(){tmp=nullptr;}
+    void setHasTmp(bool x);
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
     void AddNewEdgeOnTable(GraphicEdge *edge);
     void DeleteAllNodesFromTable();
     void Redraw();
+    void editWeight(GraphicEdge* edge, int w);
 
-//signals:
-//    void addedNewNode(Node* node);
+signals:
+    void addedNewNode(Node* node);
+    void addedNewEdge(Node* node1, Node* node2);
+    void edgeWeightChanged(Node* node1, Node* node2, int weight);
 
 private:
     void PlaceNodeOnTable(GraphicNode *node);
@@ -39,8 +44,11 @@ private:
     QVector<GraphicEdge *> m_Edges;
 
     bool m_drawingMode = true;
-    GraphicNode* tmp = nullptr;
-//    QGraphicsLineItem* lineToDraw;
+    bool m_hasTmp = false;
+    GraphicNode* m_tmp;
+    QGraphicsLineItem* m_lineToDraw;
+
+//    QVector<QGraphicsLineItem *> _veze;
 };
 
 

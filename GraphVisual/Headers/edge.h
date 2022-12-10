@@ -20,6 +20,8 @@ public:
 
     friend class Graph;
 
+    void setWeight(int n){m_weight=n;}
+
 
 private:
     int m_weight;

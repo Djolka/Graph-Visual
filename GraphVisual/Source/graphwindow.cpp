@@ -37,7 +37,9 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 
     connect(ui->menu_right, &QTabWidget::currentChanged, this, &GraphWindow::ChangeMode);
-//    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewEdge, this, &GraphWindow::AddEdge);
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::edgeWeightChanged, this, &GraphWindow::changeWeight);
 }
 
 GraphWindow::~GraphWindow()
@@ -120,13 +122,18 @@ void GraphWindow::ChangeMode(int index) {
     }
     else{
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
-        dynamic_cast<GraphTable*>(m_GraphTable)->deleteTmp();
+        dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
     }
 }
 
 void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
 }
-
+void GraphWindow::AddEdge(Node* n1, Node* n2) {
+    m_graph->addEdge(n1, n2, 1);
+}
+void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
+    m_graph->getEdge(n1, n2)->setWeight(weight);
+}
 
 

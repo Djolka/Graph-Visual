@@ -34,6 +34,8 @@ private slots:
     void DeleteAllNodes();
     void ChangeMode(int index);
     void AddNode(Node* node);
+    void AddEdge(Node* n1, Node* n2);
+    void changeWeight(Node* n1, Node* n2, int weight);
 
 private:
     Ui::GraphWindow *ui;
