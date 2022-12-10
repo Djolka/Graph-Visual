@@ -93,7 +93,7 @@ bool Graph::removeNode(Node *node) {
 
     if (it != m_nodes.end()){
         m_nodes.erase(it);
-//        isolateNode(node);
+        isolateNode(node);
         return true;
     }
     return false;
@@ -105,10 +105,31 @@ bool Graph::removeNode(const std::string &name) {
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
         if((*it)->name() == name){
             m_nodes.erase(it);
-//            isolateNode(node);
+            isolateNode(name);
             return true;
         }
     return false;
+}
+
+bool Graph::isolateNode(Node *node) {
+    auto it = m_edges.begin();
+    for(;it != m_edges.end(); ++it){
+        if(isUndirected()){
+            if ((*it)->first() == node || (*it)->second() == node){
+                removeEdge((*it)->first(), (*it)->second());
+            }
+        }else{
+            if((*it)->first() == node || (*it)->second() == node){
+                removeEdge((*it)->first(), (*it)->second());
+            }
+        }
+    }
+    return true;
+}
+
+bool Graph::isolateNode(const std::string &name) {
+    Node *node = new Node(name);
+    return isolateNode(node);
 }
 
 
@@ -252,19 +273,23 @@ bool Graph::removeEdge(Node *u, Node *v) {
         if(isUndirected()){
             if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
                 m_edges.erase(it);
+                u->decDeg();
+                v->decDeg();
                 u->removeNeighbour(v);
                 v->removeNeighbour(u);
                 return true;
             }
         }else{
-            if ((*it)->first() == u && (*it)->second() == v){
+            if((*it)->first() == u && (*it)->second() == v){
+                u->decOutDeg();
+                v->decInDeg();
                 m_edges.erase(it);
                 u->removeNeighbour(v);
                 return true;
             }
         }
     }
-    return false;
+    return true;
 }
 
 

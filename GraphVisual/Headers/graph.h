@@ -28,8 +28,8 @@ public:
     bool addNode(std::string node_name);
     bool removeNode(Node *node);
     bool removeNode(const std::string &name);
-//    bool isolateNode(Node *node);
-//    bool isolateNode(const std::string &name);
+    bool isolateNode(Node *node);
+    bool isolateNode(const std::string &name);
     bool setNodeName(Node *node, const std::string &new_name);
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
     inline int countNodes() const;
