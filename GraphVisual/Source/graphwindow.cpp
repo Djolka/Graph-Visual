@@ -42,6 +42,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::edgeWeightChanged, this, &GraphWindow::changeWeight);
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
 }
 
 GraphWindow::~GraphWindow()
@@ -148,4 +149,7 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 
 void GraphWindow::deleteNode(Node* node) {
     m_graph->removeNode(node);
+}
+void GraphWindow::deleteEdge(Node* node1, Node* node2) {
+    m_graph->removeEdge(node1, node2);
 }

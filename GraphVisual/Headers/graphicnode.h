@@ -23,8 +23,7 @@ public:
 
     int type() const override;
 
-    QPointF TopCenterPosition();
-    QPointF BottomCenterPosition();
+    QPointF CenterPosition() const;
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

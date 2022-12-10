@@ -22,9 +22,6 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     painter->drawEllipse(boundingRect());
 
-//    TODO: if node is empty then write the index
-//    ...
-
     const auto text = QString::fromStdString(m_Node->name());
     painter->setPen(Qt::black);
 
@@ -32,18 +29,14 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->drawText(boundingRect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
 }
 
-QPointF GraphicNode::TopCenterPosition() {
-    return pos() + QPointF(Width() / 2, 0);
+QPointF GraphicNode::CenterPosition() const {
+    return pos() + QPointF(Width() / 2, Height() / 2);
 }
 
-QPointF GraphicNode::BottomCenterPosition() {
-    return pos() + QPointF(Width() / 2, Height());
-}
 
 void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-
-    needRedraw();
     QGraphicsObject::mouseMoveEvent(event);
+    emit needRedraw();
 }
 
 void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {

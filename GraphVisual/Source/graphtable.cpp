@@ -127,16 +127,16 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
         emit deletedNode(node);
     }
-//    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)){ //delete edge
-//        const auto graphicEdge = dynamic_cast<GraphicEdge*>(itemAt(event->scenePos(), QTransform()));
-//        removeItem(graphicEdge);
-//        removeItem(graphicEdge->getLineEdit()->graphicsProxyWidget());
-//        m_Edges.removeOne(graphicEdge);
+    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)){ //delete edge
+        const auto graphicEdge = dynamic_cast<GraphicEdge*>(itemAt(event->scenePos(), QTransform()));
+        removeItem(graphicEdge);
+        removeItem(graphicEdge->getLineEdit()->graphicsProxyWidget());
+        m_Edges.removeOne(graphicEdge);
 
-//        Redraw();
+        Redraw();
 
-//        emit deletedEdge(graphicEdge->getStart(), graphicEdge->getEnd());
-//    }
+        emit deletedEdge(graphicEdge->getStart()->getNode(), graphicEdge->getEnd()->getNode());
+    }
     else{
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);

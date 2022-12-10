@@ -9,8 +9,8 @@
 #include<QGraphicsProxyWidget>
 
 #include"Headers/node.h"
+#include"Headers/graphicedge.h"
 class GraphicNode;
-class GraphicEdge;
 
 class GraphTable : public QGraphicsScene {
 Q_OBJECT
@@ -39,6 +39,7 @@ signals:
     void addedNewEdge(Node* node1, Node* node2);
     void edgeWeightChanged(Node* node1, Node* node2, int weight);
     void deletedNode(Node* node);
+    void deletedEdge(Node* node1, Node* node2);
 
 private:
     void PlaceNodeOnTable(GraphicNode *node);
