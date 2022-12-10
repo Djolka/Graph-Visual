@@ -14,14 +14,21 @@ SOURCES += \
     Source/main.cpp \
     Source/graphwindow.cpp \
     Source/node.cpp \
-    Source/algorithm.cpp
+    Source/algorithm.cpp \
+    Source/graphicnode.cpp \
+    Source/graphtable.cpp \
+    Source/graphicedge.cpp
 
 HEADERS += \
     Headers/edge.h \
     Headers/graph.h \
     Headers/graphwindow.h \
     Headers/node.h \
-    Headers/algorithm.h
+    Headers/algorithm.h \
+    Headers/graphicnode.h \
+    Headers/graphtable.h \
+    Headers/graphicedge.h
+
 
 FORMS += \
     Forms/graphwindow.ui
