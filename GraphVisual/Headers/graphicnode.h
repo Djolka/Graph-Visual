@@ -20,8 +20,7 @@ public:
     inline int Width() const { return 50; };
     inline int Height() const { return 50; };
 
-    QPointF TopCenterPosition();
-    QPointF BottomCenterPosition();
+    QPointF CenterPosition() const;
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

@@ -1,4 +1,5 @@
 #include "Headers/graph.h"
+#include <climits>
 #include <algorithm>
 #include <random>
 
