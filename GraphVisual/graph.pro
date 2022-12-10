@@ -9,15 +9,26 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Source/Edge.cpp \
+    Source/edge.cpp \
+    Source/graph.cpp \
     Source/main.cpp \
     Source/graphwindow.cpp \
-    Source/Node.cpp
+    Source/node.cpp \
+    Source/algorithm.cpp \
+    Source/graphicnode.cpp \
+    Source/graphtable.cpp \
+    Source/graphicedge.cpp
 
 HEADERS += \
-    Headers/Edge.h \
+    Headers/edge.h \
+    Headers/graph.h \
     Headers/graphwindow.h \
-    Headers/Node.h
+    Headers/node.h \
+    Headers/algorithm.h \
+    Headers/graphicnode.h \
+    Headers/graphtable.h \
+    Headers/graphicedge.h
+
 
 FORMS += \
     Forms/graphwindow.ui

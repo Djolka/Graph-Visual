@@ -1,28 +1,31 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include<unordered_map>
-#include<map>
-#include "Headers/Node.h"
+#include <map>
+#include "Headers/node.h"
 
-typedef std::pair<Node*, Node*> pair;
-typedef std::unordered_map<pair, int> edges;
+typedef std::map<std::pair<Node*, Node*>, int> edges;
 
 class Edge{
 
 public:
-    Edge(pair&, int&);
+    Edge(std::pair<Node*, Node*>, int weight);
 
-    explicit Edge(edges::iterator&);
+    explicit Edge(edges::iterator& iter);
     Node* first() const;
     Node* second() const;
     int weight() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const Edge e);
+
     friend class Graph;
 
+    void setWeight(int n){m_weight=n;}
+
+
 private:
-    const int &m_weight{};
-    const pair &m_node_pair{};
+    int m_weight;
+    const std::pair<Node*, Node*> m_nodePair{};
 };
 
 #endif // EDGE_H
