@@ -2,6 +2,7 @@
 #define GRAPHICNODE_H
 
 #include <QGraphicsObject>
+#include<QBrush>
 
 class Node;
 
@@ -27,9 +28,12 @@ public:
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 private:
     Node *m_Node;
+    QBrush m_brush = QBrush();
 
 signals:
     void needRedraw();
