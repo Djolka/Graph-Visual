@@ -13,6 +13,7 @@ SOURCES += \
     Source/graph.cpp \
     Source/main.cpp \
     Source/graphwindow.cpp \
+    Source/mytextedit.cpp \
     Source/node.cpp \
     Source/algorithm.cpp \
     Source/graphicnode.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     Headers/edge.h \
     Headers/graph.h \
     Headers/graphwindow.h \
+    Headers/mytextedit.h \
     Headers/node.h \
     Headers/algorithm.h \
     Headers/graphicnode.h \

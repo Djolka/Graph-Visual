@@ -38,8 +38,17 @@ private slots:
     void changeWeight(Node* n1, Node* n2, int weight);
 
     void on_actionSaveAsPng_triggered();
-
     void on_actionSaveAsJpg_triggered();
+
+    void on_pbUndirected_pressed();
+
+    void on_pbUndirected_released();
+
+    void on_pbDirected_pressed();
+
+    void on_pbUndirected_clicked();
+
+    void on_actionClose_triggered();
 
 private:
     Ui::GraphWindow *ui;
