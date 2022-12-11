@@ -1450,6 +1450,9 @@ color: rgb(245, 243, 242);</string>
            <number>0</number>
           </property>
           <widget class="QWidget" name="tab_Config">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(:/new/rec/Resources/config.png);</string>
+           </property>
            <attribute name="title">
             <string>Config</string>
            </attribute>
@@ -2103,6 +2106,9 @@ color: rgb(245, 243, 242);</string>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_Draw">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(:/new/rec/Resources/drawnode.png);</string>
+           </property>
            <attribute name="title">
             <string>Draw</string>
            </attribute>
@@ -2158,6 +2164,9 @@ canvas to cancel.</string>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_Delete">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <attribute name="title">
             <string>Delete</string>
            </attribute>

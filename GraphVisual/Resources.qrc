@@ -5,5 +5,8 @@
         <file>Resources/save.png</file>
         <file>Resources/open.png</file>
         <file>Resources/close.png</file>
+        <file>Resources/config.png</file>
+        <file>Resources/drawnode.png</file>
+        <file>Resources/deletenode.png</file>
     </qresource>
 </RCC>
