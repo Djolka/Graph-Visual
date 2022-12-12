@@ -20,10 +20,10 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->setupUi(this);
 
 //    connecting scene and view
-    m_GraphTable->setSceneRect(ui->gv_graphTable->rect());
-    ui->gv_graphTable->setScene(m_GraphTable);
-    ui->gv_graphTable->setRenderHint(QPainter::Antialiasing);
-    ui->gv_graphTable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    m_GraphTable->setSceneRect(ui->graphicsView->rect());
+    ui->graphicsView->setScene(m_GraphTable);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
 //    connecting singals and slots
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewNode);

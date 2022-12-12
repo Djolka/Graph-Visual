@@ -1,9 +1,10 @@
 #include"Headers/graphicedge.h"
 
+#include <QPen>
 #include <QPainter>
 
 GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
-    :QGraphicsObject(),
+    :QGraphicsLineItem(),
     m_start (start),
     m_end (end),
     m_weight(weight){
@@ -19,10 +20,20 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->drawLine(m_start->TopCenterPosition(), m_end->TopCenterPosition());
+    QPen pen;
+
+    if(collidesWithItem(m_start) or collidesWithItem(m_end)) {
+        pen.setColor(Qt::white);
+    } else {
+        pen.setColor(Qt::black);
+    }
+
+    painter->setPen(pen);
+    painter->fillRect(boundingRect(), Qt::black);
+    painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
     const auto text = QString::fromStdString(std::to_string(m_weight));
-    painter->drawText(m_start->TopCenterPosition().rx() - (m_start->TopCenterPosition().rx() - m_end->TopCenterPosition().rx())/2.0,
-                      m_start->TopCenterPosition().ry() - (m_start->TopCenterPosition().ry() - m_end->TopCenterPosition().ry())/2.0,
+    painter->drawText(m_start->CenterPosition().rx() - (m_start->CenterPosition().rx() - m_end->CenterPosition().rx())/2.0,
+                      m_start->CenterPosition().ry() - (m_start->CenterPosition().ry() - m_end->CenterPosition().ry())/2.0,
                       text);
 }
