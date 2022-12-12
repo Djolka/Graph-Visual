@@ -8,5 +8,8 @@
         <file>Resources/config.png</file>
         <file>Resources/drawnode.png</file>
         <file>Resources/deletenode.png</file>
+        <file>Resources/algo.png</file>
+        <file>Resources/run.png</file>
+        <file>Resources/reset.png</file>
     </qresource>
 </RCC>

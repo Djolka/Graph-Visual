@@ -1083,6 +1083,9 @@ color: #e8e4d6;</string>
          <number>0</number>
         </property>
         <item>
+         <layout class="QFormLayout" name="formLayout"/>
+        </item>
+        <item>
          <widget class="MyTextEdit" name="teNode1">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1447,7 +1450,7 @@ color: rgb(245, 243, 242);</string>
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab_Config">
            <property name="styleSheet">
@@ -1909,6 +1912,9 @@ color: rgb(245, 243, 242);</string>
            </widget>
           </widget>
           <widget class="QWidget" name="tabAlgorithms">
+           <property name="styleSheet">
+            <string notr="true">image: url(:/new/rec/Resources/algo.png);</string>
+           </property>
            <attribute name="title">
             <string>Algorithms</string>
            </attribute>
@@ -1991,6 +1997,10 @@ color: rgb(245, 243, 242);</string>
             <property name="text">
              <string>Run</string>
             </property>
+            <property name="icon">
+             <iconset resource="../Resources.qrc">
+              <normaloff>:/new/rec/Resources/run.png</normaloff>:/new/rec/Resources/run.png</iconset>
+            </property>
            </widget>
            <widget class="QPushButton" name="pbRESET">
             <property name="geometry">
@@ -2006,6 +2016,10 @@ color: rgb(245, 243, 242);</string>
             </property>
             <property name="text">
              <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Resources.qrc">
+              <normaloff>:/new/rec/Resources/reset.png</normaloff>:/new/rec/Resources/reset.png</iconset>
             </property>
            </widget>
            <widget class="QPushButton" name="pbColoring">
@@ -2165,7 +2179,7 @@ canvas to cancel.</string>
           </widget>
           <widget class="QWidget" name="tab_Delete">
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">background-image: url(:/new/rec/Resources/deletenode.png);</string>
            </property>
            <attribute name="title">
             <string>Delete</string>
