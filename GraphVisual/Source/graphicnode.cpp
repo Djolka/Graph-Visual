@@ -22,8 +22,6 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->setBrush(m_brush);
     painter->drawEllipse(boundingRect());
 
-//    TODO: if node is empty then write the index
-//    ...
 
     const auto text = QString::fromStdString(m_Node->name());
     painter->setPen(Qt::black);
@@ -36,9 +34,8 @@ QPointF GraphicNode::CenterPosition() {
 
 
 void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-
-    emit needRedraw();
     QGraphicsObject::mouseMoveEvent(event);
+    emit needRedraw();
 }
 
 void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {

@@ -1,10 +1,11 @@
 #include"Headers/graphicedge.h"
 #include<climits>
 
+#include <QPen>
 #include <QPainter>
 
 GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
-    :QGraphicsObject(),
+    :QGraphicsLineItem(),
     m_start (start),
     m_end (end),
     m_weight(weight){
@@ -54,4 +55,6 @@ void GraphicEdge::editWeight(const QString &text){
             emit needRedraw();
         }
     }
+
+//    TODO: z index
 }

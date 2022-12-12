@@ -1,15 +1,14 @@
 #ifndef GRAPHICEDGE_H
 #define GRAPHICEDGE_H
 
-#include <QGraphicsObject>
+#include <QGraphicsLineItem>
 #include"Headers/graphicnode.h"
 #include<QLineEdit>
 
-class GraphicEdge : public QGraphicsObject {
-Q_OBJECT
+class GraphicEdge : public QObject, public QGraphicsLineItem {
+    Q_OBJECT
 public:
     GraphicEdge(GraphicNode* start, GraphicNode* end, int weight);
-
     virtual ~GraphicEdge(){}
 
     QRectF boundingRect() const override;
