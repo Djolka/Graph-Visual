@@ -13,6 +13,7 @@ SOURCES += \
     Source/graph.cpp \
     Source/main.cpp \
     Source/graphwindow.cpp \
+    Source/mytextedit.cpp \
     Source/node.cpp \
     Source/algorithm.cpp \
     Source/graphicnode.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     Headers/edge.h \
     Headers/graph.h \
     Headers/graphwindow.h \
+    Headers/mytextedit.h \
     Headers/node.h \
     Headers/algorithm.h \
     Headers/graphicnode.h \
@@ -36,3 +38,13 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    Resources.qrc
+
+DISTFILES += \
+    Resources/close.png \
+    Resources/open.png \
+    Resources/save.png \
+    Resources/saveasjpg.png \
+    Resources/saveaspng.png

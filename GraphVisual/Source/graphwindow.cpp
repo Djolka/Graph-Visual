@@ -10,6 +10,9 @@
 
 #include <QString>
 #include <QListWidgetItem>
+#include <QFileDialog>
+#include <QTextEdit>
+#include <QWidget>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,7 +40,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 
-    connect(ui->menu_right, &QTabWidget::currentChanged, this, &GraphWindow::ChangeMode);
+    connect(ui->twRight, &QTabWidget::currentChanged, this, &GraphWindow::ChangeMode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewEdge, this, &GraphWindow::AddEdge);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::edgeWeightChanged, this, &GraphWindow::changeWeight);
@@ -140,4 +143,48 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 }
 
 
+void GraphWindow::on_actionSaveAsPng_triggered() {
 
+        QString dir = QDir::homePath();
+        QString name = "Untilted.png";
+        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
+            if (!fileName.isNull()) {
+                QPixmap pixMap = this->ui->graphicsView->grab();
+                pixMap.save(fileName);
+            }
+}
+
+
+void GraphWindow::on_actionSaveAsJpg_triggered(){
+
+        QString dir = QDir::homePath();
+        QString name = "Untilted.jpeg";
+        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
+            if (!fileName.isNull()) {
+                QPixmap pixMap = this->ui->graphicsView->grab();
+                pixMap.save(fileName);
+            }
+}
+
+void GraphWindow::on_pbUndirected_pressed(){   
+    ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+    ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
+    // TODO undirected edges}
+}
+
+void GraphWindow::on_pbDirected_pressed(){
+    ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
+    ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+    // TODO directed edges
+}
+
+void GraphWindow::on_actionClose_triggered()
+{
+    // TODO ask user if they want to save
+    close();
+}
+
+// delet this
+void GraphWindow::on_pbUndirected_released(){}
+void GraphWindow::on_pbUndirected_clicked(){}
+void GraphWindow::on_pbAddNode_clicked(){}

@@ -43,7 +43,7 @@ void GraphicEdge::editWeight(const QString &text){
         emit weightEdited(this, 1);
         emit needRedraw();
     }
-    else{ // TODO: postavljena max duzina grane na 100000, da li zelimo nesto drugo?
+    else{ // TODO: postavljena max duzina grane na 100000, da li zelimo nesto drugo? Ne, dobro je
         int weight = std::stoi(text.toStdString());
         if(weight < 100000){
             emit weightEdited(this, weight);

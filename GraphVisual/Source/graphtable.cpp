@@ -72,7 +72,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             GraphicNode* graphicNode = new GraphicNode(node);
 
             AddNewNodeOnTable(graphicNode);
-            graphicNode->setPos(event->scenePos());
+            graphicNode->setPos(event->scenePos() - QPointF(graphicNode->Width() / 2, graphicNode->Height() / 2));
             addItem(graphicNode);
 
             emit addedNewNode(node);
