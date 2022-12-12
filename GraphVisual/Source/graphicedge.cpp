@@ -29,7 +29,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 
     painter->setPen(pen);
-
+    painter->fillRect(boundingRect(), Qt::black);
     painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
     const auto text = QString::fromStdString(std::to_string(m_weight));
