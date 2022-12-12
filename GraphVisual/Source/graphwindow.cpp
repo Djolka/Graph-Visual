@@ -175,8 +175,8 @@ void GraphWindow::on_pbDirected_pressed(){
 
 void GraphWindow::on_actionClose_triggered()
 {
-    // TODO close app
-    // TODO maybe ask user if they want to save
+    // TODO ask user if they want to save
+    close();
 }
 
 // delet this
