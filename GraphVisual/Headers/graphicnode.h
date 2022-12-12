@@ -33,7 +33,7 @@ protected:
 
 private:
     Node *m_Node;
-    QBrush m_brush = QBrush();
+    QBrush m_brush = QBrush(Qt::white);
 
 signals:
     void needRedraw();

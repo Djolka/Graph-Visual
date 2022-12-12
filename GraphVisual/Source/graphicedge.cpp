@@ -12,6 +12,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
+    QGraphicsLineItem::setZValue(-10);
 }
 
 QRectF GraphicEdge::boundingRect() const {

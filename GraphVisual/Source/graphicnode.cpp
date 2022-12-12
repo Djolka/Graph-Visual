@@ -44,7 +44,7 @@ void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsObject::hoverEnterEvent(event);
 }
 void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    m_brush = QBrush();
+    m_brush = QBrush(Qt::white);
     emit needRedraw();
     QGraphicsObject::hoverLeaveEvent(event);
 }

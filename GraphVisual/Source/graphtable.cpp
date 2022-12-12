@@ -86,8 +86,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         else{
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
-            // open window to insert weight
-//            insertWeight();
+            // open window to insert node name
 
             GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
             AddNewEdgeOnTable(edge);
