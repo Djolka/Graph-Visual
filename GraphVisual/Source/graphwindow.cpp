@@ -27,6 +27,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
 //    connecting singals and slots
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
+
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
 
     connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
@@ -56,7 +57,7 @@ GraphWindow::~GraphWindow()
 void GraphWindow::AddNewEdge() {
     const auto name1 = ui->teNode1->toPlainText();
 
-    GraphicNode* graphicNode1;
+    GraphicNode* graphicNode1 = nullptr;
     if(!m_graph->hasNode(name1.toStdString())){
         const auto node1 = new Node(name1.toStdString());
 
@@ -80,7 +81,7 @@ void GraphWindow::AddNewEdge() {
     const auto name2 = ui->teNode2->toPlainText();
 
 
-    GraphicNode* graphicNode2;
+    GraphicNode* graphicNode2 = nullptr;
     if(!m_graph->hasNode(name2.toStdString())){
         const auto node2 = new Node(name2.toStdString());
 
@@ -104,6 +105,7 @@ void GraphWindow::AddNewEdge() {
     //m_graph->addEdge() TODO
 
     const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+//    m_GraphTable->addItem(graphicEdge);
 
     emit AddedNewEdge(graphicEdge);
     emit NeedRedraw();
@@ -114,6 +116,7 @@ void GraphWindow::DeleteAllNodes() {
 //        delete node;
 //    }
 //    m_Nodes.clear();
+//    emit DeletedAllNodes();
 }
 
 void GraphWindow::ChangeMode(int index) {
@@ -135,5 +138,6 @@ void GraphWindow::AddEdge(Node* n1, Node* n2) {
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
+
 
 

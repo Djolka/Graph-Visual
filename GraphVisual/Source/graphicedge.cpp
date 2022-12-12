@@ -8,10 +8,8 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_start (start),
     m_end (end),
     m_weight(weight){
-
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
-
     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
 }
 
@@ -20,25 +18,23 @@ QRectF GraphicEdge::boundingRect() const {
 }
 
 QPointF GraphicEdge::getCenter(){
-    return QPointF(m_start->TopCenterPosition().rx() - (m_start->TopCenterPosition().rx() - m_end->TopCenterPosition().rx())/2.0,
-        m_start->TopCenterPosition().ry() - (m_start->TopCenterPosition().ry() - m_end->TopCenterPosition().ry())/2.0);
+    return QPointF(m_start->CenterPosition().rx() - (m_start->CenterPosition().rx() - m_end->CenterPosition().rx())/2.0,
+        m_start->CenterPosition().ry() - (m_start->CenterPosition().ry() - m_end->CenterPosition().ry())/2.0);
 }
-
 
 void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->drawLine(m_start->TopCenterPosition(), m_end->TopCenterPosition());  
+    painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
     m_weightLineEdit->move(getCenter().x(), getCenter().y());
 
     auto text = m_weightLineEdit->text();
     auto width = text.length();
 
-    m_weightLineEdit->resize(std::max(10*width, 20), 20);
+    m_weightLineEdit->resize(std::fmax(10*width, 20), 20);
 }
-
 
 void GraphicEdge::editWeight(const QString &text){
     if(text.toStdString().empty()){

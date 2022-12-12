@@ -7,14 +7,14 @@
 #include<QLineEdit>
 #include<QWidget>
 
-#include"Headers/node.h"
-class GraphicNode;
-class GraphicEdge;
+#include "Headers/node.h"
+#include "Headers/graphicnode.h"
+#include "Headers/graphicedge.h"
 
 class GraphTable : public QGraphicsScene {
 Q_OBJECT
 public:
-    GraphTable(QObject *parenet = nullptr);
+    explicit GraphTable(QObject *parenet = nullptr);
     virtual ~GraphTable(){}
 
     QVector<GraphicNode *> getNodes();

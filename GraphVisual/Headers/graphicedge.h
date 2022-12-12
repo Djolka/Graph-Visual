@@ -31,7 +31,6 @@ private:
     GraphicNode* m_end;
     int m_weight;
     QLineEdit* m_weightLineEdit;
-
 };
 
 

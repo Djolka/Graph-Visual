@@ -8,6 +8,7 @@ GraphicNode::GraphicNode(Node *node)
     , m_Node(node) {
      setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
     setAcceptHoverEvents(true);
+
 }
 
 QRectF GraphicNode::boundingRect() const {
@@ -19,7 +20,6 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(widget);
 
     painter->setBrush(m_brush);
-
     painter->drawEllipse(boundingRect());
 
 //    TODO: if node is empty then write the index
@@ -27,22 +27,17 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     const auto text = QString::fromStdString(m_Node->name());
     painter->setPen(Qt::black);
-
-
     painter->drawText(boundingRect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
 }
 
-QPointF GraphicNode::TopCenterPosition() {
-    return pos() + QPointF(Width() / 2, 0);
+QPointF GraphicNode::CenterPosition() {
+    return pos() + QPointF(Width() / 2, Height() / 2);
 }
 
-QPointF GraphicNode::BottomCenterPosition() {
-    return pos() + QPointF(Width() / 2, Height());
-}
 
 void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
-    needRedraw();
+    emit needRedraw();
     QGraphicsObject::mouseMoveEvent(event);
 }
 
@@ -61,5 +56,3 @@ void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 int GraphicNode::type() const{
     return 1;
 }
-
-

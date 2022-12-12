@@ -4,7 +4,7 @@
 #include <QGraphicsObject>
 #include<QBrush>
 
-class Node;
+#include "Headers/node.h"
 
 class GraphicNode : public QGraphicsObject {
     Q_OBJECT
@@ -23,8 +23,7 @@ public:
 
     int type() const override;
 
-    QPointF TopCenterPosition();
-    QPointF BottomCenterPosition();
+    QPointF CenterPosition();
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

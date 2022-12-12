@@ -55,7 +55,6 @@ QVector<GraphicEdge *> GraphTable::getEdges(){
     return m_Edges;
 }
 
-
 void GraphTable::editWeight(GraphicEdge* edge, int w){
     emit edgeWeightChanged(edge->getStart()->getNode(), edge->getEnd()->getNode(), w);
 }
@@ -136,7 +135,3 @@ void GraphTable::setDrawingMode(bool x) {
 void GraphTable::setHasTmp(bool x) {
     m_hasTmp = x;
 }
-
-
-
-

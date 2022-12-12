@@ -29,7 +29,6 @@ HEADERS += \
     Headers/graphtable.h \
     Headers/graphicedge.h
 
-
 FORMS += \
     Forms/graphwindow.ui
 
