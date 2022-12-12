@@ -17,7 +17,8 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->drawEllipse(boundingRect());
+    painter->drawRoundedRect(boundingRect(), 30, 30);
+
 
     const auto text = QString::fromStdString(m_Node->name());
     painter->setPen(Qt::black);
