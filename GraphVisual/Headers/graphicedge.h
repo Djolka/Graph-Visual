@@ -26,7 +26,9 @@ public:
     QLineEdit* getLineEdit(){return m_weightLineEdit;}
 
 public slots:
-    void editWeight(const QString &text);
+    //void editWeight(const QString &text);
+    void editWeight();
+
 signals:
     void weightEdited(GraphicEdge* e, int w);
     void needRedraw();

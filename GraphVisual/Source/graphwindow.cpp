@@ -104,6 +104,8 @@ void GraphWindow::AddNewEdge() {
         }
     }
 
+    // TODO: if edge exists
+
     const auto weight = ui->teWeight->toPlainText().toInt();
     //m_graph->addEdge() TODO
 

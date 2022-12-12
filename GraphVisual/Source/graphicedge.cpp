@@ -11,7 +11,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_weight(weight){
 
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
-    connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
+    connect(m_weightLineEdit, &QLineEdit::returnPressed, this, &GraphicEdge::editWeight);
 
     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
 }
@@ -52,15 +52,16 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 
-void GraphicEdge::editWeight(const QString &text){
-    if(text.toStdString().empty()){
+void GraphicEdge::editWeight(){
+    if(m_weightLineEdit->text().toStdString().empty()){
         m_weightLineEdit->setText(QString("1"));
         emit weightEdited(this, 1);
         emit needRedraw();
     }
-    else{ // TODO: postavljena max duzina grane na 100000, da li zelimo nesto drugo?
-        int weight = std::stoi(text.toStdString());
-        if(weight < 100000){
+    else{
+        if(m_weightLineEdit->text().length() < 6){
+            int weight = std::stoi(m_weightLineEdit->text().toStdString());
+
             emit weightEdited(this, weight);
             emit needRedraw();
         }
