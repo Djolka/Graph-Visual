@@ -142,9 +142,11 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "PNG (*.PNG)" );
+
+        QString dir = QDir::homePath();
+        QString name = "Untilted.png";
+        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
             if (!fileName.isNull()) {
-                fileName += ".png";
                 QPixmap pixMap = this->ui->graphicsView->grab();
                 pixMap.save(fileName);
             }
@@ -153,9 +155,10 @@ void GraphWindow::on_actionSaveAsPng_triggered() {
 
 void GraphWindow::on_actionSaveAsJpg_triggered(){
 
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "JPEG (*.JPEG)" );
+        QString dir = QDir::homePath();
+        QString name = "Untilted.jpeg";
+        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
             if (!fileName.isNull()) {
-                fileName += ".jpeg";
                 QPixmap pixMap = this->ui->graphicsView->grab();
                 pixMap.save(fileName);
             }
