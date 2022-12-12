@@ -1156,6 +1156,9 @@ border: 1px solid #e8e4d6;
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -1187,6 +1190,9 @@ border: 1px solid #e8e4d6;
           <property name="inputMethodHints">
            <set>Qt::ImhMultiLine</set>
           </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -1217,6 +1223,9 @@ border: 1px solid #e8e4d6;
           </property>
           <property name="inputMethodHints">
            <set>Qt::ImhMultiLine</set>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

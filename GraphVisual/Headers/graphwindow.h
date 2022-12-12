@@ -50,6 +50,8 @@ private slots:
 
     void on_actionClose_triggered();
 
+    void on_pbAddNode_clicked();
+
 private:
     Ui::GraphWindow *ui;
     QGraphicsScene *m_GraphTable;

@@ -5,6 +5,7 @@
 
 class MyTextEdit : public QTextEdit
 {
+    Q_OBJECT
 public:
     MyTextEdit(QWidget *parent = 0) : QTextEdit(parent) {}
     void keyPressEvent(QKeyEvent *e);

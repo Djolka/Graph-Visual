@@ -182,6 +182,5 @@ void GraphWindow::on_actionClose_triggered()
 // delet this
 void GraphWindow::on_pbUndirected_released(){}
 void GraphWindow::on_pbUndirected_clicked(){}
-
-
+void GraphWindow::on_pbAddNode_clicked(){}
 
