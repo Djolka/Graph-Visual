@@ -29,8 +29,18 @@ bool Graph::isUndirected() const {
 }
 
 void Graph::clear() {
+    for(auto node:m_nodes){
+        delete node;
+    }
+    for(auto edge : m_edges){
+        delete edge;
+    }
     m_edges.clear();
     m_nodes.clear();
+}
+
+void Graph::setDirected(bool dir) {
+    m_directed = dir;
 }
 
 bool Graph::hasNode(Node *node) const {
@@ -95,6 +105,7 @@ bool Graph::removeNode(Node *node) {
     if (it != m_nodes.end()){
         m_nodes.erase(it);
         isolateNode(node);
+        delete node;
         return true;
     }
     return false;
@@ -106,6 +117,7 @@ bool Graph::removeNode(const std::string &name) {
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
         if((*it)->name() == name){
             m_nodes.erase(it);
+            delete *it;
             isolateNode(name);
             return true;
         }
@@ -129,8 +141,13 @@ bool Graph::isolateNode(Node *node) {
 }
 
 bool Graph::isolateNode(const std::string &name) {
-    Node *node = new Node(name);
-    return isolateNode(node);
+    QList<Node*>::iterator it;
+    for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
+        if((*it)->name() == name){
+            isolateNode(*it);
+        }
+
+    return true;
 }
 
 
@@ -207,14 +224,12 @@ bool Graph::setEdge(Node *u, Node *v) {
 }
 
 
-//potential problem:memory leake
 bool Graph::setEdge(const std::string &uname, const std::string &vname) {
     Node *u = new Node(uname);
     Node *v = new Node(vname);
     return setEdge(u, v, 1);
 }
 
-//potential problem:memory leake
 bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
     Node *u = new Node(uname);
     Node *v = new Node(vname);
@@ -274,6 +289,7 @@ bool Graph::removeEdge(Node *u, Node *v) {
         if(isUndirected()){
             if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
                 m_edges.erase(it);
+                delete *it;
                 u->decDeg();
                 v->decDeg();
                 u->removeNeighbour(v);
@@ -285,6 +301,7 @@ bool Graph::removeEdge(Node *u, Node *v) {
                 u->decOutDeg();
                 v->decInDeg();
                 m_edges.erase(it);
+                delete *it;
                 u->removeNeighbour(v);
                 return true;
             }
@@ -295,9 +312,30 @@ bool Graph::removeEdge(Node *u, Node *v) {
 
 
 bool Graph::removeEdge(const std::string &uname, const std::string &vname) {
-    Node *n1 = new Node(uname);
-    Node *n2 = new Node(vname);
-    return removeEdge(n1, n2);
+    auto it = m_edges.begin();
+    for(;it != m_edges.end(); ++it){
+        if(isUndirected()){
+            if (((*it)->first()->name() == uname && (*it)->second()->name() == vname) || ((*it)->first()->name() == vname && (*it)->second()->name() == uname)){
+                m_edges.erase(it);
+                (*it)->first()->decDeg();
+                (*it)->second()->decDeg();
+                (*it)->first()->removeNeighbour((*it)->second());
+                (*it)->second()->removeNeighbour((*it)->first());
+                delete *it;
+                return true;
+            }
+        }else{
+            if((*it)->first()->name() == uname && (*it)->second()->name() == vname){
+                (*it)->first()->decOutDeg();
+                (*it)->second()->decInDeg();
+                m_edges.erase(it);
+                (*it)->first()->removeNeighbour((*it)->second());
+                delete *it;
+                return true;
+            }
+        }
+    }
+    return true;
 }
 
 bool Graph::setWeight(Node *u, Node *v, int w) {
@@ -332,6 +370,9 @@ int Graph::weight(const std::string &uname, const std::string &vname) const {
 }
 
 void Graph::clearEdges() {
+    for(auto edge: m_edges){
+        delete edge;
+    }
     m_edges.clear();
 }
 
@@ -352,7 +393,6 @@ Node* Graph::randomNode() {
 
     return n;
 }
-
 
 
 
