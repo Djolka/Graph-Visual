@@ -2,6 +2,8 @@
 #include "Headers/graphicnode.h"
 #include "Headers/graphicedge.h"
 
+#include "Headers/popup.h"
+
 GraphTable::GraphTable(QObject *parent)
     : QGraphicsScene(parent) {
 
@@ -68,17 +70,24 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             setHasTmp(false);
         }
         else{
-            Node* node = new Node();
-            GraphicNode* graphicNode = new GraphicNode(node);
+            Popup* p = new Popup();
 
-            AddNewNodeOnTable(graphicNode);
-            graphicNode->setPos(event->scenePos() - QPointF(graphicNode->Width() / 2, graphicNode->Height() / 2));
-            addItem(graphicNode);
+            if(p->exec() == QDialog::Accepted){
 
-            // open window to insert node name
-//            insertNodeName();
+                QString nodeName = p->getNodeName();
 
-            emit addedNewNode(node);
+                if(!nodeName.length()==0){
+
+                    Node* node = new Node(nodeName.toStdString());
+                    GraphicNode* graphicNode = new GraphicNode(node);
+
+                    AddNewNodeOnTable(graphicNode);
+                    graphicNode->setPos(event->scenePos() - QPointF(graphicNode->Width() / 2, graphicNode->Height() / 2));
+                    addItem(graphicNode);
+
+                    emit addedNewNode(node);
+                }
+            }
         }
     }
     else if(m_drawingMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){

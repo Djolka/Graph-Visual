@@ -47,6 +47,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
+
 }
 
 GraphWindow::~GraphWindow()

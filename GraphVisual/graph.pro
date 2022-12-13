@@ -18,7 +18,8 @@ SOURCES += \
     Source/algorithm.cpp \
     Source/graphicnode.cpp \
     Source/graphtable.cpp \
-    Source/graphicedge.cpp
+    Source/graphicedge.cpp \
+    Source/popup.cpp
 
 HEADERS += \
     Headers/edge.h \
@@ -29,10 +30,12 @@ HEADERS += \
     Headers/algorithm.h \
     Headers/graphicnode.h \
     Headers/graphtable.h \
-    Headers/graphicedge.h
+    Headers/graphicedge.h \
+    Headers/popup.h
 
 FORMS += \
-    Forms/graphwindow.ui
+    Forms/graphwindow.ui \
+    Forms/popup.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
