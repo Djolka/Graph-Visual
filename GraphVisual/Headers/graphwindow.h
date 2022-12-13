@@ -36,6 +36,8 @@ private slots:
     void AddNode(Node* node);
     void AddEdge(Node* n1, Node* n2);
     void changeWeight(Node* n1, Node* n2, int weight);
+    void deleteNode(Node* node);
+    void deleteEdge(Node* node1, Node* node2);
 
     void on_actionSaveAsPng_triggered();
     void on_actionSaveAsJpg_triggered();

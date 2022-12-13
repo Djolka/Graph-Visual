@@ -22,7 +22,6 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->setBrush(m_brush);
     painter->drawEllipse(boundingRect());
 
-
     const auto text = QString::fromStdString(m_Node->name());
     painter->setPen(Qt::black);
     painter->drawText(boundingRect(), Qt::AlignHCenter | Qt::AlignVCenter, text);

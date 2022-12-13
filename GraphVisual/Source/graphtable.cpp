@@ -75,6 +75,9 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             graphicNode->setPos(event->scenePos() - QPointF(graphicNode->Width() / 2, graphicNode->Height() / 2));
             addItem(graphicNode);
 
+            // open window to insert node name
+//            insertNodeName();
+
             emit addedNewNode(node);
         }
     }
@@ -86,8 +89,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         else{
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
-            // open window to insert node name
-
             GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
             AddNewEdgeOnTable(edge);
 
@@ -96,6 +97,42 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             setHasTmp(false);
         }
         this->update();
+    }
+    else if(m_deleteMode && itemAt(event->scenePos(), QTransform()) == NULL){
+        setHasTmp(false);
+        QGraphicsScene::mousePressEvent(event);
+    }
+    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){ //delete node
+        const auto graphicNode = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+        removeItem(graphicNode);
+        m_Nodes.removeOne(graphicNode);
+
+        Node* node = graphicNode->getNode();
+
+        // delete edges around the node
+        auto i = m_Edges.begin();
+        while (i != m_Edges.end()) {
+            if((*i)->getStart()->getNode()==node || (*i)->getEnd()->getNode()==node){
+                removeItem(*i);
+                removeItem((*i)->getLineEdit()->graphicsProxyWidget());
+                i = m_Edges.erase(i);
+                Redraw();
+            }
+            else
+                ++i;
+        }
+
+        emit deletedNode(node);
+    }
+    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)){ //delete edge
+        const auto graphicEdge = dynamic_cast<GraphicEdge*>(itemAt(event->scenePos(), QTransform()));
+        removeItem(graphicEdge);
+        removeItem(graphicEdge->getLineEdit()->graphicsProxyWidget());
+        m_Edges.removeOne(graphicEdge);
+
+        Redraw();
+
+        emit deletedEdge(graphicEdge->getStart()->getNode(), graphicEdge->getEnd()->getNode());
     }
     else{
         setHasTmp(false);
@@ -134,3 +171,7 @@ void GraphTable::setDrawingMode(bool x) {
 void GraphTable::setHasTmp(bool x) {
     m_hasTmp = x;
 }
+void GraphTable::setDeleteMode(bool x) {
+    m_deleteMode = x;
+}
+

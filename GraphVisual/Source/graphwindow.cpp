@@ -44,6 +44,9 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewNode, this, &GraphWindow::AddNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::addedNewEdge, this, &GraphWindow::AddEdge);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::edgeWeightChanged, this, &GraphWindow::changeWeight);
+
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
 }
 
 GraphWindow::~GraphWindow()
@@ -59,6 +62,7 @@ GraphWindow::~GraphWindow()
 
 void GraphWindow::AddNewEdge() {
     const auto name1 = ui->teNode1->toPlainText();
+    ui->teNode1->clear();
 
     GraphicNode* graphicNode1 = nullptr;
     if(!m_graph->hasNode(name1.toStdString())){
@@ -82,7 +86,7 @@ void GraphWindow::AddNewEdge() {
 
 
     const auto name2 = ui->teNode2->toPlainText();
-
+    ui->teNode2->clear();
 
     GraphicNode* graphicNode2 = nullptr;
     if(!m_graph->hasNode(name2.toStdString())){
@@ -103,6 +107,8 @@ void GraphWindow::AddNewEdge() {
             }
         }
     }
+
+    // TODO: if edge exists
 
     const auto weight = ui->teWeight->toPlainText().toInt();
     //m_graph->addEdge() TODO
@@ -125,10 +131,17 @@ void GraphWindow::DeleteAllNodes() {
 void GraphWindow::ChangeMode(int index) {
     if(index == 2){
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(true);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
+    }
+    else if(index == 3){
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(true);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
     }
     else{
         dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
         dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
+        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
     }
 }
 
@@ -188,3 +201,11 @@ void GraphWindow::on_actionClose_triggered()
 void GraphWindow::on_pbUndirected_released(){}
 void GraphWindow::on_pbUndirected_clicked(){}
 void GraphWindow::on_pbAddNode_clicked(){}
+
+
+void GraphWindow::deleteNode(Node* node) {
+    m_graph->removeNode(node);
+}
+void GraphWindow::deleteEdge(Node* node1, Node* node2) {
+    m_graph->removeEdge(node1, node2);
+}
