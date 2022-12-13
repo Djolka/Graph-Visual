@@ -15,6 +15,10 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     QGraphicsLineItem::setZValue(-10);
 }
 
+GraphicEdge::~GraphicEdge(){
+    delete m_weightLineEdit;
+}
+
 QRectF GraphicEdge::boundingRect() const {
     return QRectF();
 }
@@ -56,6 +60,4 @@ void GraphicEdge::editWeight(const QString &text){
             emit needRedraw();
         }
     }
-
-//    TODO: z index
 }

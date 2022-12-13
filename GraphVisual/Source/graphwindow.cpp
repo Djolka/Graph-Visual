@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QTextEdit>
 #include <QWidget>
+#include <QMessageBox>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,14 +30,17 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
 //    connecting singals and slots
+    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
+    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
 
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
 
-    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
-    connect(this, &GraphWindow::DeletedAllNodes, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteAllNodesFromTable);
+    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteGraphFromTable);
+    connect(this, &GraphWindow::DeletedGraph, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteGraphFromTable);
 
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
+//    connect(this, &GraphWindow::AddedNewDirectedEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewDirectedEdgeOnTable);
 
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 
@@ -57,7 +61,8 @@ GraphWindow::~GraphWindow()
 }
 
 
-void GraphWindow::AddNewEdge() {
+
+void GraphWindow::AddNewEdge() {    
     const auto name1 = ui->teNode1->toPlainText();
 
     GraphicNode* graphicNode1 = nullptr;
@@ -114,12 +119,11 @@ void GraphWindow::AddNewEdge() {
     emit NeedRedraw();
 }
 
-void GraphWindow::DeleteAllNodes() {
-//    for(auto node : m_Nodes) {
-//        delete node;
-//    }
-//    m_Nodes.clear();
-//    emit DeletedAllNodes();
+void GraphWindow::DeleteGraphFromTable() {
+    for(auto node : m_graph->nodeSet()) {
+        m_graph->removeNode(node);
+    }
+    emit DeletedGraph();
 }
 
 void GraphWindow::ChangeMode(int index) {
@@ -142,6 +146,83 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 
+
+
+void GraphWindow::graphDirected() {
+    if(shouldPopUpDir){
+        QMessageBox *msg = new QMessageBox();
+        switch(msg->question(
+                    this,
+                    tr("Warning"),
+                    tr("Current progress will be deleted if you change to directed graph, click yes to continue"),
+
+                    QMessageBox::Yes |
+                    QMessageBox::No |
+
+                    QMessageBox::No) )
+        {
+          case QMessageBox::Yes:
+            ui->pbUndirected->setEnabled(true);
+            emit ui->pbDeleteAll->clicked();
+            ui->pbDirected->setEnabled(false);
+            m_graph->setDirected(true);
+            shouldPopUpUndir = true;
+            shouldPopUpDir = false;
+            break;
+          case QMessageBox::No:
+            ui->pbUndirected->setChecked(true);
+            ui->pbUndirected->setEnabled(true);
+            ui->pbUndirected->click();
+            ui->pbUndirected->setEnabled(false);
+            break;
+          default:
+            break;
+        }
+        msg->setStyleSheet("background:white");
+    }
+
+
+}
+
+
+
+void GraphWindow::graphUndirected() {
+    if(shouldPopUpUndir){
+        //pop-up warning window
+        QMessageBox *msg = new QMessageBox();
+        switch(msg->question(
+                    this,
+                    tr("Warning"),
+                    tr("Current progress will be deleted if you change to undirected graph, click yes to continue"),
+
+                    QMessageBox::Yes |
+                    QMessageBox::No |
+
+                    QMessageBox::No) )
+        {
+          case QMessageBox::Yes:
+            ui->pbUndirected->setEnabled(false);
+            ui->pbDirected->setEnabled(true);
+            emit ui->pbDeleteAll->clicked();
+            m_graph->setDirected(false);
+            shouldPopUpDir = true;
+            shouldPopUpUndir = false;
+            break;
+          case QMessageBox::No:
+            ui->pbDirected->setChecked(true);
+            ui->pbDirected->setEnabled(true);
+            ui->pbDirected->click();
+            ui->pbDirected->setEnabled(false);
+            break;
+          default:
+            break;
+        }
+        msg->setStyleSheet("background:white");
+    }else{
+        return;
+    }
+
+}
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
 
@@ -184,7 +265,7 @@ void GraphWindow::on_actionClose_triggered()
     close();
 }
 
-// delet this
+// delete this
 void GraphWindow::on_pbUndirected_released(){}
 void GraphWindow::on_pbUndirected_clicked(){}
 void GraphWindow::on_pbAddNode_clicked(){}

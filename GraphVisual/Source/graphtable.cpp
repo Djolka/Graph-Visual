@@ -24,12 +24,28 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     addWidget(edge->getLineEdit());
 }
 
-void GraphTable::DeleteAllNodesFromTable() {
+//void GraphTable::AddNewDirectedEdgeOnTable(GraphicEdge *edge) {
+//    m_Edges.append(edge);
+//    edge->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+//    connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight);
+//    connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
+//    addItem(edge);
+//    addWidget(edge->getLineEdit());
+//}
+
+
+void GraphTable::DeleteGraphFromTable() {
+    for(auto edge : m_Edges) {
+        removeItem(edge);
+        delete edge;
+    }
+    m_Edges.clear();
     for(auto node : m_Nodes) {
         removeItem(node);
         delete node;
     }
     m_Nodes.clear();
+    update();
 }
 
 void GraphTable::Redraw(){
