@@ -73,14 +73,24 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         if(m_hasTmp){
             setHasTmp(false);
         }
-        else{
+        else{ //add new node
             Popup* p = new Popup();
 
             if(p->exec() == QDialog::Accepted){
 
                 QString nodeName = p->getNodeName();
 
-                if(!nodeName.length()==0){
+                bool alreadyExists = false;
+                for(GraphicNode* n : m_Nodes){
+                    if(n->getNode()->name() == nodeName.toStdString()){
+                        alreadyExists = true;
+                        emit needWarning("Node with that name already exists");
+                        break;
+                    }
+                }
+
+
+                if(!alreadyExists && !nodeName.length()==0){
 
                     Node* node = new Node(nodeName.toStdString());
                     GraphicNode* graphicNode = new GraphicNode(node);
@@ -94,7 +104,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             }
         }
     }
-    else if(m_drawingMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){
+    else if(m_drawingMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){ //click on node
         if(!m_hasTmp){
             this->m_tmp = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
             setHasTmp(true);
