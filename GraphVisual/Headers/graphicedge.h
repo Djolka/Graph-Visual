@@ -30,6 +30,7 @@ public slots:
 signals:
     void weightEdited(GraphicEdge* e, int w);
     void needRedraw();
+    void needWarning(QString s);
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);

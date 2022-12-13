@@ -33,6 +33,7 @@ public slots:
     void DeleteAllNodesFromTable();
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
+    void Warning (QString s);
 
 signals:
     void addedNewNode(Node* node);
@@ -40,6 +41,7 @@ signals:
     void edgeWeightChanged(Node* node1, Node* node2, int weight);
     void deletedNode(Node* node);
     void deletedEdge(Node* node1, Node* node2);
+    void needWarning(QString s);
 
 private:
     void PlaceNodeOnTable(GraphicNode *node);

@@ -49,6 +49,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
 
+    connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
+
 }
 
 GraphWindow::~GraphWindow()
@@ -74,7 +76,10 @@ void GraphWindow::AddNewEdge() {
 
 
     if(name1.length()==0 || name2.length()==0){
-        QMessageBox::warning(this, "Error", "You have to insert node name");
+        warning(QString("You have to insert node name"));
+    }
+    else if(weight == 0){
+        warning(QString("Edge weight must be a number"));
     }
     else{
         GraphicNode* graphicNode1 = nullptr;
@@ -163,6 +168,9 @@ void GraphWindow::AddEdge(Node* n1, Node* n2) {
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
+}
+void GraphWindow::warning(QString s) {
+    QMessageBox::warning(this, "Error", s);
 }
 
 

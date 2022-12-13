@@ -3,7 +3,7 @@
 
 #include <QPen>
 #include <QPainter>
-#include<QtMath>
+#include <QtMath>
 
 GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     :QGraphicsLineItem(),
@@ -11,7 +11,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_end (end),
     m_weight(weight){
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
-    connect(m_weightLineEdit, &QLineEdit::returnPressed, this, &GraphicEdge::editWeight);
+    connect(m_weightLineEdit, &QLineEdit::editingFinished, this, &GraphicEdge::editWeight);
     setFlags(GraphicsItemFlag::ItemIsSelectable);
     setAcceptHoverEvents(true);
     QGraphicsLineItem::setZValue(-10);
@@ -75,24 +75,33 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 
 void GraphicEdge::editWeight(){
-    if(m_weightLineEdit->text().toStdString().empty()){
+    auto text = m_weightLineEdit->text();
+
+    if(text.toStdString().empty()){
         m_weightLineEdit->setText(QString("1"));
+
         emit weightEdited(this, 1);
         emit needRedraw();
     }
+    else if(text.toInt() == 0){
+        m_weightLineEdit->setText(QString("1"));
+
+        emit weightEdited(this, 1);
+        emit needRedraw();
+        emit needWarning(QString("Edge weight must be a number"));
+    }
+    else if(text.length() < 6){
+        int weight = text.toInt();
+
+        emit weightEdited(this, weight);
+        emit needRedraw();
+    }
     else{
-        if(m_weightLineEdit->text().length() < 6){
-            int weight = std::stoi(m_weightLineEdit->text().toStdString());
+        m_weightLineEdit->setText(QString("1"));
 
-            emit weightEdited(this, weight);
-            emit needRedraw();
-        }
-        else{
-            m_weightLineEdit->setText(QString("1"));
-
-            emit weightEdited(this, 1);
-            emit needRedraw();
-        }
+        emit weightEdited(this, 1);
+        emit needRedraw();
+        emit needWarning(QString("Edge weight too big"));
     }
 }
 

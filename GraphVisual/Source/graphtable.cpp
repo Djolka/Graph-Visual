@@ -3,6 +3,7 @@
 #include "Headers/graphicedge.h"
 
 #include "Headers/popup.h"
+#include <QMessageBox>
 
 GraphTable::GraphTable(QObject *parent)
     : QGraphicsScene(parent) {
@@ -22,6 +23,7 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     edge->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight);
     connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
+    connect(edge, &GraphicEdge::needWarning, this, &GraphTable::Warning);
     addItem(edge);
     addWidget(edge->getLineEdit());
 }
@@ -61,7 +63,9 @@ void GraphTable::editWeight(GraphicEdge* edge, int w){
     emit edgeWeightChanged(edge->getStart()->getNode(), edge->getEnd()->getNode(), w);
 }
 
-
+void GraphTable::Warning (QString s){
+    emit needWarning(s);
+}
 
 void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
