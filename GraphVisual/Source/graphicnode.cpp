@@ -1,5 +1,6 @@
 #include "Headers/graphicnode.h"
 #include "Headers/node.h"
+#include "qgraphicsscene.h"
 
 #include <QPainter>
 
@@ -37,6 +38,19 @@ QPointF GraphicNode::CenterPosition() {
 
 void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsObject::mouseMoveEvent(event);
+
+    if(x() < 0) {
+        setPos(0, y());
+    } else if (x() + boundingRect().right() > scene()->width()) {
+        setPos(scene()->width() - boundingRect().width(), y());
+    }
+
+    if (y() < 0) {
+        setPos(x(), 0);
+    } else if (y()+ boundingRect().bottom() > scene()->height()) {
+        setPos(x(), scene()->height() - boundingRect().height());
+    }
+
     emit needRedraw();
 }
 
