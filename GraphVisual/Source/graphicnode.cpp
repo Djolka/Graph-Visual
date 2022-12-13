@@ -19,12 +19,14 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+
     painter->setBrush(m_brush);
+    painter->setPen(pen);
     painter->drawEllipse(boundingRect());
 
-
     const auto text = QString::fromStdString(m_Node->name());
-    painter->setPen(Qt::black);
     painter->drawText(boundingRect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
 }
 
