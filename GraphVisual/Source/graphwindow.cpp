@@ -33,8 +33,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
 
-    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
-    connect(this, &GraphWindow::DeletedAllNodes, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteAllNodesFromTable);
+    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteGraphFromTable);
+    connect(this, &GraphWindow::DeletedGraph, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteGraphFromTable);
 
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
 
@@ -114,12 +114,12 @@ void GraphWindow::AddNewEdge() {
     emit NeedRedraw();
 }
 
-void GraphWindow::DeleteAllNodes() {
-//    for(auto node : m_Nodes) {
-//        delete node;
-//    }
-//    m_Nodes.clear();
-//    emit DeletedAllNodes();
+void GraphWindow::DeleteGraphFromTable() {
+    for(auto node : m_graph->nodeSet()) {
+        m_graph->removeNode(node);
+    }
+
+    emit DeletedGraph();
 }
 
 void GraphWindow::ChangeMode(int index) {
@@ -166,7 +166,7 @@ void GraphWindow::on_actionSaveAsJpg_triggered(){
             }
 }
 
-void GraphWindow::on_pbUndirected_pressed(){   
+void GraphWindow::on_pbUndirected_pressed(){
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
     // TODO undirected edges}

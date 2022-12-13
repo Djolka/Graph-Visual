@@ -24,12 +24,20 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     addWidget(edge->getLineEdit());
 }
 
-void GraphTable::DeleteAllNodesFromTable() {
+void GraphTable::DeleteGraphFromTable() {
+    for(auto edge : m_Edges) {
+        removeItem(edge);
+        delete edge;
+    }
+    m_Edges.clear();
+
     for(auto node : m_Nodes) {
         removeItem(node);
         delete node;
     }
     m_Nodes.clear();
+
+    update();
 }
 
 void GraphTable::Redraw(){
