@@ -76,6 +76,9 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             graphicNode->setPos(event->scenePos());
             addItem(graphicNode);
 
+            // open window to insert node name
+//            insertNodeName();
+
             emit addedNewNode(node);
         }
     }
@@ -86,9 +89,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         }
         else{
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
-
-            // open window to insert weight
-//            insertWeight();
 
             GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
             AddNewEdgeOnTable(edge);
@@ -103,8 +103,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
     }
-
-    // CHECK: program ends unexpectedly in some cases
     else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){ //delete node
         const auto graphicNode = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
         removeItem(graphicNode);

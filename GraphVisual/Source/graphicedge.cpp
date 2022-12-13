@@ -1,8 +1,8 @@
 #include"Headers/graphicedge.h"
 #include<climits>
 
-#include <QPen>
 #include <QPainter>
+#include<QtMath>
 
 GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     :QGraphicsLineItem(),
@@ -13,11 +13,23 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
     connect(m_weightLineEdit, &QLineEdit::returnPressed, this, &GraphicEdge::editWeight);
 
-    setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
+    setFlags(GraphicsItemFlag::ItemIsSelectable); // GraphicsItemFlag::ItemIsMovable
+    setAcceptHoverEvents(true);
 }
 
 QRectF GraphicEdge::boundingRect() const {
-    return QRectF();
+    QPolygonF nPolygon;
+    auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
+    qreal radAngle = line.angle()* M_PI / 180;
+    qreal dx = 20 * sin(radAngle);
+    qreal dy = 20 * cos(radAngle);
+    QPointF offset1 = QPointF(dx, dy);
+    QPointF offset2 = QPointF(-dx, -dy);
+    nPolygon << line.p1() + offset1
+             << line.p1() + offset2
+             << line.p2() + offset2
+             << line.p2() + offset1;
+    return nPolygon.boundingRect();
 }
 
 
@@ -27,19 +39,30 @@ QPointF GraphicEdge::getCenter(){
 }
 
 
+QPainterPath GraphicEdge::shape() const{
+    QPainterPath ret;
+    QPolygonF nPolygon;
+    auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
+    qreal radAngle = line.angle()* M_PI / 180;
+    qreal dx = 20 * sin(radAngle);
+    qreal dy = 20 * cos(radAngle);
+    QPointF offset1 = QPointF(dx, dy);
+    QPointF offset2 = QPointF(-dx, -dy);
+    nPolygon << line.p1() + offset1
+             << line.p1() + offset2
+             << line.p2() + offset2
+             << line.p2() + offset1;
+    ret.addPolygon(nPolygon);
+    return ret;
+}
+
+
+
 void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    QPen pen;
-
-    if(collidesWithItem(m_start) or collidesWithItem(m_end)) {
-        pen.setColor(Qt::white);
-    } else {
-        pen.setColor(Qt::black);
-    }
-
-    painter->setPen(pen);
+    painter->setPen(m_pen);
 
     painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
@@ -72,6 +95,18 @@ void GraphicEdge::editWeight(){
         }
     }
 }
+
+void GraphicEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+    m_pen = QPen(Qt::green);
+    emit needRedraw();
+    QGraphicsLineItem::hoverEnterEvent(event);
+}
+void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+    m_pen = QPen(Qt::black);
+    emit needRedraw();
+    QGraphicsLineItem::hoverLeaveEvent(event);
+}
+
 
 int GraphicEdge::type() const {
     return 2;
