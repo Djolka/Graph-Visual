@@ -113,7 +113,9 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 //TODO: drawing a line when clicked on a node
 
 //void GraphTable::mouseMoveEvent (QGraphicsSceneMouseEvent * event ){
-
+//    if(event->scenePos().x() < 0){
+//        event->scenePos().setX(0);
+//    }
 
 //    if(m_drawingMode && m_hasTmp){
 //        for (auto veza : _veze){

@@ -67,13 +67,8 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         edgeCenter->setX(edgeCenter->x()+(m_start->x()+m_end->x())/2);
         edgeCenter->setY(edgeCenter->y()+(m_start->y()+m_end->y())/2);
 
-
-
-
-
         targetNode->setX((targetNode->x()+edgeCenter->x())/2);
         targetNode->setY((targetNode->y()+edgeCenter->y())/2);
-
 
         QPainterPath myPath;
         myPath.moveTo(m_start->x()+25,m_start->y()+25);
@@ -91,7 +86,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 //        arrow
 //        QRectF rect = QRectF(0, 0, 20, 20);
-//        QRectF rect = QRectF(m_end->x()+15, m_end->y()-15, 15, 15);
+//        QRectF rect = QRectF(m_end->x(), m_end->y(), 15, 15);
 
 //        QPainterPath path;
 //        path.moveTo(rect.left() + (rect.width() / 2), rect.bottom());
