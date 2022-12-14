@@ -22,6 +22,8 @@ class GraphWindow : public QMainWindow
 public:
     GraphWindow(QWidget *parent = nullptr);
     ~GraphWindow();
+    QMap<QString, QString> m_colors;
+    void fillMap();
 
 signals:
     void AddedNewNode(GraphicNode *);
@@ -53,6 +55,8 @@ private slots:
     void on_actionClose_triggered();
 
     void on_pbAddNode_clicked();
+
+    void on_pbSave_clicked();
 
 private:
     Ui::GraphWindow *ui;

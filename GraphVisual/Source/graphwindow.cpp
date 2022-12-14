@@ -47,6 +47,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedNode, this, &GraphWindow::deleteNode);
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
+
+    fillMap();
 }
 
 GraphWindow::~GraphWindow()
@@ -57,6 +59,19 @@ GraphWindow::~GraphWindow()
 //        delete node;
 //    }
 
+}
+
+void GraphWindow::fillMap() {
+    m_colors.insert("off white", "#E4E8D6");
+    m_colors.insert("white", "#FFFFFF");
+    m_colors.insert("black", "#000000");
+    m_colors.insert("navy", "#192841");
+    m_colors.insert("yellow", "#ece75f");
+    m_colors.insert("green", "#87ab69");
+    m_colors.insert("purple", "#D9C4EC");
+    m_colors.insert("blue", "#287caa");
+    m_colors.insert("dark grey", "#3A3B3C");
+    m_colors.insert("red", "#D0312D");
 }
 
 
@@ -209,3 +224,19 @@ void GraphWindow::deleteNode(Node* node) {
 void GraphWindow::deleteEdge(Node* node1, Node* node2) {
     m_graph->removeEdge(node1, node2);
 }
+
+void GraphWindow::on_pbSave_clicked()
+{
+    int m_radius = ui->sbRadius->value();
+    QString m_nodeColor = ui->cbNodecolor->currentText();
+    QString m_edgeColor = ui->cbEdgecolor->currentText();
+
+    ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
+
+    // TODO: radius, node, edge
+
+    ui->sbRadius->setValue(m_radius);
+    ui->cbNodecolor->setCurrentText(m_nodeColor);
+    ui->cbEdgecolor->setCurrentText(m_edgeColor);
+}
+
