@@ -255,5 +255,21 @@ void GraphWindow::deleteNode(Node* node) {
     m_graph->removeNode(node);
 }
 void GraphWindow::deleteEdge(Node* node1, Node* node2) {
+
+    QString edge = QString::fromStdString(node1->name()+"->"+node2->name());
+
+    int n = ui->lw->count();
+    for(int i=0;i<n;++i){
+        auto item = ui->lw->item(i);
+
+        QString  text = item->text().trimmed();
+
+        if(text.startsWith(edge)){
+            auto item1 = ui->lw->takeItem(i);
+            delete item1;
+            break;
+        }
+    }
+
     m_graph->removeEdge(node1, node2);
 }
