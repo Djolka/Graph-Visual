@@ -39,7 +39,7 @@ private slots:
     void deleteNode(Node* node);
     void deleteEdge(Node* node1, Node* node2);
     void warning(QString s);
-    void nodeNameLenght();
+    void nodeNameLength();
 
     void on_actionSaveAsPng_triggered();
     void on_actionSaveAsJpg_triggered();

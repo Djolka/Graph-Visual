@@ -31,8 +31,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 
 //    connecting singals and slots
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
-    connect(ui->teNode1, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLenght);
-    connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLenght);
+    connect(ui->teNode1, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
+    connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
 
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
 
@@ -174,7 +174,7 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 void GraphWindow::warning(QString s) {
     QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>"+s+"</FONT>");
 }
-void GraphWindow::nodeNameLenght() {
+void GraphWindow::nodeNameLength() {
     auto text = ui->teNode1->toPlainText();
 
     if (text.length() > 5){
