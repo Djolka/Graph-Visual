@@ -115,7 +115,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
             AddNewEdgeOnTable(edge);
 
-            emit addedNewEdge(m_tmp->getNode(), node->getNode());
+            emit addedNewEdge(m_tmp->getNode(), node->getNode(), 1);
 
             setHasTmp(false);
         }

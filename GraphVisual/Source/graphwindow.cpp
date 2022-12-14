@@ -74,7 +74,7 @@ void GraphWindow::AddNewEdge() {
     ui->teNode2->clear();
 
     const auto w = ui->teWeight->toPlainText();
-    const auto weight = w.toInt();
+    int weight = w.toInt();
     ui->teWeight->clear();
 
 
@@ -85,9 +85,10 @@ void GraphWindow::AddNewEdge() {
         warning(QString("Edge weight must be a number"));
     }
     else{
+        Node* node1 = nullptr;
         GraphicNode* graphicNode1 = nullptr;
         if(!m_graph->hasNode(name1.toStdString())){
-            const auto node1 = new Node(name1.toStdString());
+            node1 = new Node(name1.toStdString());
 
             m_graph->addNode(node1);
 
@@ -99,15 +100,17 @@ void GraphWindow::AddNewEdge() {
         else{
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name1.toStdString()){
+                    node1 = n->getNode();
                     graphicNode1 = n;
                     break;
                 }
             }
         }
 
+        Node* node2 = nullptr;
         GraphicNode* graphicNode2 = nullptr;
         if(!m_graph->hasNode(name2.toStdString())){
-            const auto node2 = new Node(name2.toStdString());
+            node2 = new Node(name2.toStdString());
 
             m_graph->addNode(node2);
 
@@ -119,6 +122,7 @@ void GraphWindow::AddNewEdge() {
         else{
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name2.toStdString()){
+                    node2 = n->getNode();
                     graphicNode2 = n;
                     break;
                 }
@@ -130,14 +134,15 @@ void GraphWindow::AddNewEdge() {
         // TODO: if edge exists
 
         //else:
-        //m_graph->addEdge() TODO
+//        m_graph->addEdge(node1, node2, weight);
 
-        const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+        AddEdge(node1, node2, weight);
+        GraphicEdge* graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
 
         emit AddedNewEdge(graphicEdge);
         emit NeedRedraw();
 
-        ui->lw->addItem(name1+"->"+name2+"    weight="+w);
+//        ui->lw->addItem(name1+"->"+name2+"    weight="+w);
     }
 }
 
@@ -169,9 +174,9 @@ void GraphWindow::ChangeMode(int index) {
 void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
 }
-void GraphWindow::AddEdge(Node* n1, Node* n2) {
-    m_graph->addEdge(n1, n2, 1);
-    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight=1");
+void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
+    m_graph->addEdge(n1, n2, weight);
+    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
