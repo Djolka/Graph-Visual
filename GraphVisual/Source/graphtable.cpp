@@ -112,10 +112,12 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         else{
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
-            GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
-            AddNewEdgeOnTable(edge);
+            if(m_tmp != node){
+                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
+                AddNewEdgeOnTable(edge);
 
-            emit addedNewEdge(m_tmp->getNode(), node->getNode(), 1);
+                emit addedNewEdge(m_tmp->getNode(), node->getNode(), 1);
+            }
 
             setHasTmp(false);
         }

@@ -84,6 +84,9 @@ void GraphWindow::AddNewEdge() {
     else if(weight == 0){
         warning(QString("Edge weight must be a number"));
     }
+    else if(name1 == name2){
+        warning(QString("Node names are the same"));
+    }
     else{
         Node* node1 = nullptr;
         GraphicNode* graphicNode1 = nullptr;
@@ -176,6 +179,21 @@ void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
+    //update list
+
+    QString edge = QString::fromStdString(n1->name()+"->"+n2->name());
+    int n = ui->lw->count();
+    for(int i=0;i<n;++i){
+        auto item = ui->lw->item(i);
+        QString  text = item->text().trimmed();
+        if(text.startsWith(edge)){
+            auto item1 = ui->lw->takeItem(i);
+            delete item1;
+            break;
+        }
+    }
+    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 void GraphWindow::warning(QString s) {
