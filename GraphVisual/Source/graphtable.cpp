@@ -138,6 +138,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             if((*i)->getStart()->getNode()==node || (*i)->getEnd()->getNode()==node){
                 removeItem(*i);
                 removeItem((*i)->getLineEdit()->graphicsProxyWidget());
+                emit deletedEdge((*i)->getStart()->getNode(), (*i)->getEnd()->getNode());
                 i = m_Edges.erase(i);
                 Redraw();
             }

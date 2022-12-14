@@ -133,16 +133,13 @@ void GraphWindow::AddNewEdge() {
 
         // TODO: if edge exists
 
-        //else:
-//        m_graph->addEdge(node1, node2, weight);
 
+        //else:
         AddEdge(node1, node2, weight);
         GraphicEdge* graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
 
         emit AddedNewEdge(graphicEdge);
         emit NeedRedraw();
-
-//        ui->lw->addItem(name1+"->"+name2+"    weight="+w);
     }
 }
 
