@@ -38,7 +38,6 @@ private slots:
     void AddEdge(Node* n1, Node* n2);
     void changeWeight(Node* n1, Node* n2, int weight);
 
-
     void graphDirected();
     void graphUndirected();
 
@@ -59,8 +58,8 @@ private slots:
 
 private:
     Ui::GraphWindow *ui;
-    QGraphicsScene *m_GraphTable;
     Graph *m_graph;
+    QGraphicsScene *m_GraphTable;
     bool shouldPopUpUndir = false;
     bool shouldPopUpDir = true;
 

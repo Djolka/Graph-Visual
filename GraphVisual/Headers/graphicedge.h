@@ -8,7 +8,7 @@
 class GraphicEdge : public QObject, public QGraphicsLineItem {
     Q_OBJECT
 public:
-    GraphicEdge(GraphicNode* start, GraphicNode* end, int weight);
+    GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool dir);
     virtual ~GraphicEdge();
 
     QRectF boundingRect() const override;
@@ -30,6 +30,7 @@ private:
     GraphicNode* m_end;
     int m_weight;
     QLineEdit* m_weightLineEdit;
+    bool directed;
 };
 
 

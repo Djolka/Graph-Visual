@@ -41,10 +41,10 @@ public:
     Edge* getEdge(Node *u, Node *v);
     bool addEdge(Node *u, Node *v);
     bool addEdge(Node *u, Node *v, int w);
-    bool setEdge(Node *u, Node *v);
-    bool setEdge(Node *u, Node *v, int w);
-    bool setEdge(const std::string &uname, const std::string &vname);
-    bool setEdge(const std::string &uname, const std::string &vname, int w);
+//    bool setEdge(Node *u, Node *v);
+//    bool setEdge(Node *u, Node *v, int w);
+//    bool setEdge(const std::string &uname, const std::string &vname);
+//    bool setEdge(const std::string &uname, const std::string &vname, int w);
     bool removeEdge(Node *u, Node *v);
     bool removeEdge(const std::string &uname, const std::string &vname);
     bool hasDirectedEdge(Node *u, Node *v) const;
@@ -57,8 +57,6 @@ public:
 
     QList<Edge*> edgeSet();
     QList<Node*> nodeSet();
-
-
 
 protected:
     QList<Edge*> m_edges;

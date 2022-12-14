@@ -101,7 +101,6 @@ bool Graph::addNode(std::string node_name) {
 
 bool Graph::removeNode(Node *node) {
     auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
-
     if (it != m_nodes.end()){
         m_nodes.erase(it);
         isolateNode(node);
@@ -182,60 +181,56 @@ int Graph::countNodes() const {
 }
 
 //TOCHECK(some cases)
-bool Graph::setEdge(Node *u, Node *v, int w){
-    if (w < m_weightRange.first || w > m_weightRange.second){
-        return false;
-    }
+//bool Graph::setEdge(Node *u, Node *v, int w){
+//    if (w < m_weightRange.first || w > m_weightRange.second){
+//        return false;
+//    }
 
-    if(u == v || !hasNode(u) || !hasNode(v)){
-        return false;
-    }
+//    if(u == v || !hasNode(u) || !hasNode(v)){
+//        return false;
+//    }
 
-    if(hasDirectedEdge(u,v)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == u && (*it)->second() == v){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(u,v), w);
-        m_edges.append(e);
-        return true;
-    }
+//    if(hasDirectedEdge(u,v)){
+//        auto it = m_edges.begin();
+//        for(;it != m_edges.end(); ++it){
+//            if ((*it)->first() == u && (*it)->second() == v){
+//                (*it)->setWeight(w);
+//            }
+//        }
+//        return true;
+//    }
 
-    if(!m_directed && hasDirectedEdge(v,u)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == v && (*it)->second() == u){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(v,u), w);
-        m_edges.append(e);
-        return true;
-    }
+//    if(!m_directed && hasDirectedEdge(v,u)){
+//        auto it = m_edges.begin();
+//        for(;it != m_edges.end(); ++it){
+//            if ((*it)->first() == v && (*it)->second() == u){
+//                (*it)->setWeight(w);
+//            }
+//        }
+//        return true;
+//    }
 
-    addEdge(u,v,w);
-    return true;
-}
+//    addEdge(u,v,w);
+//    return true;
+//}
 
 
-bool Graph::setEdge(Node *u, Node *v) {
-    return setEdge(u, v, 1);
-}
+//bool Graph::setEdge(Node *u, Node *v) {
+//    return setEdge(u, v, 1);
+//}
 
 
-bool Graph::setEdge(const std::string &uname, const std::string &vname) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, 1);
-}
+//bool Graph::setEdge(const std::string &uname, const std::string &vname) {
+//    Node *u = new Node(uname);
+//    Node *v = new Node(vname);
+//    return setEdge(u, v, 1);
+//}
 
-bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, w);
-}
+//bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
+//    Node *u = new Node(uname);
+//    Node *v = new Node(vname);
+//    return setEdge(u, v, w);
+//}
 
 
 Edge* Graph::getEdge(Node *u, Node *v) {

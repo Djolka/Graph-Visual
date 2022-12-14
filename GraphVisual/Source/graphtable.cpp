@@ -2,9 +2,9 @@
 #include "Headers/graphicnode.h"
 #include "Headers/graphicedge.h"
 
-GraphTable::GraphTable(QObject *parent)
-    : QGraphicsScene(parent) {
-
+GraphTable::GraphTable(bool dir, QObject *parent)
+    : QGraphicsScene(parent){
+    directed = dir;
 }
 
 void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
@@ -23,16 +23,6 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     addItem(edge);
     addWidget(edge->getLineEdit());
 }
-
-//void GraphTable::AddNewDirectedEdgeOnTable(GraphicEdge *edge) {
-//    m_Edges.append(edge);
-//    edge->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-//    connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight);
-//    connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
-//    addItem(edge);
-//    addWidget(edge->getLineEdit());
-//}
-
 
 void GraphTable::DeleteGraphFromTable() {
     for(auto edge : m_Edges) {
@@ -104,7 +94,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
             // open window to insert node name
 
-            GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
+            GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, directed);
             AddNewEdgeOnTable(edge);
 
             emit addedNewEdge(m_tmp->getNode(), node->getNode());

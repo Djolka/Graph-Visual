@@ -18,8 +18,8 @@
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
-    , m_GraphTable(new GraphTable(this))
     , m_graph(new Graph(false, false))
+    , m_GraphTable(new GraphTable(m_graph->isDirected(), this))
 {
     ui->setupUi(this);
 
@@ -40,7 +40,6 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::DeletedGraph, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteGraphFromTable);
 
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
-//    connect(this, &GraphWindow::AddedNewDirectedEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewDirectedEdgeOnTable);
 
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 
@@ -59,7 +58,6 @@ GraphWindow::~GraphWindow()
 //    }
 
 }
-
 
 
 void GraphWindow::AddNewEdge() {    
@@ -110,10 +108,11 @@ void GraphWindow::AddNewEdge() {
     }
 
     const auto weight = ui->teWeight->toPlainText().toInt();
-    //m_graph->addEdge() TODO
+//    m_graph->addEdge() //TODO
 
-    const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+    const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight, m_graph->isDirected());
 //    m_GraphTable->addItem(graphicEdge);
+
 
     emit AddedNewEdge(graphicEdge);
     emit NeedRedraw();
@@ -123,6 +122,7 @@ void GraphWindow::DeleteGraphFromTable() {
     for(auto node : m_graph->nodeSet()) {
         m_graph->removeNode(node);
     }
+
     emit DeletedGraph();
 }
 
@@ -146,12 +146,10 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 
-
-
 void GraphWindow::graphDirected() {
     if(shouldPopUpDir){
-        QMessageBox *msg = new QMessageBox();
-        switch(msg->question(
+//        QMessageBox *msg = new QMessageBox();
+        switch(QMessageBox::question(
                     this,
                     tr("Warning"),
                     tr("Current progress will be deleted if you change to directed graph, click yes to continue"),
@@ -178,7 +176,7 @@ void GraphWindow::graphDirected() {
           default:
             break;
         }
-        msg->setStyleSheet("background:white");
+//        msg->setStyleSheet("color:white;background:white"); //not working
     }
 
 
