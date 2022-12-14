@@ -110,7 +110,8 @@ void GraphWindow::AddNewEdge() {
 
     // TODO: if edge exists
 
-    const auto weight = ui->teWeight->toPlainText().toInt();
+    const auto w = ui->teWeight->toPlainText();
+    const auto weight = w.toInt();
     //m_graph->addEdge() TODO
 
     const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
@@ -118,6 +119,8 @@ void GraphWindow::AddNewEdge() {
 
     emit AddedNewEdge(graphicEdge);
     emit NeedRedraw();
+
+    ui->lw->addItem(name1+"->"+name2+"    weight="+w);
 }
 
 void GraphWindow::DeleteAllNodes() {
@@ -150,6 +153,7 @@ void GraphWindow::AddNode(Node* node) {
 }
 void GraphWindow::AddEdge(Node* n1, Node* n2) {
     m_graph->addEdge(n1, n2, 1);
+    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight=1");
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
