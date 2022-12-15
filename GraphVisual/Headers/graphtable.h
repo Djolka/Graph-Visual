@@ -21,6 +21,8 @@ public:
     QVector<GraphicNode *> getNodes();
     QVector<GraphicEdge *> getEdges();
 
+    bool hasGraphicEdge(GraphicNode *u, GraphicNode *v);
+
     void mousePressEvent ( QGraphicsSceneMouseEvent * event ) override;
 //    void mouseMoveEvent (QGraphicsSceneMouseEvent * event ) override;
     void setDrawingMode(bool x);
@@ -30,7 +32,7 @@ public:
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
     void AddNewEdgeOnTable(GraphicEdge *edge);
-    void DeleteAllNodesFromTable();
+    void DeleteGraphFromTable();
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
@@ -49,7 +51,7 @@ private:
     QVector<GraphicNode *> m_Nodes;
     QVector<GraphicEdge *> m_Edges;
 
-    bool m_drawingMode = true;
+    bool m_drawingMode = false;
     bool m_hasTmp = false;
     GraphicNode* m_tmp;
     QGraphicsLineItem* m_lineToDraw;

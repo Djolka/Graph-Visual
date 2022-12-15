@@ -1,5 +1,6 @@
 #include "Headers/graphicnode.h"
 #include "Headers/node.h"
+#include "qgraphicsscene.h"
 
 #include <QPainter>
 
@@ -11,6 +12,10 @@ GraphicNode::GraphicNode(Node *node)
 
 }
 
+GraphicNode::~GraphicNode() {
+
+}
+
 QRectF GraphicNode::boundingRect() const {
     return QRectF(0, 0, Width(), Height());
 }
@@ -19,11 +24,14 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+
     painter->setBrush(m_brush);
+    painter->setPen(pen);
     painter->drawEllipse(boundingRect());
 
     const auto text = QString::fromStdString(m_Node->name());
-    painter->setPen(Qt::black);
     painter->drawText(boundingRect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
 }
 
@@ -34,6 +42,19 @@ QPointF GraphicNode::CenterPosition() {
 
 void GraphicNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsObject::mouseMoveEvent(event);
+
+    if(x() < 0) {
+        setPos(0, y());
+    } else if (x() + boundingRect().right() > scene()->width()) {
+        setPos(scene()->width() - boundingRect().width(), y());
+    }
+
+    if (y() < 0) {
+        setPos(x(), 0);
+    } else if (y()+ boundingRect().bottom() > scene()->height()) {
+        setPos(x(), scene()->height() - boundingRect().height());
+    }
+
     emit needRedraw();
 }
 

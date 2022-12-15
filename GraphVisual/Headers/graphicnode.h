@@ -10,8 +10,7 @@ class GraphicNode : public QGraphicsObject {
     Q_OBJECT
 public:
     GraphicNode(Node *node);
-
-    virtual ~GraphicNode(){}
+    ~GraphicNode();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

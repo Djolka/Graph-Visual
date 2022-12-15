@@ -12,6 +12,7 @@ public:
     Node();
     explicit Node(std::string name);
     explicit Node(std::string name, QPointF position);
+    ~Node();
 
     //getters
     unsigned inDeg() const;

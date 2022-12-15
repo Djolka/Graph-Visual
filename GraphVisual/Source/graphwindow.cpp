@@ -15,6 +15,8 @@
 #include <QWidget>
 #include <QMessageBox>
 
+#include <iostream>
+
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
@@ -35,11 +37,10 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
 
     connect(this, &GraphWindow::AddedNewNode, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewNodeOnTable);
-
-    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteAllNodes);
-    connect(this, &GraphWindow::DeletedAllNodes, dynamic_cast<GraphTable *>(m_GraphTable),&GraphTable::DeleteAllNodesFromTable);
-
     connect(this, &GraphWindow::AddedNewEdge, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::AddNewEdgeOnTable);
+
+    connect(ui->pbDeleteAll, &QPushButton::clicked, this, &GraphWindow::DeleteGraphFromTable);
+    connect(this, &GraphWindow::DeletedGraph, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::DeleteGraphFromTable, Qt::QueuedConnection);
 
     connect(this, &GraphWindow::NeedRedraw, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::Redraw);
 
@@ -58,11 +59,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 GraphWindow::~GraphWindow()
 {
     delete ui;
-
-//    for(auto node : m_Nodes) {
-//        delete node;
-//    }
-
+    delete m_GraphTable;
+    delete m_graph;
 }
 
 
@@ -72,6 +70,11 @@ void GraphWindow::AddNewEdge() {
 
     const auto name2 = ui->teNode2->toPlainText();
     ui->teNode2->clear();
+
+    GraphicNode* graphicNode1 = nullptr;
+    GraphicNode* graphicNode2 = nullptr;
+    Node* node1 = nullptr;
+    Node* node2 = nullptr;
 
     const auto w = ui->teWeight->toPlainText();
     const auto weight = w.toInt();
@@ -85,9 +88,8 @@ void GraphWindow::AddNewEdge() {
         warning(QString("Edge weight must be a number"));
     }
     else{
-        GraphicNode* graphicNode1 = nullptr;
         if(!m_graph->hasNode(name1.toStdString())){
-            const auto node1 = new Node(name1.toStdString());
+            node1 = new Node(name1.toStdString());
 
             m_graph->addNode(node1);
 
@@ -100,14 +102,14 @@ void GraphWindow::AddNewEdge() {
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name1.toStdString()){
                     graphicNode1 = n;
+                    node1 = graphicNode1->getNode();
                     break;
                 }
             }
         }
 
-        GraphicNode* graphicNode2 = nullptr;
         if(!m_graph->hasNode(name2.toStdString())){
-            const auto node2 = new Node(name2.toStdString());
+            node2 = new Node(name2.toStdString());
 
             m_graph->addNode(node2);
 
@@ -120,33 +122,33 @@ void GraphWindow::AddNewEdge() {
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name2.toStdString()){
                     graphicNode2 = n;
+                    node2 = graphicNode2->getNode();
                     break;
                 }
             }
         }
 
 
+        if(m_graph->addEdge(node1, node2, weight)) {
+            const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+            emit AddedNewEdge(graphicEdge);
+        }
 
-        // TODO: if edge exists
-
-        //else:
-        //m_graph->addEdge() TODO
-
-        const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
-
-        emit AddedNewEdge(graphicEdge);
         emit NeedRedraw();
 
         ui->lw->addItem(name1+"->"+name2+"    weight="+w);
     }
+
+    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
+    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 
-void GraphWindow::DeleteAllNodes() {
-//    for(auto node : m_Nodes) {
-//        delete node;
-//    }
-//    m_Nodes.clear();
-//    emit DeletedAllNodes();
+void GraphWindow::DeleteGraphFromTable() {
+    for(auto node : m_graph->nodeSet()) {
+        m_graph->removeNode(node);
+    }
+
+    emit DeletedGraph();
 }
 
 void GraphWindow::ChangeMode(int index) {
@@ -168,10 +170,13 @@ void GraphWindow::ChangeMode(int index) {
 
 void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
+    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
 }
 void GraphWindow::AddEdge(Node* n1, Node* n2) {
     m_graph->addEdge(n1, n2, 1);
     ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight=1");
+    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
+
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     m_graph->getEdge(n1, n2)->setWeight(weight);
@@ -206,28 +211,28 @@ void GraphWindow::nodeNameLength() {
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
 
-        QString dir = QDir::homePath();
-        QString name = "Untilted.png";
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
-            if (!fileName.isNull()) {
-                QPixmap pixMap = this->ui->graphicsView->grab();
-                pixMap.save(fileName);
-            }
+    QString dir = QDir::homePath();
+    QString name = "Untilted.png";
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
+        if (!fileName.isNull()) {
+            QPixmap pixMap = this->ui->graphicsView->grab();
+            pixMap.save(fileName);
+        }
 }
 
 
 void GraphWindow::on_actionSaveAsJpg_triggered(){
 
-        QString dir = QDir::homePath();
-        QString name = "Untilted.jpeg";
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
-            if (!fileName.isNull()) {
-                QPixmap pixMap = this->ui->graphicsView->grab();
-                pixMap.save(fileName);
-            }
+    QString dir = QDir::homePath();
+    QString name = "Untilted.jpeg";
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
+    if (!fileName.isNull()) {
+        QPixmap pixMap = this->ui->graphicsView->grab();
+        pixMap.save(fileName);
+    }
 }
 
-void GraphWindow::on_pbUndirected_pressed(){   
+void GraphWindow::on_pbUndirected_pressed(){
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
     // TODO undirected edges}

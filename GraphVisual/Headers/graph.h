@@ -20,6 +20,7 @@ public:
     bool isDirected() const;
     bool isUndirected() const;
     void clear();
+    void setDirected(bool dir);
 
     //nodes methods
     bool hasNode(Node *node) const;
@@ -34,6 +35,7 @@ public:
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
     inline int countNodes() const;
     Node* randomNode();
+    void clearNodes();
 
     //edge methods
     Edge* getEdge(Node *u, Node *v);
@@ -64,8 +66,8 @@ protected:
     const std::pair<int, int> m_weightRange;
 
 //private:
-    const bool m_directed;
-    const bool m_weighted;
+    bool m_directed;
+    bool m_weighted;
 
 };
 

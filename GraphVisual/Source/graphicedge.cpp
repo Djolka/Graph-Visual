@@ -10,11 +10,19 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_start (start),
     m_end (end),
     m_weight(weight){
+
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
     connect(m_weightLineEdit, &QLineEdit::editingFinished, this, &GraphicEdge::editWeight);
     setFlags(GraphicsItemFlag::ItemIsSelectable);
     setAcceptHoverEvents(true);
+    m_weightLineEdit->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    m_weightLineEdit->setMinimumWidth(15);
+    connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
+
     QGraphicsLineItem::setZValue(-10);
+}
+GraphicEdge::~GraphicEdge(){
+    delete m_weightLineEdit;
 }
 
 QRectF GraphicEdge::boundingRect() const {
@@ -89,6 +97,7 @@ void GraphicEdge::editWeight(){
         emit weightEdited(this, 1);
         emit needRedraw();
         emit needWarning(QString("Edge weight must be a number"));
+
     }
     else if(text.length() < 6){
         int weight = text.toInt();

@@ -1,11 +1,14 @@
 #include "Headers/graphwindow.h"
 #include "Headers/algorithm.h"
+#include "Headers/graph.h"
+#include "Headers/node.h"
+#include "Headers/edge.h"
+
+#include <string>
 
 #include <QApplication>
-#include <iostream>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     GraphWindow w;
 

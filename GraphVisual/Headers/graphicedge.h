@@ -11,7 +11,7 @@ class GraphicEdge : public QObject, public QGraphicsLineItem {
     Q_OBJECT
 public:
     GraphicEdge(GraphicNode* start, GraphicNode* end, int weight);
-    virtual ~GraphicEdge(){}
+    ~GraphicEdge();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
