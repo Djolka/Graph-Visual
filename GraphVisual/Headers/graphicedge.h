@@ -16,13 +16,15 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     int type() const override;
-    QPainterPath shape() const;
+    QPainterPath shape() const override;
 
     int getWeight(){return m_weight;}
     GraphicNode* getStart(){return m_start;}
     GraphicNode* getEnd(){return m_end;}
     QPointF getCenter();
     QLineEdit* getLineEdit(){return m_weightLineEdit;}
+
+    static QColor m_color;
 
 public slots:
     void editWeight();
@@ -33,8 +35,8 @@ signals:
     void needWarning(QString s);
 
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     GraphicNode* m_start;

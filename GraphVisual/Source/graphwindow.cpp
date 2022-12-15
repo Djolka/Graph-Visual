@@ -54,6 +54,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
 
+    fillMap();
 }
 
 GraphWindow::~GraphWindow()
@@ -61,6 +62,32 @@ GraphWindow::~GraphWindow()
     delete ui;
     delete m_GraphTable;
     delete m_graph;
+}
+
+void GraphWindow::fillMap() {
+    m_colors.insert("off white", "#E4E8D6");
+    m_colors.insert("white", "#FFFFFF");
+    m_colors.insert("black", "#000000");
+    m_colors.insert("navy", "#192841");
+    m_colors.insert("yellow", "#ece75f");
+    m_colors.insert("green", "#87ab69");
+    m_colors.insert("purple", "#D9C4EC");
+    m_colors.insert("blue", "#287caa");
+    m_colors.insert("dark grey", "#3A3B3C");
+    m_colors.insert("red", "#D0312D");
+
+}
+
+void GraphWindow::SaveAsPic(const QString& m_ext){
+    QString dir = QDir::homePath();
+    QString name = "Untilted." + m_ext;
+    QString fileType = m_ext.toUpper() + "(*." + m_ext.toUpper() + ")";
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, fileType);
+        if (!fileName.isNull()) {
+            QPixmap pixMap = this->ui->graphicsView->grab();
+            pixMap.save(fileName);
+        }
+
 }
 
 
@@ -210,42 +237,25 @@ void GraphWindow::nodeNameLength() {
 
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
-
-    QString dir = QDir::homePath();
-    QString name = "Untilted.png";
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
-        if (!fileName.isNull()) {
-            QPixmap pixMap = this->ui->graphicsView->grab();
-            pixMap.save(fileName);
-        }
+    GraphWindow::SaveAsPic("png");
 }
 
 
-void GraphWindow::on_actionSaveAsJpg_triggered(){
-
-    QString dir = QDir::homePath();
-    QString name = "Untilted.jpeg";
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
-    if (!fileName.isNull()) {
-        QPixmap pixMap = this->ui->graphicsView->grab();
-        pixMap.save(fileName);
-    }
+void GraphWindow::on_actionSaveAsJpg_triggered() {
+    GraphWindow::SaveAsPic("jpeg");
 }
 
-void GraphWindow::on_pbUndirected_pressed(){
+void GraphWindow::on_pbUndirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
-    // TODO undirected edges}
 }
 
-void GraphWindow::on_pbDirected_pressed(){
+void GraphWindow::on_pbDirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
-    // TODO directed edges
 }
 
-void GraphWindow::on_actionClose_triggered()
-{
+void GraphWindow::on_actionClose_triggered() {
     // TODO ask user if they want to save
     close();
 }
@@ -262,3 +272,20 @@ void GraphWindow::deleteNode(Node* node) {
 void GraphWindow::deleteEdge(Node* node1, Node* node2) {
     m_graph->removeEdge(node1, node2);
 }
+
+void GraphWindow::on_pbSave_clicked() {
+    GraphicNode::m_height = ui->sbRadius->value();
+    GraphicNode::m_width = ui->sbRadius->value();
+    GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
+    GraphicEdge::m_color = QColor(m_colors[ui->cbEdgecolor->currentText()]);
+    ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
+
+    if (ui->cbEdgecolor->currentText() == ui->cbBgcolor->currentText()) {
+        ui->lblMsg->setText(QString("\n\n\nWatch out! Your edges are the same color as the background."));
+        ui->lblMsg->setStyleSheet(QString("background-image: url(:/new/rec/Resources/warning.png)"));
+    } else {
+        ui->lblMsg->setText(QString());
+        ui->lblMsg->setStyleSheet(QString());
+    }
+}
+

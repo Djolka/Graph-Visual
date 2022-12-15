@@ -635,6 +635,15 @@
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>211</red>
+                <green>215</green>
+                <blue>207</blue>
+               </color>
+              </brush>
+             </colorrole>
             </active>
             <inactive>
              <colorrole role="WindowText">
@@ -691,6 +700,15 @@
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>211</red>
+                <green>215</green>
+                <blue>207</blue>
+               </color>
+              </brush>
+             </colorrole>
             </inactive>
             <disabled>
              <colorrole role="WindowText">
@@ -744,6 +762,15 @@
                 <red>45</red>
                 <green>74</green>
                 <blue>90</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>211</red>
+                <green>215</green>
+                <blue>207</blue>
                </color>
               </brush>
              </colorrole>
@@ -843,6 +870,15 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>245</red>
+                <green>243</green>
+                <blue>242</blue>
+               </color>
+              </brush>
+             </colorrole>
             </active>
             <inactive>
              <colorrole role="WindowText">
@@ -899,6 +935,15 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
                </color>
               </brush>
              </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>245</red>
+                <green>243</green>
+                <blue>242</blue>
+               </color>
+              </brush>
+             </colorrole>
             </inactive>
             <disabled>
              <colorrole role="WindowText">
@@ -952,6 +997,15 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
                 <red>40</red>
                 <green>124</green>
                 <blue>170</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="PlaceholderText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="128">
+                <red>245</red>
+                <green>243</green>
+                <blue>242</blue>
                </color>
               </brush>
              </colorrole>
@@ -1377,6 +1431,12 @@ color: rgb(211, 215, 207);</string>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(232, 228, 214);</string>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
@@ -1444,7 +1504,7 @@ color: rgb(245, 243, 242);</string>
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_Config">
            <property name="styleSheet">
@@ -1482,7 +1542,14 @@ color: rgb(245, 243, 242);</string>
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="sbRadius"/>
+                <widget class="QSpinBox" name="sbRadius">
+                 <property name="minimum">
+                  <number>50</number>
+                 </property>
+                 <property name="maximum">
+                  <number>150</number>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -1559,6 +1626,15 @@ color: rgb(245, 243, 242);</string>
                       </color>
                      </brush>
                     </colorrole>
+                    <colorrole role="PlaceholderText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="128">
+                       <red>245</red>
+                       <green>243</green>
+                       <blue>242</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
                    </active>
                    <inactive>
                     <colorrole role="WindowText">
@@ -1612,6 +1688,15 @@ color: rgb(245, 243, 242);</string>
                        <red>23</red>
                        <green>23</green>
                        <blue>23</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
+                    <colorrole role="PlaceholderText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="128">
+                       <red>245</red>
+                       <green>243</green>
+                       <blue>242</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -1671,15 +1756,32 @@ color: rgb(245, 243, 242);</string>
                       </color>
                      </brush>
                     </colorrole>
+                    <colorrole role="PlaceholderText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="128">
+                       <red>245</red>
+                       <green>243</green>
+                       <blue>242</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
                    </disabled>
                   </palette>
                  </property>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
+                 <property name="currentIndex">
+                  <number>1</number>
+                 </property>
                  <item>
                   <property name="text">
                    <string>dark grey</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>white</string>
                   </property>
                  </item>
                  <item>
@@ -1745,9 +1847,17 @@ color: rgb(245, 243, 242);</string>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
+                 <property name="currentIndex">
+                  <number>8</number>
+                 </property>
                  <item>
                   <property name="text">
                    <string>dark grey</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>white</string>
                   </property>
                  </item>
                  <item>
@@ -1813,9 +1923,17 @@ color: rgb(245, 243, 242);</string>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
+                 <property name="currentIndex">
+                  <number>7</number>
+                 </property>
                  <item>
                   <property name="text">
                    <string>dark grey</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>white</string>
                   </property>
                  </item>
                  <item>
@@ -1877,6 +1995,33 @@ color: rgb(245, 243, 242);</string>
               </layout>
              </item>
             </layout>
+           </widget>
+           <widget class="QLabel" name="lblMsg">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>340</y>
+              <width>131</width>
+              <height>91</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </widget>
           <widget class="QWidget" name="tabAlgorithms">

@@ -17,12 +17,14 @@ public:
 
     inline Node *getNode() { return m_Node; }
 
-    inline int Width() const { return 50; }
-    inline int Height() const { return 50; }
+    static int m_width;
+    static int m_height;
 
     int type() const override;
 
     QPointF CenterPosition();
+
+    static QColor m_color;
 
 
 protected:

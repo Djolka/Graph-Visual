@@ -16,8 +16,12 @@ GraphicNode::~GraphicNode() {
 
 }
 
+QColor GraphicNode::m_color = QColor("white");
+int GraphicNode::m_height = 50;
+int GraphicNode::m_width = 50;
+
 QRectF GraphicNode::boundingRect() const {
-    return QRectF(0, 0, Width(), Height());
+    return QRectF(0, 0, GraphicNode::m_width, GraphicNode::m_height);
 }
 
 void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -26,6 +30,10 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     QPen pen(Qt::black);
     pen.setWidth(2);
+
+    if(m_brush != QBrush(Qt::yellow)) {
+        m_brush = QBrush(GraphicNode::m_color);
+    }
 
     painter->setBrush(m_brush);
     painter->setPen(pen);
@@ -36,7 +44,7 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 QPointF GraphicNode::CenterPosition() {
-    return pos() + QPointF(Width() / 2, Height() / 2);
+    return pos() + QPointF(GraphicNode::m_width / 2, GraphicNode::m_height / 2);
 }
 
 
@@ -64,7 +72,7 @@ void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsObject::hoverEnterEvent(event);
 }
 void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    m_brush = QBrush(Qt::white);
+    m_brush = QBrush(GraphicNode::m_color);
     emit needRedraw();
     QGraphicsObject::hoverLeaveEvent(event);
 }
