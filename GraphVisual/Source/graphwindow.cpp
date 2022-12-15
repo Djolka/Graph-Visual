@@ -230,5 +230,13 @@ void GraphWindow::on_pbSave_clicked() {
     GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
     GraphicEdge::m_color = QColor(m_colors[ui->cbEdgecolor->currentText()]);
     ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
+
+    if (ui->cbEdgecolor->currentText() == ui->cbBgcolor->currentText()) {
+        ui->lblMsg->setText(QString("\n\n\nWatch out! Your edges are the same color as the background."));
+        ui->lblMsg->setStyleSheet(QString("background-image: url(:/new/rec/Resources/warning.png)"));
+    } else {
+        ui->lblMsg->setText(QString());
+        ui->lblMsg->setStyleSheet(QString());
+    }
 }
 

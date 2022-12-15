@@ -1995,6 +1995,33 @@ color: rgb(245, 243, 242);</string>
              </item>
             </layout>
            </widget>
+           <widget class="QLabel" name="lblMsg">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>340</y>
+              <width>131</width>
+              <height>91</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
           </widget>
           <widget class="QWidget" name="tabAlgorithms">
            <property name="styleSheet">
