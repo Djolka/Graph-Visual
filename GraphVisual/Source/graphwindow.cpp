@@ -230,8 +230,9 @@ void GraphWindow::on_pbSave_clicked()
     //int m_radius = ui->sbRadius->value();
     //QString m_nodeColor = ui->cbNodecolor->currentText();
 
-    //TODO node radius, color
+    //TODO node radius
 
+    GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
     GraphicEdge::m_color = QColor(m_colors[ui->cbEdgecolor->currentText()]);
     ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
 }

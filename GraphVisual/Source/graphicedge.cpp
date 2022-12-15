@@ -108,7 +108,7 @@ void GraphicEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
 }
 void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 
-    m_pen = QPen(this->m_color);
+    m_pen = QPen(GraphicEdge::m_color);
     emit needRedraw();
     QGraphicsLineItem::hoverLeaveEvent(event);
 }

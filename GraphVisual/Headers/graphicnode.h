@@ -25,6 +25,8 @@ public:
 
     QPointF CenterPosition();
 
+    static QColor m_color;
+
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

@@ -11,6 +11,8 @@ GraphicNode::GraphicNode(Node *node)
 
 }
 
+QColor GraphicNode::m_color = QColor("white");
+
 QRectF GraphicNode::boundingRect() const {
     return QRectF(0, 0, Width(), Height());
 }
@@ -18,6 +20,10 @@ QRectF GraphicNode::boundingRect() const {
 void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
+
+    if(m_brush != QBrush(Qt::yellow)) {
+        m_brush = QBrush(GraphicNode::m_color);
+    }
 
     painter->setBrush(m_brush);
     painter->drawEllipse(boundingRect());
@@ -43,7 +49,7 @@ void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsObject::hoverEnterEvent(event);
 }
 void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    m_brush = QBrush(Qt::white);
+    m_brush = QBrush(GraphicNode::m_color);
     emit needRedraw();
     QGraphicsObject::hoverLeaveEvent(event);
 }
