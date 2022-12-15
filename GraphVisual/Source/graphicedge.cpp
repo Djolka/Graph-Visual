@@ -9,7 +9,10 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     m_start (start),
     m_end (end),
     m_weight(weight){
+
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
+    m_weightLineEdit->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    m_weightLineEdit->setMinimumWidth(15);
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
     QGraphicsLineItem::setZValue(-10);

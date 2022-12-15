@@ -20,6 +20,8 @@ public:
     QVector<GraphicNode *> getNodes();
     QVector<GraphicEdge *> getEdges();
 
+    bool hasGraphicEdge(GraphicNode *u, GraphicNode *v);
+
     void mousePressEvent ( QGraphicsSceneMouseEvent * event ) override;
 //    void mouseMoveEvent (QGraphicsSceneMouseEvent * event ) override;
     void setDrawingMode(bool x);

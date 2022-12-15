@@ -2,6 +2,8 @@
 #include "Headers/graphicnode.h"
 #include "Headers/graphicedge.h"
 
+#include <iostream>
+
 GraphTable::GraphTable(QObject *parent)
     : QGraphicsScene(parent) {
 
@@ -18,8 +20,8 @@ void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
 void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     m_Edges.append(edge);
     edge->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight);
-    connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
+    connect(edge, &GraphicEdge::weightEdited, this, &GraphTable::editWeight); // ??
+    connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);       // ??
     addItem(edge);
     addWidget(edge->getLineEdit());
 }
@@ -67,7 +69,15 @@ void GraphTable::editWeight(GraphicEdge* edge, int w){
     emit edgeWeightChanged(edge->getStart()->getNode(), edge->getEnd()->getNode(), w);
 }
 
-
+bool GraphTable::hasGraphicEdge(GraphicNode *u, GraphicNode *v) {
+    auto it = m_Edges.begin();
+    for(;it != m_Edges.end(); ++it){
+        if ((*it)->getStart()->getNode() == u->getNode() && (*it)->getEnd()->getNode() == v->getNode()){
+            return true;
+        }
+    }
+    return false;
+}
 
 void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
@@ -96,10 +106,12 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
             // open window to insert node name
 
-            GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
-            AddNewEdgeOnTable(edge);
+            if(!hasGraphicEdge(m_tmp, node)) {
+                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
+                AddNewEdgeOnTable(edge);
 
-            emit addedNewEdge(m_tmp->getNode(), node->getNode());
+                emit addedNewEdge(m_tmp->getNode(), node->getNode());
+            }
 
             setHasTmp(false);
         }
@@ -110,7 +122,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         QGraphicsScene::mousePressEvent(event);
     }
 }
-
 
 //TODO: drawing a line when clicked on a node
 

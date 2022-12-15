@@ -12,6 +12,10 @@ GraphicNode::GraphicNode(Node *node)
 
 }
 
+GraphicNode::~GraphicNode() {
+
+}
+
 QRectF GraphicNode::boundingRect() const {
     return QRectF(0, 0, Width(), Height());
 }
