@@ -40,8 +40,8 @@ void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     const int tableWidth = static_cast<int>(width());
     auto newNodeIndex = m_Nodes.size() - 1;
 
-    const auto xPos = (node->Width() * newNodeIndex) % tableWidth;
-    const auto yPos = node->Height() * ((node->Width() * newNodeIndex) / tableWidth);
+    const auto xPos = (node->m_width * newNodeIndex) % tableWidth;
+    const auto yPos = node->m_height * ((node->m_width * newNodeIndex) / tableWidth);
     node->setPos(xPos, yPos);
 
     node->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
@@ -72,7 +72,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             GraphicNode* graphicNode = new GraphicNode(node);
 
             AddNewNodeOnTable(graphicNode);
-            graphicNode->setPos(event->scenePos() - QPointF(graphicNode->Width() / 2, graphicNode->Height() / 2));
+            graphicNode->setPos(event->scenePos() - QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2));
             addItem(graphicNode);
 
             // open window to insert node name

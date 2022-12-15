@@ -75,6 +75,18 @@ void GraphWindow::fillMap() {
 
 }
 
+void GraphWindow::SaveAsPic(const QString& m_ext){
+    QString dir = QDir::homePath();
+    QString name = "Untilted." + m_ext;
+    QString fileType = m_ext.toUpper() + "(*." + m_ext.toUpper() + ")";
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, fileType);
+        if (!fileName.isNull()) {
+            QPixmap pixMap = this->ui->graphicsView->grab();
+            pixMap.save(fileName);
+        }
+
+}
+
 
 void GraphWindow::AddNewEdge() {
     const auto name1 = ui->teNode1->toPlainText();
@@ -175,39 +187,26 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
 
-        QString dir = QDir::homePath();
-        QString name = "Untilted.png";
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "PNG (*.PNG)" );
-            if (!fileName.isNull()) {
-                QPixmap pixMap = this->ui->graphicsView->grab();
-                pixMap.save(fileName);
-            }
+        GraphWindow::SaveAsPic("png");
 }
 
 
-void GraphWindow::on_actionSaveAsJpg_triggered(){
+void GraphWindow::on_actionSaveAsJpg_triggered() {
 
-        QString dir = QDir::homePath();
-        QString name = "Untilted.jpeg";
-        QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, "JPEG (*.JPEG)" );
-            if (!fileName.isNull()) {
-                QPixmap pixMap = this->ui->graphicsView->grab();
-                pixMap.save(fileName);
-            }
+        GraphWindow::SaveAsPic("jpeg");
 }
 
-void GraphWindow::on_pbUndirected_pressed(){   
+void GraphWindow::on_pbUndirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
 }
 
-void GraphWindow::on_pbDirected_pressed(){
+void GraphWindow::on_pbDirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
 }
 
-void GraphWindow::on_actionClose_triggered()
-{
+void GraphWindow::on_actionClose_triggered() {
     // TODO ask user if they want to save
     close();
 }
@@ -225,13 +224,9 @@ void GraphWindow::deleteEdge(Node* node1, Node* node2) {
     m_graph->removeEdge(node1, node2);
 }
 
-void GraphWindow::on_pbSave_clicked()
-{
-    //int m_radius = ui->sbRadius->value();
-    //QString m_nodeColor = ui->cbNodecolor->currentText();
-
-    //TODO node radius
-
+void GraphWindow::on_pbSave_clicked() {
+    GraphicNode::m_height = ui->sbRadius->value();
+    GraphicNode::m_width = ui->sbRadius->value();
     GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
     GraphicEdge::m_color = QColor(m_colors[ui->cbEdgecolor->currentText()]);
     ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
