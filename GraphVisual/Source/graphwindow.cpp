@@ -72,6 +72,7 @@ void GraphWindow::fillMap() {
     m_colors.insert("blue", "#287caa");
     m_colors.insert("dark grey", "#3A3B3C");
     m_colors.insert("red", "#D0312D");
+
 }
 
 
@@ -129,6 +130,7 @@ void GraphWindow::AddNewEdge() {
     //m_graph->addEdge() TODO
 
     const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+
 //    m_GraphTable->addItem(graphicEdge);
 
     emit AddedNewEdge(graphicEdge);
@@ -197,13 +199,11 @@ void GraphWindow::on_actionSaveAsJpg_triggered(){
 void GraphWindow::on_pbUndirected_pressed(){   
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
-    // TODO undirected edges}
 }
 
 void GraphWindow::on_pbDirected_pressed(){
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
-    // TODO directed edges
 }
 
 void GraphWindow::on_actionClose_triggered()
@@ -227,16 +227,12 @@ void GraphWindow::deleteEdge(Node* node1, Node* node2) {
 
 void GraphWindow::on_pbSave_clicked()
 {
-    int m_radius = ui->sbRadius->value();
-    QString m_nodeColor = ui->cbNodecolor->currentText();
-    QString m_edgeColor = ui->cbEdgecolor->currentText();
+    //int m_radius = ui->sbRadius->value();
+    //QString m_nodeColor = ui->cbNodecolor->currentText();
 
+    //TODO node radius, color
+
+    GraphicEdge::m_color = QColor(m_colors[ui->cbEdgecolor->currentText()]);
     ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
-
-    // TODO: radius, node, edge
-
-    ui->sbRadius->setValue(m_radius);
-    ui->cbNodecolor->setCurrentText(m_nodeColor);
-    ui->cbEdgecolor->setCurrentText(m_edgeColor);
 }
 

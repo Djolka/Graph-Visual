@@ -1431,6 +1431,12 @@ color: rgb(211, 215, 207);</string>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(232, 228, 214);</string>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
@@ -1535,7 +1541,14 @@ color: rgb(245, 243, 242);</string>
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="sbRadius"/>
+                <widget class="QSpinBox" name="sbRadius">
+                 <property name="minimum">
+                  <number>50</number>
+                 </property>
+                 <property name="maximum">
+                  <number>150</number>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -1757,6 +1770,9 @@ color: rgb(245, 243, 242);</string>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
+                 <property name="currentIndex">
+                  <number>1</number>
+                 </property>
                  <item>
                   <property name="text">
                    <string>dark grey</string>
@@ -1830,6 +1846,9 @@ color: rgb(245, 243, 242);</string>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
+                 <property name="currentIndex">
+                  <number>8</number>
+                 </property>
                  <item>
                   <property name="text">
                    <string>dark grey</string>
@@ -1902,6 +1921,9 @@ color: rgb(245, 243, 242);</string>
                 <widget class="QComboBox" name="cbBgcolor">
                  <property name="styleSheet">
                   <string notr="true"/>
+                 </property>
+                 <property name="currentIndex">
+                  <number>7</number>
                  </property>
                  <item>
                   <property name="text">

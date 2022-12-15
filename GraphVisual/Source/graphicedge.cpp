@@ -3,7 +3,7 @@
 
 #include <QPen>
 #include <QPainter>
-#include<QtMath>
+#include <QtMath>
 
 GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     :QGraphicsLineItem(),
@@ -16,6 +16,8 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight)
     setAcceptHoverEvents(true);
     QGraphicsLineItem::setZValue(-10);
 }
+
+QColor GraphicEdge::m_color = QColor("black");
 
 QRectF GraphicEdge::boundingRect() const {
     QPolygonF nPolygon;
@@ -31,7 +33,6 @@ QRectF GraphicEdge::boundingRect() const {
              << line.p2() + offset1;
     return nPolygon.boundingRect();
 }
-
 
 QPointF GraphicEdge::getCenter(){
     return QPointF(m_start->CenterPosition().rx() - (m_start->CenterPosition().rx() - m_end->CenterPosition().rx())/2.0,
@@ -61,6 +62,9 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
+    if(m_pen != QPen(Qt::green)) {
+        m_pen = QPen(GraphicEdge::m_color);
+    }
     painter->setPen(m_pen);
 
     painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
@@ -97,12 +101,14 @@ void GraphicEdge::editWeight(){
 }
 
 void GraphicEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+
     m_pen = QPen(Qt::green);
     emit needRedraw();
     QGraphicsLineItem::hoverEnterEvent(event);
 }
 void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    m_pen = QPen(Qt::black);
+
+    m_pen = QPen(this->m_color);
     emit needRedraw();
     QGraphicsLineItem::hoverLeaveEvent(event);
 }
@@ -111,3 +117,4 @@ void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 int GraphicEdge::type() const {
     return 2;
 }
+
