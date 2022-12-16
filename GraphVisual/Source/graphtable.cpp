@@ -87,20 +87,6 @@ bool GraphTable::hasGraphicEdge(GraphicNode *u, GraphicNode *v) {
 }
 
 void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
-//    TODO
-//    if(event->pos() < 0) {
-//        setPos(0, event->pos().y());
-//    } else if (x() + boundingRect().right() > scene()->width()) {
-//        setPos(scene()->width() - boundingRect().width(), y());
-//    }
-
-//    if (y() < 0) {
-//        setPos(x(), 0);
-//    } else if (y()+ boundingRect().bottom() > scene()->height()) {
-//        setPos(x(), scene()->height() - boundingRect().height());
-//    }
-
-
 
     if(m_drawingMode && itemAt(event->scenePos(), QTransform()) == NULL){
         if(m_hasTmp){
@@ -128,10 +114,16 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                     Node* node = new Node(nodeName.toStdString());
                     GraphicNode* graphicNode = new GraphicNode(node);
 
-                    AddNewNodeOnTable(graphicNode);
-                    graphicNode->setPos(event->scenePos() - QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2));
-                    addItem(graphicNode);
+                    QPointF point = event->scenePos() - QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2);
+                    qreal x = 0, y = 0;
+                    x = std::min(sceneRect().width() - GraphicNode::m_width, point.x());
+                    y = std::min(sceneRect().height() - GraphicNode::m_height, point.y());
+                    x = std::fmax(0, x);
+                    y = std::fmax(0, y);
 
+                    AddNewNodeOnTable(graphicNode);
+                    graphicNode->setPos(x, y);
+                    addItem(graphicNode);
                     emit addedNewNode(node);
                 }
             }
