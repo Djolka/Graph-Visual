@@ -31,17 +31,32 @@ QColor GraphicEdge::m_color = QColor("black");
 
 
 QRectF GraphicEdge::boundingRect() const {
+    QPainterPath ret;
     QPolygonF nPolygon;
     auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
     qreal radAngle = line.angle()* M_PI / 180;
-    qreal dx = 20 * sin(radAngle);
-    qreal dy = 20 * cos(radAngle);
-    QPointF offset1 = QPointF(dx, dy);
-    QPointF offset2 = QPointF(-dx, -dy);
+    qreal dx = sin(radAngle);
+    qreal dy = cos(radAngle);
+    QPointF offset1;
+    QPointF offset2;
+
+    if(directed){
+        dx *= 40;
+        dy *= 40;
+        offset1 = QPointF(-dx, -dy);
+        offset2 = QPointF(0, 0);
+    }
+    else {
+        dx *= 20;
+        dy *= 20;
+        offset1 = QPointF(dx, dy);
+        offset2 = QPointF(-dx, -dy);
+    }
     nPolygon << line.p1() + offset1
              << line.p1() + offset2
              << line.p2() + offset2
              << line.p2() + offset1;
+//    ret.addPolygon(nPolygon);
     return nPolygon.boundingRect();
 }
 

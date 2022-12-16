@@ -6,6 +6,7 @@ Popup::Popup(QWidget *parent) :
     ui(new Ui::Popup)
 {
     ui->setupUi(this);
+    ui->lineEdit->setFocus();
 }
 
 Popup::~Popup()

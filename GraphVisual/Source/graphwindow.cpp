@@ -207,8 +207,9 @@ void GraphWindow::AddNode(Node* node) {
 void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     if(m_graph->addEdge(n1, n2, weight)){
         ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
-//    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
     }
+
+    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     //update list
