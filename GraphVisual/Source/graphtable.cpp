@@ -5,6 +5,7 @@
 #include "Headers/popup.h"
 #include <QMessageBox>
 #include <iostream>
+#include <cmath>
 
 
 GraphTable::GraphTable(bool dir, QObject *parent)
