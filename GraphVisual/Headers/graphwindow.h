@@ -69,7 +69,7 @@ private:
     Ui::GraphWindow *ui;
     Graph *m_graph;
     QGraphicsScene *m_GraphTable;
-    bool shouldPopUpUndir = false;
+    bool shouldPopUpUndir = true;
     bool shouldPopUpDir = true;
 
 };

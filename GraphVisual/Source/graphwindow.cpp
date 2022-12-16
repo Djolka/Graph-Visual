@@ -256,7 +256,14 @@ void GraphWindow::nodeNameLength() {
 }
 
 void GraphWindow::graphDirected() {
-    if(shouldPopUpDir){
+
+    if(m_graph->nodeSet().empty()){
+            ui->pbUndirected->setEnabled(true);
+            ui->pbDirected->setEnabled(false);
+            m_graph->setDirected(true);
+//            shouldPopUpDir = true;
+            shouldPopUpUndir = true;
+    }else if(shouldPopUpDir){
 //        QMessageBox *msg = new QMessageBox();
         switch(QMessageBox::question(
                     this,
@@ -277,6 +284,7 @@ void GraphWindow::graphDirected() {
             shouldPopUpDir = false;
             break;
           case QMessageBox::No:
+            shouldPopUpUndir=false;
             ui->pbUndirected->setChecked(true);
             ui->pbUndirected->setEnabled(true);
             ui->pbUndirected->click();
@@ -287,17 +295,22 @@ void GraphWindow::graphDirected() {
         }
 //        msg->setStyleSheet("color:white;background:white"); //not working
     }
-
-
+    return;
 }
 
 
 
 void GraphWindow::graphUndirected() {
-    if(shouldPopUpUndir){
+    if(m_graph->nodeSet().empty()){
+            ui->pbUndirected->setEnabled(false);
+            ui->pbDirected->setEnabled(true);
+            m_graph->setDirected(false);
+            shouldPopUpDir = true;
+//            shouldPopUpUndir = true;
+    }else if(shouldPopUpUndir){
         //pop-up warning window
-        QMessageBox *msg = new QMessageBox();
-        switch(msg->question(
+//        QMessageBox *msg = new QMessageBox();
+        switch(QMessageBox::question(
                     this,
                     tr("Warning"),
                     tr("Current progress will be deleted if you change to undirected graph, click yes to continue"),
@@ -316,6 +329,7 @@ void GraphWindow::graphUndirected() {
             shouldPopUpUndir = false;
             break;
           case QMessageBox::No:
+            shouldPopUpDir=false;
             ui->pbDirected->setChecked(true);
             ui->pbDirected->setEnabled(true);
             ui->pbDirected->click();
@@ -324,11 +338,9 @@ void GraphWindow::graphUndirected() {
           default:
             break;
         }
-        msg->setStyleSheet("background:white");
-    }else{
-        return;
+//        msg->setStyleSheet("background:white");
     }
-
+    return;
 }
 
         
