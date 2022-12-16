@@ -7,9 +7,9 @@
 #include <iostream>
 
 
-GraphTable::GraphTable(QObject *parent)
+GraphTable::GraphTable(bool dir, QObject *parent)
     : QGraphicsScene(parent) {
-
+    directed = dir;
 }
 
 void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
@@ -37,13 +37,11 @@ void GraphTable::DeleteGraphFromTable() {
         delete edge;
     }
     m_Edges.clear();
-
     for(auto node : m_Nodes) {
         removeItem(node);
         delete node;
     }
     m_Nodes.clear();
-
     update();
 }
 
@@ -149,7 +147,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
             // open window to insert node name
             if(!hasGraphicEdge(m_tmp, node)) {
-                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1);
+                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, directed);
                 AddNewEdgeOnTable(edge);
 
 
@@ -205,7 +203,9 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 //TODO: drawing a line when clicked on a node
 
 //void GraphTable::mouseMoveEvent (QGraphicsSceneMouseEvent * event ){
-
+//    if(event->scenePos().x() < 0){
+//        event->scenePos().setX(0);
+//    }
 
 //    if(m_drawingMode && m_hasTmp){
 //        for (auto veza : _veze){

@@ -117,7 +117,7 @@ bool Graph::removeNode(const std::string &name) {
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
         if((*it)->name() == name){
             isolateNode(name);
-            delete *it;
+            delete *it;          // TOFIX
             m_nodes.erase(it);
             return true;
         }
@@ -412,6 +412,14 @@ Node* Graph::randomNode() {
 
     return n;
 }
+
+//void Graph::clearNodes() {
+//    for(auto node: m_nodes){
+//        removeNode(node);
+//        delete node;
+//    }
+//    m_nodes.clear();
+//}
 
 
 

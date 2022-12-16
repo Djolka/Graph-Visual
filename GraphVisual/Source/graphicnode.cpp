@@ -1,6 +1,7 @@
 #include "Headers/graphicnode.h"
 #include "Headers/node.h"
 #include "qgraphicsscene.h"
+#include "qgraphicssceneevent.h"
 
 #include <QPainter>
 
@@ -76,7 +77,6 @@ void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     emit needRedraw();
     QGraphicsObject::hoverLeaveEvent(event);
 }
-
 
 int GraphicNode::type() const{
     return 1;

@@ -15,7 +15,7 @@
 class GraphTable : public QGraphicsScene {
 Q_OBJECT
 public:
-    explicit GraphTable(QObject *parenet = nullptr);
+    explicit GraphTable(bool dir, QObject *parenet = nullptr);
     virtual ~GraphTable(){}
 
     QVector<GraphicNode *> getNodes();
@@ -55,6 +55,7 @@ private:
     bool m_hasTmp = false;
     GraphicNode* m_tmp;
     QGraphicsLineItem* m_lineToDraw;
+    bool directed;
 
     bool m_deleteMode = false;
 

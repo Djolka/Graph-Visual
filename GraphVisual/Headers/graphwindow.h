@@ -32,6 +32,7 @@ signals:
     void DeletedGraph();
     void NeedRedraw();
 
+
 private slots:
     void AddNewEdge();
     void DeleteGraphFromTable();
@@ -43,6 +44,9 @@ private slots:
     void deleteEdge(Node* node1, Node* node2);
     void warning(QString s);
     void nodeNameLength();
+
+    void graphDirected();
+    void graphUndirected();
 
     void on_actionSaveAsPng_triggered();
     void on_actionSaveAsJpg_triggered();
@@ -63,7 +67,10 @@ private slots:
 
 private:
     Ui::GraphWindow *ui;
-    QGraphicsScene *m_GraphTable;
     Graph *m_graph;
+    QGraphicsScene *m_GraphTable;
+    bool shouldPopUpUndir = false;
+    bool shouldPopUpDir = true;
+
 };
 #endif // GRAPHWINDOW_H

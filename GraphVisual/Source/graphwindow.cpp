@@ -14,14 +14,13 @@
 #include <QTextEdit>
 #include <QWidget>
 #include <QMessageBox>
-
 #include <iostream>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
-    , m_GraphTable(new GraphTable(this))
     , m_graph(new Graph(false, false))
+    , m_GraphTable(new GraphTable(m_graph->isDirected(), this))
 {
     ui->setupUi(this);
 
@@ -32,6 +31,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
 //    connecting singals and slots
+    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
+    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
     connect(ui->teNode1, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
     connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
@@ -91,7 +92,7 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
 }
 
 
-void GraphWindow::AddNewEdge() {
+void GraphWindow::AddNewEdge() {    
     const auto name1 = ui->teNode1->toPlainText();
     ui->teNode1->clear();
 
@@ -157,7 +158,7 @@ void GraphWindow::AddNewEdge() {
 
 
         if(m_graph->addEdge(node1, node2, weight)) {
-            const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight);
+            const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight, m_graph->isDirected());
             emit AddedNewEdge(graphicEdge);
         }
 
@@ -217,7 +218,6 @@ void GraphWindow::nodeNameLength() {
     if (text.length() > 5){
         text.chop(text.length() - 5); // Cut off at 5 characters
         ui->teNode1->setPlainText(text); // Reset text
-
         QTextCursor cursor = ui->teNode1->textCursor();
         cursor.setPosition(ui->teNode1->document()->characterCount() - 1);
         ui->teNode1->setTextCursor(cursor);
@@ -234,6 +234,84 @@ void GraphWindow::nodeNameLength() {
         ui->teNode2->setTextCursor(cursor);
     }
 }
+
+void GraphWindow::graphDirected() {
+    if(shouldPopUpDir){
+//        QMessageBox *msg = new QMessageBox();
+        switch(QMessageBox::question(
+                    this,
+                    tr("Warning"),
+                    tr("Current progress will be deleted if you change to directed graph, click yes to continue"),
+
+                    QMessageBox::Yes |
+                    QMessageBox::No |
+
+                    QMessageBox::No) )
+        {
+          case QMessageBox::Yes:
+            ui->pbUndirected->setEnabled(true);
+            emit ui->pbDeleteAll->clicked();
+            ui->pbDirected->setEnabled(false);
+            m_graph->setDirected(true);
+            shouldPopUpUndir = true;
+            shouldPopUpDir = false;
+            break;
+          case QMessageBox::No:
+            ui->pbUndirected->setChecked(true);
+            ui->pbUndirected->setEnabled(true);
+            ui->pbUndirected->click();
+            ui->pbUndirected->setEnabled(false);
+            break;
+          default:
+            break;
+        }
+//        msg->setStyleSheet("color:white;background:white"); //not working
+    }
+
+
+}
+
+
+
+void GraphWindow::graphUndirected() {
+    if(shouldPopUpUndir){
+        //pop-up warning window
+        QMessageBox *msg = new QMessageBox();
+        switch(msg->question(
+                    this,
+                    tr("Warning"),
+                    tr("Current progress will be deleted if you change to undirected graph, click yes to continue"),
+
+                    QMessageBox::Yes |
+                    QMessageBox::No |
+
+                    QMessageBox::No) )
+        {
+          case QMessageBox::Yes:
+            ui->pbUndirected->setEnabled(false);
+            ui->pbDirected->setEnabled(true);
+            emit ui->pbDeleteAll->clicked();
+            m_graph->setDirected(false);
+            shouldPopUpDir = true;
+            shouldPopUpUndir = false;
+            break;
+          case QMessageBox::No:
+            ui->pbDirected->setChecked(true);
+            ui->pbDirected->setEnabled(true);
+            ui->pbDirected->click();
+            ui->pbDirected->setEnabled(false);
+            break;
+          default:
+            break;
+        }
+        msg->setStyleSheet("background:white");
+    }else{
+        return;
+    }
+
+}
+
+        
 
 
 void GraphWindow::on_actionSaveAsPng_triggered() {
@@ -260,7 +338,7 @@ void GraphWindow::on_actionClose_triggered() {
     close();
 }
 
-// delet this
+// delete this
 void GraphWindow::on_pbUndirected_released(){}
 void GraphWindow::on_pbUndirected_clicked(){}
 void GraphWindow::on_pbAddNode_clicked(){}

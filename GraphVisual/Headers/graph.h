@@ -35,7 +35,8 @@ public:
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
     inline int countNodes() const;
     Node* randomNode();
-    void clearNodes();
+
+//    void clearNodes();
 
     //edge methods
     Edge* getEdge(Node *u, Node *v);
@@ -57,8 +58,6 @@ public:
 
     QList<Edge*> edgeSet();
     QList<Node*> nodeSet();
-
-
 
 protected:
     QList<Edge*> m_edges;
