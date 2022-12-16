@@ -31,7 +31,7 @@ signals:
     void AddedNewEdge(GraphicEdge *);
     void DeletedGraph();
     void NeedRedraw();
-
+    void colorBFS(QList<Node*> result);
 
 private slots:
     void AddNewEdge();
@@ -64,6 +64,8 @@ private slots:
     void on_pbAddNode_clicked();
 
     void on_pbSave_clicked();
+
+    void algorithm();
 
 private:
     Ui::GraphWindow *ui;

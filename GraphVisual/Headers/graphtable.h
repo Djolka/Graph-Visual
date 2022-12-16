@@ -7,6 +7,8 @@
 #include<QLineEdit>
 #include<QWidget>
 #include<QGraphicsProxyWidget>
+#include<QTimer>
+#include<QApplication>
 
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
@@ -28,6 +30,8 @@ public:
     void setDrawingMode(bool x);
     void setHasTmp(bool x);
     void setDeleteMode(bool x);
+    GraphicNode* getGraphicNode(Node* n);
+    void delay();
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
@@ -36,6 +40,8 @@ public slots:
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
+    void colorNodes(QList<Node*> result);
+    void resetColor();
 
 signals:
     void addedNewNode(Node* node);
@@ -59,7 +65,7 @@ private:
 
     bool m_deleteMode = false;
 
-//    QVector<QGraphicsLineItem *> _veze;
+    //    QVector<QGraphicsLineItem *> _veze;
 };
 
 

@@ -26,6 +26,8 @@ public:
 
     static QColor m_color;
 
+    void setBrush(QBrush b){m_brush=b;}
+
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

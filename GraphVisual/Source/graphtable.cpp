@@ -5,6 +5,9 @@
 #include "Headers/popup.h"
 #include <QMessageBox>
 #include <iostream>
+#include <QTime>
+
+#include<cmath>
 
 
 GraphTable::GraphTable(bool dir, QObject *parent)
@@ -227,4 +230,41 @@ void GraphTable::setHasTmp(bool x) {
 void GraphTable::setDeleteMode(bool x) {
     m_deleteMode = x;
 }
+
+GraphicNode* GraphTable::getGraphicNode(Node* n) {
+    for(auto node : m_Nodes)
+        if(node->getNode()->name() == n->name())
+            return node;
+    return nullptr;
+}
+
+void GraphTable::delay() {
+    QTime dieTime = QTime::currentTime().addSecs(2);
+    while(QTime::currentTime() < dieTime){
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+}
+
+void GraphTable::colorNodes(QList<Node*> result) {
+    for(auto n : result){
+        GraphicNode* node = getGraphicNode(n);
+        node->setAcceptHoverEvents(false);
+        node->setBrush(QBrush(Qt::red));
+        Redraw();
+        delay();
+        //TODO
+//        QTimer* timer = new QTimer();
+//        timer->start(2000);
+    }
+}
+
+void GraphTable::resetColor() {
+    for(GraphicNode* node : m_Nodes){
+        node->setBrush(QBrush(GraphicNode::m_color));
+    }
+    Redraw();
+}
+
+
+
 

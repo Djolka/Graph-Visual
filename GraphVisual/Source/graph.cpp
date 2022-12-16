@@ -413,6 +413,14 @@ Node* Graph::randomNode() {
     return n;
 }
 
+Node* Graph::getNode(std::string name){
+    for(auto n : m_nodes)
+        if(n->name()==name)
+            return n;
+    return nullptr;
+}
+
+
 //void Graph::clearNodes() {
 //    for(auto node: m_nodes){
 //        removeNode(node);

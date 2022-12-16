@@ -35,6 +35,7 @@ public:
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
     inline int countNodes() const;
     Node* randomNode();
+    Node* getNode(std::string name);
 
 //    void clearNodes();
 

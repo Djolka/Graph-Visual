@@ -16,6 +16,10 @@
 #include <QMessageBox>
 #include <iostream>
 
+#include "Headers/algorithm.h"
+#include"Headers/popup.h"
+#include"ui_popup.h"
+
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
@@ -54,6 +58,10 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
+
+    connect(ui->pbRUN, &QPushButton::clicked, this, &GraphWindow::algorithm);
+    connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
+    connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::resetColor);
 
     fillMap();
 }
@@ -169,9 +177,6 @@ void GraphWindow::AddNewEdge() {
 
         emit NeedRedraw();
     }
-
-    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
-    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 
 void GraphWindow::DeleteGraphFromTable() {
@@ -202,14 +207,11 @@ void GraphWindow::ChangeMode(int index) {
 
 void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
-    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
 }
 void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     if(m_graph->addEdge(n1, n2, weight)){
         ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
     }
-
-    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     //update list
@@ -403,3 +405,26 @@ void GraphWindow::on_pbSave_clicked() {
     }
 }
 
+
+
+
+
+
+void GraphWindow::algorithm() {
+    auto a = new Algorithm();
+    if(ui->pbBFS->isChecked()){
+        auto p = new Popup();
+        if(p->exec() == QDialog::Accepted){
+            QString nodeName = p->getNodeName();
+            Node* node = m_graph->getNode(nodeName.toStdString());
+            if(node != nullptr){
+                QList<Node*> result = a->BFS(node);
+                emit colorBFS(result);
+            }
+            else{
+                //poruka
+            }
+        }
+
+    }
+}
