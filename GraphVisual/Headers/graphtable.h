@@ -39,7 +39,7 @@ public slots:
 
 signals:
     void addedNewNode(Node* node);
-    void addedNewEdge(Node* node1, Node* node2);
+    void addedNewEdge(Node* node1, Node* node2, int weight);
     void edgeWeightChanged(Node* node1, Node* node2, int weight);
     void deletedNode(Node* node);
     void deletedEdge(Node* node1, Node* node2);

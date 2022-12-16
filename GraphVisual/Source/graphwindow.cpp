@@ -105,7 +105,7 @@ void GraphWindow::AddNewEdge() {
     Node* node2 = nullptr;
 
     const auto w = ui->teWeight->toPlainText();
-    const auto weight = w.toInt();
+    int weight = w.toInt();
     ui->teWeight->clear();
 
 
@@ -114,6 +114,9 @@ void GraphWindow::AddNewEdge() {
     }
     else if(weight == 0){
         warning(QString("Edge weight must be a number"));
+    }
+    else if(name1 == name2){
+        warning(QString("Node names are the same"));
     }
     else{
         if(!m_graph->hasNode(name1.toStdString())){
@@ -129,13 +132,13 @@ void GraphWindow::AddNewEdge() {
         else{
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name1.toStdString()){
+                    node1 = n->getNode();
                     graphicNode1 = n;
                     node1 = graphicNode1->getNode();
                     break;
                 }
             }
         }
-
         if(!m_graph->hasNode(name2.toStdString())){
             node2 = new Node(name2.toStdString());
 
@@ -149,6 +152,7 @@ void GraphWindow::AddNewEdge() {
         else{
             for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
                 if(n->getNode()->name() == name2.toStdString()){
+                    node2 = n->getNode();
                     graphicNode2 = n;
                     node2 = graphicNode2->getNode();
                     break;
@@ -158,13 +162,12 @@ void GraphWindow::AddNewEdge() {
 
 
         if(m_graph->addEdge(node1, node2, weight)) {
+            ui->lw->addItem(QString::fromStdString(node1->name())+"->"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
             const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight, m_graph->isDirected());
             emit AddedNewEdge(graphicEdge);
         }
 
         emit NeedRedraw();
-
-        ui->lw->addItem(name1+"->"+name2+"    weight="+w);
     }
 
     std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
@@ -176,6 +179,7 @@ void GraphWindow::DeleteGraphFromTable() {
         m_graph->removeNode(node);
     }
 
+    ui->lw->clear();
     emit DeletedGraph();
 }
 
@@ -200,13 +204,28 @@ void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
     std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
 }
-void GraphWindow::AddEdge(Node* n1, Node* n2) {
-    m_graph->addEdge(n1, n2, 1);
-    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight=1");
-    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
-
+void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
+    if(m_graph->addEdge(n1, n2, weight)){
+        ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+//    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
+    }
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
+    //update list
+
+    QString edge = QString::fromStdString(n1->name()+"->"+n2->name());
+    int n = ui->lw->count();
+    for(int i=0;i<n;++i){
+        auto item = ui->lw->item(i);
+        QString  text = item->text().trimmed();
+        if(text.startsWith(edge)){
+            auto item1 = ui->lw->takeItem(i);
+            delete item1;
+            break;
+        }
+    }
+    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 void GraphWindow::warning(QString s) {
@@ -348,6 +367,22 @@ void GraphWindow::deleteNode(Node* node) {
     m_graph->removeNode(node);
 }
 void GraphWindow::deleteEdge(Node* node1, Node* node2) {
+
+    QString edge = QString::fromStdString(node1->name()+"->"+node2->name());
+
+    int n = ui->lw->count();
+    for(int i=0;i<n;++i){
+        auto item = ui->lw->item(i);
+
+        QString  text = item->text().trimmed();
+
+        if(text.startsWith(edge)){
+            auto item1 = ui->lw->takeItem(i);
+            delete item1;
+            break;
+        }
+    }
+
     m_graph->removeEdge(node1, node2);
 }
 

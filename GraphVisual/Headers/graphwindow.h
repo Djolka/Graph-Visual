@@ -38,7 +38,7 @@ private slots:
     void DeleteGraphFromTable();
     void ChangeMode(int index);
     void AddNode(Node* node);
-    void AddEdge(Node* n1, Node* n2);
+    void AddEdge(Node* n1, Node* n2, int weight);
     void changeWeight(Node* n1, Node* n2, int weight);
     void deleteNode(Node* node);
     void deleteEdge(Node* node1, Node* node2);
