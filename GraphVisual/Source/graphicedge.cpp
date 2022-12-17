@@ -23,6 +23,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool 
 
     QGraphicsLineItem::setZValue(-10);
 }
+
 GraphicEdge::~GraphicEdge(){
     delete m_weightLineEdit;
 }

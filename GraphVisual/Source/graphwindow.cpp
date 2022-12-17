@@ -67,6 +67,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
+    connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
+    connect(this, &GraphWindow::changeToUndir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToUndir);
 
 
     fillMap();
@@ -290,6 +292,7 @@ void GraphWindow::nodeNameLength() {
 void GraphWindow::graphDirected() {
 
     if(m_graph->nodeSet().empty()){
+            emit changeToDir();
             ui->pbUndirected->setEnabled(true);
             ui->pbDirected->setEnabled(false);
             m_graph->setDirected(true);
@@ -304,6 +307,7 @@ void GraphWindow::graphDirected() {
                 QMessageBox::No) )
         {
           case QMessageBox::Yes:
+            emit changeToDir();
             ui->pbUndirected->setEnabled(true);
             emit ui->pbDeleteAll->clicked();
             ui->pbDirected->setEnabled(false);
@@ -329,6 +333,7 @@ void GraphWindow::graphDirected() {
 
 void GraphWindow::graphUndirected() {
     if(m_graph->nodeSet().empty()){
+            emit changeToUndir();
             ui->pbUndirected->setEnabled(false);
             ui->pbDirected->setEnabled(true);
             m_graph->setDirected(false);
@@ -343,6 +348,7 @@ void GraphWindow::graphUndirected() {
                 QMessageBox::No) )
         {
           case QMessageBox::Yes:
+            emit changeToUndir();
             ui->pbUndirected->setEnabled(false);
             ui->pbDirected->setEnabled(true);
             emit ui->pbDeleteAll->clicked();

@@ -43,6 +43,8 @@ public slots:
     void Warning (QString s);
     void colorNodes(QList<Node*> result, bool x);
     void reset(bool x);
+    void setToDir();
+    void setToUndir();
 
 signals:
     void addedNewNode(Node* node);

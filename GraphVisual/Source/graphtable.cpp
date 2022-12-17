@@ -19,6 +19,7 @@ GraphTable::GraphTable(bool dir, QObject *parent)
 
 void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
     m_Nodes.append(node);
+    std::cout << directed << std::endl;
 
     connect(node, &GraphicNode::needRedraw, this, &GraphTable::Redraw);
 
@@ -140,9 +141,11 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             setHasTmp(true);
         }
         else{
+            qDebug("GraphicTable: 143");
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
             if(!hasGraphicEdge(m_tmp, node) && m_tmp != node) {
+                std::cout << directed << std::endl;
                 GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, directed);
                 AddNewEdgeOnTable(edge);
 
@@ -240,4 +243,12 @@ void GraphTable::reset(bool x) {
         node->setBrush(QBrush(GraphicNode::m_color), x);
     }
     Redraw();
+}
+
+void GraphTable::setToDir() {
+    directed = true;
+}
+
+void GraphTable::setToUndir() {
+    directed = false;
 }

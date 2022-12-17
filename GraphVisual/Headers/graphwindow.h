@@ -33,6 +33,8 @@ signals:
     void NeedRedraw();
     void colorDFS(QList<Node*>, bool x);
     void colorBFS(QList<Node*> result, bool x);
+    void changeToDir();
+    void changeToUndir();
 
 
 private slots:
