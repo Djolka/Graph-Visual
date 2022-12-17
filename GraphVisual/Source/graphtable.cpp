@@ -114,7 +114,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                 }
 
 
-                if(!alreadyExists && !nodeName.length()==0){
+                if(!alreadyExists && !(nodeName.length()==0)){
 
                     Node* node = new Node(nodeName.toStdString());
                     GraphicNode* graphicNode = new GraphicNode(node);
@@ -224,20 +224,20 @@ GraphicNode* GraphTable::getGraphicNode(Node *node) {
 }
 
 
-void GraphTable::colorNodes(QList<Node*> result) {
-    reset();
+void GraphTable::colorNodes(QList<Node*> result, bool x) {
+    reset(x);
     for(auto n : result){
 
         GraphicNode* node = getGraphicNode(n);
-        node->setBrush(QBrush(Qt::red), true);
+        node->setBrush(QBrush(Qt::red), x);
         Redraw();
         delay();
     }
 }
 
-void GraphTable::reset() {
+void GraphTable::reset(bool x) {
     for(GraphicNode* node : m_Nodes){
-        node->setBrush(QBrush(GraphicNode::m_color), false);
+        node->setBrush(QBrush(GraphicNode::m_color), x);
     }
     Redraw();
 }

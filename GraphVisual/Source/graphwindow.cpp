@@ -19,8 +19,8 @@
 #include <iostream>
 
 #include "Headers/algorithm.h"
-#include"Headers/popup.h"
-#include"ui_popup.h"
+#include "Headers/popup.h"
+#include "ui_popup.h"
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -174,9 +174,16 @@ void GraphWindow::AddNewEdge() {
 
 
         if(m_graph->addEdge(node1, node2, weight)) {
-            ui->lw->addItem(QString::fromStdString(node1->name())+"->"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+            if(m_graph->isDirected()){
+                ui->lw->addItem(QString::fromStdString(node1->name())+"->"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+            }else{
+                ui->lw->addItem(QString::fromStdString(node1->name())+"-"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+            }
+
             const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight, m_graph->isDirected());
             emit AddedNewEdge(graphicEdge);
+        }else{
+            warning("Edge already exists");
         }
 
         emit NeedRedraw();
@@ -214,13 +221,24 @@ void GraphWindow::AddNode(Node* node) {
 }
 void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     if(m_graph->addEdge(n1, n2, weight)){
-        ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+        if(m_graph->isDirected()){
+            ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+        }else{
+            ui->lw->addItem(QString::fromStdString(n1->name())+"-"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+        }
+
     }
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     //update list
 
-    QString edge = QString::fromStdString(n1->name()+"->"+n2->name());
+    QString edge;
+    if(m_graph->isDirected()){
+        edge = QString::fromStdString(n1->name()+"->"+n2->name());
+    }else{
+        edge = QString::fromStdString(n1->name()+"-"+n2->name());
+    }
+
     int n = ui->lw->count();
     for(int i=0;i<n;++i){
         auto item = ui->lw->item(i);
@@ -231,13 +249,21 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
             break;
         }
     }
-    ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+
+    if(m_graph->isDirected()){
+        ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+    }else{
+        ui->lw->addItem(QString::fromStdString(n1->name())+"-"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+    }
+
 
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
+
 void GraphWindow::warning(QString s) {
     QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>"+s+"</FONT>");
 }
+
 void GraphWindow::nodeNameLength() {
     auto text = ui->teNode1->toPlainText();
 
@@ -267,19 +293,15 @@ void GraphWindow::graphDirected() {
             ui->pbUndirected->setEnabled(true);
             ui->pbDirected->setEnabled(false);
             m_graph->setDirected(true);
-//            shouldPopUpDir = true;
             shouldPopUpUndir = true;
     }else if(shouldPopUpDir){
-//        QMessageBox *msg = new QMessageBox();
-        switch(QMessageBox::question(
-                    this,
-                    tr("Warning"),
-                    tr("Current progress will be deleted if you change to directed graph, click yes to continue"),
+        switch(QMessageBox::question(this, "Error",
+                "<FONT COLOR='#FFEFD5'>Current progress will be deleted if you change to directed graph, click yes to continue</FONT>",
 
-                    QMessageBox::Yes |
-                    QMessageBox::No |
+                QMessageBox::Yes |
+                QMessageBox::No |
 
-                    QMessageBox::No) )
+                QMessageBox::No) )
         {
           case QMessageBox::Yes:
             ui->pbUndirected->setEnabled(true);
@@ -299,7 +321,6 @@ void GraphWindow::graphDirected() {
           default:
             break;
         }
-//        msg->setStyleSheet("color:white;background:white"); //not working
     }
     return;
 }
@@ -312,20 +333,14 @@ void GraphWindow::graphUndirected() {
             ui->pbDirected->setEnabled(true);
             m_graph->setDirected(false);
             shouldPopUpDir = true;
-//            shouldPopUpUndir = true;
     }else if(shouldPopUpUndir){
-        //pop-up warning window
-//        QMessageBox *msg = new QMessageBox();
-        switch(QMessageBox::question(
-                    this,
-                    tr("Warning"),
-                    tr("Current progress will be deleted if you change to undirected graph, click yes to continue"),
+        switch(QMessageBox::question(this, "Error",
+                "<FONT COLOR='#FFEFD5'>Current progress will be deleted if you change to undirected graph, click yes to continue</FONT>",
 
+                QMessageBox::Yes |
+                QMessageBox::No |
 
-                    QMessageBox::Yes |
-                    QMessageBox::No |
-
-                    QMessageBox::No) )
+                QMessageBox::No) )
         {
           case QMessageBox::Yes:
             ui->pbUndirected->setEnabled(false);
@@ -345,7 +360,6 @@ void GraphWindow::graphUndirected() {
           default:
             break;
         }
-//        msg->setStyleSheet("background:white");
     }
     return;
 }
@@ -374,7 +388,31 @@ void GraphWindow::on_pbDirected_pressed() {
 
 void GraphWindow::on_actionClose_triggered() {
     // TODO ask user if they want to save
-    close();
+    switch(QMessageBox::question(this, "Warning",
+            "<FONT COLOR='#FFEFD5'>Do you want to save changes?</FONT>",
+
+                QMessageBox::Save |
+                QMessageBox::No |
+                QMessageBox::Cancel |
+
+                QMessageBox::Cancel) )
+    {
+      case QMessageBox::Save:
+        qDebug("Yes");
+        //implement saving to current project if it is already saved, or save to new project if it doesn't exist and than leaving
+        //close();
+        break;
+      case QMessageBox::No:
+        qDebug("No");
+        close();
+        break;
+      case QMessageBox::Cancel:
+        qDebug("Cancel");
+        break;
+      default:
+        break;
+    }
+    return;
 }
 
 // delete this
@@ -422,7 +460,7 @@ void GraphWindow::on_pbSave_clicked() {
     }
 }
 
-//<<<<<<< HEAD
+
 //void GraphWindow::algorithm() {
 
 //    QString nodeName;
@@ -462,7 +500,7 @@ void GraphWindow::algorithm() {
             if(node != nullptr){
                 QWidget::setEnabled(false);
                 QList<Node*> result = a->BFS(node);
-                emit colorBFS(result);
+                emit colorBFS(result, true);
                 QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
             }
@@ -482,7 +520,7 @@ void GraphWindow::algorithm() {
 
                 QWidget::setEnabled(false);
                 a->DFS(node, visited, result);
-                emit colorDFS(result);
+                emit colorDFS(result, true);
                 QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
             }

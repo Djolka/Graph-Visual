@@ -31,8 +31,8 @@ signals:
     void AddedNewEdge(GraphicEdge *);
     void DeletedGraph();
     void NeedRedraw();
-    void colorDFS(QList<Node*>);
-    void colorBFS(QList<Node*> result);
+    void colorDFS(QList<Node*>, bool x);
+    void colorBFS(QList<Node*> result, bool x);
 
 
 private slots:

@@ -41,8 +41,8 @@ public slots:
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
-    void colorNodes(QList<Node*> result);
-    void reset();
+    void colorNodes(QList<Node*> result, bool x);
+    void reset(bool x);
 
 signals:
     void addedNewNode(Node* node);
