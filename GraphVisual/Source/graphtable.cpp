@@ -3,6 +3,8 @@
 #include "Headers/graphicedge.h"
 
 #include "Headers/popup.h"
+#include "qapplication.h"
+#include "qdatetime.h"
 #include <QMessageBox>
 #include <iostream>
 
@@ -192,32 +194,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
     }
 }
 
-//TODO: drawing a line when clicked on a node
-
-//void GraphTable::mouseMoveEvent (QGraphicsSceneMouseEvent * event ){
-//    if(event->scenePos().x() < 0){
-//        event->scenePos().setX(0);
-//    }
-
-//    if(m_drawingMode && m_hasTmp){
-//        for (auto veza : _veze){
-//            this->removeItem(veza);
-//            delete veza;
-//        }
-//        _veze.clear();
-
-
-//        QLineF linija(m_tmp->TopCenterPosition(), event->scenePos());
-//        auto veza = new QGraphicsLineItem(linija);
-//        _veze.append(veza);
-//        this->addItem(veza);
-
-//        this->update();
-//    }
-//    QGraphicsScene::mouseMoveEvent(event);
-
-//}
-
 void GraphTable::setDrawingMode(bool x) {
     m_drawingMode = x;
 }
@@ -227,4 +203,46 @@ void GraphTable::setHasTmp(bool x) {
 void GraphTable::setDeleteMode(bool x) {
     m_deleteMode = x;
 }
+
+void GraphTable::delay() {
+    QTime dieTime = QTime::currentTime().addSecs(1);
+    while (QTime::currentTime() < dieTime) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+}
+
+GraphicNode* GraphTable::getGraphicNode(Node *node) {
+    for(GraphicNode *gn : m_Nodes) {
+        if(gn->getNode()->name() == node->name()) {
+            return gn;
+        }
+    }
+
+    return nullptr;
+}
+
+void GraphTable::colorNodes(QList<Node *> result) {
+    for(Node *node : result) {
+        GraphicNode *graphicNode = getGraphicNode(node);
+        graphicNode->setBrush(QBrush(Qt::red));
+        delay();
+        Redraw();
+    }
+}
+
+void GraphTable::reset() {
+    for(auto gn : m_Nodes) {
+        gn->setBrush(gn->m_color);
+    }
+
+    Redraw();
+}
+
+
+
+
+
+
+
+
 

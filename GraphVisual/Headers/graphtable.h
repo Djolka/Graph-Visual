@@ -28,6 +28,8 @@ public:
     void setDrawingMode(bool x);
     void setHasTmp(bool x);
     void setDeleteMode(bool x);
+    void delay();
+    GraphicNode* getGraphicNode(Node *node);
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
@@ -36,6 +38,8 @@ public slots:
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
+    void colorNodes(QList<Node*> result);
+    void reset();
 
 signals:
     void addedNewNode(Node* node);

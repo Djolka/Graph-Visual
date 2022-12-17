@@ -31,6 +31,8 @@ signals:
     void AddedNewEdge(GraphicEdge *);
     void DeletedGraph();
     void NeedRedraw();
+    void colorDFS(QList<Node*>);
+    void resetedColors();
 
 
 private slots:
@@ -44,6 +46,8 @@ private slots:
     void deleteEdge(Node* node1, Node* node2);
     void warning(QString s);
     void nodeNameLength();
+    void algorithm();
+    void resetColors();
 
     void graphDirected();
     void graphUndirected();
