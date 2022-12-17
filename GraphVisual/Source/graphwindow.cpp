@@ -315,6 +315,7 @@ void GraphWindow::graphUndirected() {
                     tr("Warning"),
                     tr("Current progress will be deleted if you change to undirected graph, click yes to continue"),
 
+
                     QMessageBox::Yes |
                     QMessageBox::No |
 
@@ -430,11 +431,16 @@ void GraphWindow::algorithm() {
     if(node != nullptr && ui->pbDFS->isEnabled()) { // node exists
         QHash<Node*, bool> visited;
         QList<Node*> result;
+
+        QWidget::setEnabled(false);
         a->DFS(node, visited, result);
         emit colorDFS(result);
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QWidget::setEnabled(true);
     }
     else { // node doesn't exist
-        std::cout << "Searched node does not exist\n";
+//        std::cout << "Searched node does not exist\n";
+        QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>Node with this name does not exists</FONT>");
     }
 
 }
