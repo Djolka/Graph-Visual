@@ -7,6 +7,9 @@
 #include "qdatetime.h"
 #include <QMessageBox>
 #include <iostream>
+#include <QTime>
+
+#include<cmath>
 
 
 GraphTable::GraphTable(bool dir, QObject *parent)
@@ -204,45 +207,37 @@ void GraphTable::setDeleteMode(bool x) {
     m_deleteMode = x;
 }
 
+
 void GraphTable::delay() {
     QTime dieTime = QTime::currentTime().addSecs(1);
-    while (QTime::currentTime() < dieTime) {
+    while(QTime::currentTime() < dieTime){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
 }
 
 GraphicNode* GraphTable::getGraphicNode(Node *node) {
-    for(GraphicNode *gn : m_Nodes) {
-        if(gn->getNode()->name() == node->name()) {
+    for(GraphicNode *gn : m_Nodes)
+        if(gn->getNode()->name() == node->name())
             return gn;
-        }
-    }
 
     return nullptr;
 }
 
-void GraphTable::colorNodes(QList<Node *> result) {
-    for(Node *node : result) {
-        GraphicNode *graphicNode = getGraphicNode(node);
-        graphicNode->setBrush(QBrush(Qt::red));
-        delay();
+
+void GraphTable::colorNodes(QList<Node*> result) {
+    reset();
+    for(auto n : result){
+
+        GraphicNode* node = getGraphicNode(n);
+        node->setBrush(QBrush(Qt::red), true);
         Redraw();
+        delay();
     }
 }
 
 void GraphTable::reset() {
-    for(auto gn : m_Nodes) {
-        gn->setBrush(gn->m_color);
+    for(GraphicNode* node : m_Nodes){
+        node->setBrush(QBrush(GraphicNode::m_color), false);
     }
-
     Redraw();
 }
-
-
-
-
-
-
-
-
-

@@ -7,6 +7,8 @@
 #include<QLineEdit>
 #include<QWidget>
 #include<QGraphicsProxyWidget>
+#include<QTimer>
+#include<QApplication>
 
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
@@ -28,6 +30,7 @@ public:
     void setDrawingMode(bool x);
     void setHasTmp(bool x);
     void setDeleteMode(bool x);
+
     void delay();
     GraphicNode* getGraphicNode(Node *node);
 
@@ -63,7 +66,7 @@ private:
 
     bool m_deleteMode = false;
 
-//    QVector<QGraphicsLineItem *> _veze;
+    //    QVector<QGraphicsLineItem *> _veze;
 };
 
 

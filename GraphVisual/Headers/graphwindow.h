@@ -32,7 +32,7 @@ signals:
     void DeletedGraph();
     void NeedRedraw();
     void colorDFS(QList<Node*>);
-    void resetedColors();
+    void colorBFS(QList<Node*> result);
 
 
 private slots:
@@ -47,7 +47,6 @@ private slots:
     void warning(QString s);
     void nodeNameLength();
     void algorithm();
-    void resetColors();
 
     void graphDirected();
     void graphUndirected();

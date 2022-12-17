@@ -18,6 +18,10 @@
 #include <QMessageBox>
 #include <iostream>
 
+#include "Headers/algorithm.h"
+#include"Headers/popup.h"
+#include"ui_popup.h"
+
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
@@ -58,10 +62,12 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
 
     connect(ui->pbRUN, &QPushButton::clicked, this, &GraphWindow::algorithm);
-    connect(this, &GraphWindow::colorDFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
 
-    connect(ui->pbRESET, &QPushButton::clicked, this, &GraphWindow::resetColors);
-    connect(this, &GraphWindow::resetedColors, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
+    connect(this, &GraphWindow::colorDFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
+    connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
+
+    connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
+
 
     fillMap();
 }
@@ -416,37 +422,73 @@ void GraphWindow::on_pbSave_clicked() {
     }
 }
 
+//<<<<<<< HEAD
+//void GraphWindow::algorithm() {
+
+//    QString nodeName;
+//    Popup *p = new Popup();
+//    if(p->exec() == QDialog::Accepted) {
+//        nodeName = p->getNodeName();
+//    }
+
+//    Node *node = m_graph->getNode(nodeName.toStdString());
+
+//    if(node != nullptr && ui->pbDFS->isEnabled()) { // node exists
+//        QHash<Node*, bool> visited;
+//        QList<Node*> result;
+
+//        QWidget::setEnabled(false);
+//        a->DFS(node, visited, result);
+//        emit colorDFS(result);
+//        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+//        QWidget::setEnabled(true);
+//    }
+//    else { // node doesn't exist
+////        std::cout << "Searched node does not exist\n";
+//        QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>Node with this name does not exists</FONT>");
+//    }
+
+//}
+
+
+
 void GraphWindow::algorithm() {
-    emit resetedColors();
-
-    QString nodeName;
-    Popup *p = new Popup();
-    if(p->exec() == QDialog::Accepted) {
-        nodeName = p->getNodeName();
+    auto a = new Algorithm();
+    if(ui->pbBFS->isChecked()){
+        auto p = new Popup();
+        if(p->exec() == QDialog::Accepted){
+            QString nodeName = p->getNodeName();
+            Node* node = m_graph->getNode(nodeName.toStdString());
+            if(node != nullptr){
+                QWidget::setEnabled(false);
+                QList<Node*> result = a->BFS(node);
+                emit colorBFS(result);
+                QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+                QWidget::setEnabled(true);
+            }
+            else{
+                warning("Node with that name does not exist");
+            }
+        }
     }
+    else if(ui->pbDFS->isChecked()){
+        auto p = new Popup();
+        if(p->exec() == QDialog::Accepted){
+            QString nodeName = p->getNodeName();
+            Node* node = m_graph->getNode(nodeName.toStdString());
+            if(node != nullptr){
+                QHash<Node*, bool> visited;
+                QList<Node*> result;
 
-    Algorithm *a = new Algorithm();
-    Node *node = m_graph->getNode(nodeName.toStdString());
-
-    if(node != nullptr && ui->pbDFS->isEnabled()) { // node exists
-        QHash<Node*, bool> visited;
-        QList<Node*> result;
-
-        QWidget::setEnabled(false);
-        a->DFS(node, visited, result);
-        emit colorDFS(result);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
-        QWidget::setEnabled(true);
+                QWidget::setEnabled(false);
+                a->DFS(node, visited, result);
+                emit colorDFS(result);
+                QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+                QWidget::setEnabled(true);
+            }
+            else{
+                warning("Node with that name does not exist");
+            }
+        }
     }
-    else { // node doesn't exist
-//        std::cout << "Searched node does not exist\n";
-        QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>Node with this name does not exists</FONT>");
-    }
-
 }
-
-void GraphWindow::resetColors() {
-    emit resetedColors();
-}
-
-

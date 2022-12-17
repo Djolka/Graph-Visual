@@ -16,11 +16,15 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     inline Node *getNode() { return m_Node; }
-    inline void setBrush(QBrush b) { m_brush = b; m_algorithm = true; }
+    inline void setBrush(QBrush b, bool x) { m_brush = b; m_algorithm = x; }
 
     int type() const override;
 
     QPointF CenterPosition();
+
+//    void setInAlgorithm(bool x){m_algorithm=x;}
+
+//    static QColor m_color;
 
 
 protected:
