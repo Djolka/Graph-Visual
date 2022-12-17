@@ -422,7 +422,7 @@ void GraphWindow::algorithm() {
                 emit colorBFS(result);
             }
             else{
-                //poruka
+                warning("Node with that name doesn't exist");
             }
         }
 

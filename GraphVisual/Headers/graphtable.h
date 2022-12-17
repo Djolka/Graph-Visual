@@ -64,6 +64,7 @@ private:
     bool directed;
 
     bool m_deleteMode = false;
+    bool stopAlgorithm = false;
 
     //    QVector<QGraphicsLineItem *> _veze;
 };

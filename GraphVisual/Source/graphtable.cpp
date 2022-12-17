@@ -239,7 +239,7 @@ GraphicNode* GraphTable::getGraphicNode(Node* n) {
 }
 
 void GraphTable::delay() {
-    QTime dieTime = QTime::currentTime().addSecs(2);
+    QTime dieTime = QTime::currentTime().addSecs(1);
     while(QTime::currentTime() < dieTime){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
@@ -247,20 +247,22 @@ void GraphTable::delay() {
 
 void GraphTable::colorNodes(QList<Node*> result) {
     for(auto n : result){
-        GraphicNode* node = getGraphicNode(n);
-        node->setAcceptHoverEvents(false);
-        node->setBrush(QBrush(Qt::red));
-        Redraw();
-        delay();
-        //TODO
-//        QTimer* timer = new QTimer();
-//        timer->start(2000);
+        if(!stopAlgorithm){
+            GraphicNode* node = getGraphicNode(n);
+            node->setAcceptHoverEvents(false);
+            node->setBrush(QBrush(Qt::red));
+            Redraw();
+            delay();
+        }
     }
+    stopAlgorithm = false;
 }
 
 void GraphTable::resetColor() {
+    stopAlgorithm = true;
     for(GraphicNode* node : m_Nodes){
         node->setBrush(QBrush(GraphicNode::m_color));
+        node->setAcceptHoverEvents(true);
     }
     Redraw();
 }
