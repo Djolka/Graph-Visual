@@ -7,7 +7,9 @@
 
 #include "Headers/edge.h"
 #include "Headers/graphicedge.h"
-
+#include "Headers/graph.h"
+#include<fstream>
+#include<string>
 #include <QString>
 #include <QListWidgetItem>
 #include <QFileDialog>
@@ -86,6 +88,8 @@ void GraphWindow::fillMap() {
     m_colors.insert("red", "#D0312D");
 
 }
+
+
 
 void GraphWindow::SaveAsPic(const QString& m_ext){
     QString dir = QDir::homePath();
@@ -353,6 +357,77 @@ void GraphWindow::on_pbUndirected_pressed() {
 void GraphWindow::on_pbDirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+}
+
+void GraphWindow::on_actionOpen_triggered(){
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)");
+        std::string filename = file.toStdString();
+        std::ifstream openFile;
+        std::string path = filename;
+        openFile.open(filename);
+        if (!openFile.fail()){
+            auto graphs={"nema zasad", "sve ok"};
+            for (auto graph : graphs) {
+                //auto graph = mAutomataDisplay->GetAutomataByID(automata.first);
+                //mAutomataDisplay->removeItem(graph);
+                //delete graph;
+
+                //OVDE ISCRTAVAJ STVARI NA OSNOVU NASEG FAJLA
+            }
+        }
+
+}
+
+void GraphWindow::on_actionSave_triggered(){
+        if (this->m_graph->countNodes()==0){
+                QMessageBox::information(this, tr("Error"), "The scene is empty");
+        }else{
+            QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "GRAPH files (*.graph)");
+            if (!file.isEmpty()){
+                std::string filename = file.toStdString();
+                if (filename.substr(filename.size()-6).compare(".graph")!=0){
+                    filename+=".graph";
+                }
+                std::string path = filename;
+                std::ofstream saveFile;
+                saveFile.open(filename);
+                QString backgroundColor=this->ui->cbBgcolor->currentText();
+                int nodeRadius=this->ui->sbRadius->displayIntegerBase();
+                QString nodeColor=this->ui->cbNodecolor->currentText();
+                QString edgeColor=this->ui->cbEdgecolor->currentText();
+                auto nodes= this->m_graph->nodeSet();
+                auto edges=this->m_graph->edgeSet();
+                saveFile <<nodes.size()<< " "<< edges.size()<<"\n";
+                saveFile<<"Background: "<<backgroundColor.toStdString()
+                       <<"\nNode color: "<<nodeColor.toStdString()
+                      <<"\nEdge color: "<<edgeColor.toStdString()
+                     <<"\nNode radius: "<<nodeRadius
+                    <<std::endl;
+                for (auto node:nodes){
+                     saveFile<<"Node name: "<<node->name();
+                     QVector<Node* > tmp=node->neighbours().toVector();
+                     QPointF position=node->position();
+                     double px=position.x();
+                     double py=position.y();
+                     std::vector<std::string> cpy;
+                     for (unsigned i=0; i<tmp.size();i++){
+                        cpy.push_back(tmp[i]->name());
+                     }
+                     saveFile<<"\nPosition:"<<px<<" "<<py;
+                     saveFile<<"\nNeighbors:";
+                     for (auto elem : cpy){
+                         saveFile<<elem<<" ";
+                     }
+                     saveFile<<"\n";
+                }
+
+                for (auto edge:edges){
+                    saveFile << edge->first()->name()<<" "<<edge->second()->name()<<" "<< edge->weight()<<"\n";
+                }
+
+                saveFile.close();
+            }
+        }
 }
 
 void GraphWindow::on_actionClose_triggered() {
