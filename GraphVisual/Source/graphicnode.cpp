@@ -32,7 +32,7 @@ void GraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     QPen pen(Qt::black);
     pen.setWidth(2);
 
-    if(m_brush != QBrush(Qt::yellow)) {
+    if(m_brush != QBrush(Qt::yellow) && m_brush != QBrush(Qt::red)) {
         m_brush = QBrush(GraphicNode::m_color);
     }
 
@@ -73,7 +73,13 @@ void GraphicNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsObject::hoverEnterEvent(event);
 }
 void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    m_brush = QBrush(GraphicNode::m_color);
+    if(!m_algorithm) {
+        m_brush = QBrush(GraphicNode::m_color);
+    }
+    else {
+        m_brush = QBrush(Qt::red);
+    }
+
     emit needRedraw();
     QGraphicsObject::hoverLeaveEvent(event);
 }

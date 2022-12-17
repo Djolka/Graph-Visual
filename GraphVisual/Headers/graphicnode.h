@@ -16,15 +16,11 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     inline Node *getNode() { return m_Node; }
-
-    static int m_width;
-    static int m_height;
+    inline void setBrush(QBrush b) { m_brush = b; m_algorithm = true; }
 
     int type() const override;
 
     QPointF CenterPosition();
-
-    static QColor m_color;
 
 
 protected:
@@ -32,12 +28,19 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-private:
-    Node *m_Node;
-    QBrush m_brush = QBrush(Qt::white);
 
 signals:
     void needRedraw();
+
+public:
+    static QColor m_color;
+    static int m_width;
+    static int m_height;
+
+private:
+    Node *m_Node;
+    QBrush m_brush = QBrush(Qt::white);
+    bool m_algorithm = false;
 };
 
 #endif // GRAPHICNODE_H

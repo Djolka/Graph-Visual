@@ -23,6 +23,7 @@ public:
     void setDirected(bool dir);
 
     //nodes methods
+    Node* getNode(const std::string &name);
     bool hasNode(Node *node) const;
     bool hasNode(const std::string &node_name) const;
     bool addNode(Node* node);

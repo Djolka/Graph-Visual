@@ -1,4 +1,5 @@
 #include "Headers/graphwindow.h"
+#include "Headers/popup.h"
 #include "ui_graphwindow.h"
 
 #include "Headers/graphtable.h"
@@ -7,6 +8,7 @@
 
 #include "Headers/edge.h"
 #include "Headers/graphicedge.h"
+#include "Headers/algorithm.h"
 
 #include <QString>
 #include <QListWidgetItem>
@@ -54,6 +56,12 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::deletedEdge, this, &GraphWindow::deleteEdge);
 
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
+
+    connect(ui->pbRUN, &QPushButton::clicked, this, &GraphWindow::algorithm);
+    connect(this, &GraphWindow::colorDFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
+
+    connect(ui->pbRESET, &QPushButton::clicked, this, &GraphWindow::resetColors);
+    connect(this, &GraphWindow::resetedColors, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
 
     fillMap();
 }
@@ -134,7 +142,6 @@ void GraphWindow::AddNewEdge() {
                 if(n->getNode()->name() == name1.toStdString()){
                     node1 = n->getNode();
                     graphicNode1 = n;
-                    node1 = graphicNode1->getNode();
                     break;
                 }
             }
@@ -154,7 +161,6 @@ void GraphWindow::AddNewEdge() {
                 if(n->getNode()->name() == name2.toStdString()){
                     node2 = n->getNode();
                     graphicNode2 = n;
-                    node2 = graphicNode2->getNode();
                     break;
                 }
             }
@@ -169,9 +175,6 @@ void GraphWindow::AddNewEdge() {
 
         emit NeedRedraw();
     }
-
-    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
-    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 
 void GraphWindow::DeleteGraphFromTable() {
@@ -202,14 +205,11 @@ void GraphWindow::ChangeMode(int index) {
 
 void GraphWindow::AddNode(Node* node) {
     m_graph->addNode(node);
-    std::cout << "Num of nodes: " << m_graph->nodeSet().size() << std::endl;
 }
 void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     if(m_graph->addEdge(n1, n2, weight)){
         ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
     }
-
-    std::cout << "Num of edges: " << m_graph->edgeSet().size() << std::endl;
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
     //update list
@@ -414,4 +414,33 @@ void GraphWindow::on_pbSave_clicked() {
         ui->lblMsg->setStyleSheet(QString());
     }
 }
+
+void GraphWindow::algorithm() {
+    emit resetedColors();
+
+    QString nodeName;
+    Popup *p = new Popup();
+    if(p->exec() == QDialog::Accepted) {
+        nodeName = p->getNodeName();
+    }
+
+    Algorithm *a = new Algorithm();
+    Node *node = m_graph->getNode(nodeName.toStdString());
+
+    if(node != nullptr && ui->pbDFS->isEnabled()) { // node exists
+        QHash<Node*, bool> visited;
+        QList<Node*> result;
+        a->DFS(node, visited, result);
+        emit colorDFS(result);
+    }
+    else { // node doesn't exist
+        std::cout << "Searched node does not exist\n";
+    }
+
+}
+
+void GraphWindow::resetColors() {
+    emit resetedColors();
+}
+
 
