@@ -22,10 +22,6 @@ public:
 
     QPointF CenterPosition();
 
-//    void setInAlgorithm(bool x){m_algorithm=x;}
-
-//    static QColor m_color;
-
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

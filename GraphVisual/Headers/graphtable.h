@@ -11,6 +11,7 @@
 #include<QApplication>
 
 #include "Headers/node.h"
+#include "Headers/edge.h"
 #include "Headers/graphicnode.h"
 #include "Headers/graphicedge.h"
 
@@ -33,6 +34,7 @@ public:
 
     void delay();
     GraphicNode* getGraphicNode(Node *node);
+    GraphicEdge* getGraphicEdge(Edge *edge);
 
 public slots:
     void AddNewNodeOnTable(GraphicNode *node);
@@ -42,6 +44,7 @@ public slots:
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
     void colorNodes(QList<Node*> result);
+    void colorEdges(QList<Edge*> result);
     void reset();
 
 signals:

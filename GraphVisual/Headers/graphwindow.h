@@ -33,7 +33,7 @@ signals:
     void NeedRedraw();
     void colorDFS(QList<Node*>);
     void colorBFS(QList<Node*> result);
-
+    void colorMST(QList<Edge*>);
 
 private slots:
     void AddNewEdge();

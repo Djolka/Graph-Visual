@@ -25,7 +25,7 @@
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GraphWindow)
-    , m_graph(new Graph(false, false))
+    , m_graph(new Graph(false, true))
     , m_GraphTable(new GraphTable(m_graph->isDirected(), this))
 {
     ui->setupUi(this);
@@ -65,6 +65,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(this, &GraphWindow::colorDFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
     connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
+    connect(this, &GraphWindow::colorMST, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
 
@@ -491,4 +492,28 @@ void GraphWindow::algorithm() {
             }
         }
     }
+    else if(ui->pbMST->isChecked()){  // works for undirected graph
+
+        QWidget::setEnabled(false);
+        map<Node*, Node*> parent = a->MST(*m_graph);
+        QList<Edge*> result;
+
+        for (map<Node*, Node*>::iterator it=parent.begin(); it!=parent.end(); ++it){
+            if(it->second != nullptr)
+                result.append(m_graph->getEdge(it->second, it->first));
+
+        }
+
+        emit colorMST(result);
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QWidget::setEnabled(true);
+    }
 }
+
+
+
+
+
+
+
+
