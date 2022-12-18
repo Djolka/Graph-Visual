@@ -11,6 +11,7 @@
 #include<QApplication>
 
 #include "Headers/node.h"
+#include "Headers/edge.h"
 #include "Headers/graphicnode.h"
 #include "Headers/graphicedge.h"
 
@@ -42,6 +43,7 @@ public slots:
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
     void colorNodes(QList<Node*> result, bool x);
+    void colorNodesSet(QSet<Node*> result, bool x);
     void reset(bool x);
     void setToDir();
     void setToUndir();
