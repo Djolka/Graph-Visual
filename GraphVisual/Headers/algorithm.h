@@ -10,7 +10,7 @@ using namespace std;
 
 class Algorithm{
 public:
-    Algorithm(){};
+    Algorithm(){}
 
     QList<Node*> BFS (Node* current);
     void DFS (Node* current, QHash<Node*, bool> &visited, QList<Node*> &steps);
@@ -18,7 +18,7 @@ public:
     bool isAllConnected (Graph &graph);
     int Dijkstra (Graph &graph, Node* start, Node* end);
     Node* minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited);
-    void MST (Graph graph);
+    map<Node*, Node*> MST (Graph &graph);
     QList<Edge*> getBridges (Graph &graph);
     void bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
                   QHash<Node*, int> &in, QHash<Node*, int> &low_link,

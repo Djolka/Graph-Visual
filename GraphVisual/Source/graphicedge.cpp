@@ -102,7 +102,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if(m_pen != QPen(Qt::green)) {
+    if(m_pen != QPen(Qt::green) && m_pen != QPen(Qt::red)) {
         m_pen = QPen(GraphicEdge::m_color);
     }
     painter->setPen(m_pen);
@@ -229,8 +229,13 @@ void GraphicEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsLineItem::hoverEnterEvent(event);
 }
 void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+    if(!m_algorithm) {
+        m_pen = QPen(GraphicNode::m_color);
+    }
+    else {
+        m_pen = QPen(Qt::red);
+    }
 
-    m_pen = QPen(GraphicEdge::m_color);
     emit needRedraw();
     QGraphicsLineItem::hoverLeaveEvent(event);
 }

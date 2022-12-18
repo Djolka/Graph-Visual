@@ -225,12 +225,22 @@ GraphicNode* GraphTable::getGraphicNode(Node *node) {
 
     return nullptr;
 }
+GraphicEdge* GraphTable::getGraphicEdge(Edge *edge) {
+
+    for(GraphicEdge *ge : m_Edges){
+
+        if((ge->getStart()->getNode()->name() == edge->first()->name() && ge->getEnd()->getNode()->name() == edge->second()->name())
+                ||(ge->getStart()->getNode()->name() == edge->second()->name() && ge->getEnd()->getNode()->name() == edge->first()->name())){
+            return ge;
+        }
+    }
+    return nullptr;
+}
 
 
 void GraphTable::colorNodes(QList<Node*> result, bool x) {
-    reset(x);
+    reset();
     for(auto n : result){
-
         GraphicNode* node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), x);
         Redraw();
@@ -238,12 +248,37 @@ void GraphTable::colorNodes(QList<Node*> result, bool x) {
     }
 }
 
-void GraphTable::reset(bool x) {
+void GraphTable::colorEdges(QList<Edge*> result) {
+    reset();
+    for(auto e : result){
+        GraphicEdge* edge = getGraphicEdge(e);
+
+        edge->setPen(QPen(Qt::red), true);
+        Redraw();
+        delay();
+    }
+}
+
+
+void GraphTable::reset(){
     for(GraphicNode* node : m_Nodes){
-        node->setBrush(QBrush(GraphicNode::m_color), x);
+        node->setBrush(QBrush(GraphicNode::m_color), false);
+    }
+    for(GraphicEdge* edge : m_Edges){
+        edge->setPen(QPen(GraphicEdge::m_color), false);
     }
     Redraw();
 }
+
+//void GraphTable::reset(bool x) {
+//    for(GraphicNode* node : m_Nodes){
+//        node->setBrush(QBrush(GraphicNode::m_color), x);
+//    }
+//    for(GraphicEdge* edge : m_Edges){
+//        edge->setPen(QPen(GraphicEdge::m_color), x);
+//    }
+//    Redraw();
+//}
 
 void GraphTable::setToDir() {
     directed = true;

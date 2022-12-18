@@ -241,6 +241,9 @@ Edge* Graph::getEdge(Node *u, Node *v) {
         if ((*it)->first() == u && (*it)->second() == v){
             return *it;
         }
+        if(!m_directed && (*it)->first() == v && (*it)->second() == u){
+            return *it;
+        }
     }
     return nullptr;
 }

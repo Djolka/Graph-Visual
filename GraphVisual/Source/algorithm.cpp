@@ -110,10 +110,10 @@ Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
 }
 
 
-void Algorithm::MST (Graph graph){
+map<Node*, Node*> Algorithm::MST (Graph &graph){
 
-    map<Node*, bool> visited;
     map<Node*, Node*> parent;
+    map<Node*, bool> visited;
     map<Node*, int> minEdge;
 
     priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
@@ -167,11 +167,15 @@ void Algorithm::MST (Graph graph){
     }
 
     //print MST
-    for (auto node : graph.nodeSet()){
-        if (node != begin){
-            cout<< node->name() << " -> " << parent[node]->name() << endl;
-        }
-    }
+//    for (auto node : graph.nodeSet()){
+//        if (node != begin){
+//            cout<< node->name() << " -> " << parent[node]->name() << endl;
+//        }
+//    }
+
+    parent[begin] = nullptr;
+
+    return parent;
 }
 
 

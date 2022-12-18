@@ -24,6 +24,8 @@ public:
     QPointF getCenter();
     QLineEdit* getLineEdit(){return m_weightLineEdit;}
 
+    void setPen(QPen pen, bool x){m_pen = pen;m_algorithm=x;}
+
     static QColor m_color;
 
 public slots:
@@ -45,6 +47,7 @@ private:
     QLineEdit* m_weightLineEdit;
     QPen m_pen = QPen(Qt::black);
     bool directed;
+    bool m_algorithm = false;
 };
 
 

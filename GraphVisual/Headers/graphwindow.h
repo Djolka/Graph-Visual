@@ -35,6 +35,7 @@ signals:
     void colorBFS(QList<Node*> result, bool x);
     void changeToDir();
     void changeToUndir();
+    void colorMST(QList<Edge*>);
 
 
 private slots:
