@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include<QPointF>
 
+
 #include"Headers/graphicedge.h"
 #include"Headers/graph.h"
 
@@ -23,8 +24,11 @@ public:
     GraphWindow(QWidget *parent = nullptr);
     ~GraphWindow();
     QMap<QString, QString> m_colors;
+    QMap<QString, int> m_indices;
     void fillMap();
+    void indexColors();
     void SaveAsPic(const QString& m_ext);
+    bool nodeExists(std::string name);
 
 signals:
     void AddedNewNode(GraphicNode *);
@@ -60,6 +64,10 @@ private slots:
     void on_pbUndirected_clicked();
 
     void on_actionClose_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionOpen_triggered();
 
     void on_pbAddNode_clicked();
 
