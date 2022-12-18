@@ -67,6 +67,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
     connect(this, &GraphWindow::colorMST, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
     connect(this, &GraphWindow::colorDijkstra, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesDijkstra);
+    connect(this, &GraphWindow::colorArticulation, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesSet);
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
     connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
@@ -562,6 +563,15 @@ void GraphWindow::algorithm() {
             emit colorDijkstra(path, visit, edges2);
             QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
         }
+        QWidget::setEnabled(true);
+    }
+    else if(ui->pbArticulation->isChecked()){
+        QSet<Node*> result;
+
+        QWidget::setEnabled(false);
+        result = a->getArticulationNodes(*m_graph);
+        emit colorArticulation(result, true);
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
 }

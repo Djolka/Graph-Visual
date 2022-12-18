@@ -46,7 +46,9 @@ public slots:
     void colorNodes(QList<Node*> result, bool x);
     void colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges);
     void colorEdges(QList<Edge*> result);
-    void reset();
+    // void reset();
+    void colorNodesSet(QSet<Node*> result, bool x);
+    void reset(bool x);
     void setToDir();
     void setToUndir();
 
