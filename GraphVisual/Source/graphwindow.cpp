@@ -521,7 +521,7 @@ void GraphWindow::algorithm() {
 
         }
 
-        emit colorMST(result);
+        emit colorMST(result, true);
         QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
@@ -560,7 +560,7 @@ void GraphWindow::algorithm() {
                 edges2.append(m_graph->getEdge(p.first, p.second));
             }
 
-            emit colorDijkstra(path, visit, edges2);
+            emit colorDijkstra(path, visit, edges2, true);
             QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
         }
         QWidget::setEnabled(true);

@@ -236,7 +236,7 @@ GraphicEdge* GraphTable::getGraphicEdge(Edge *edge) {
 
 
 void GraphTable::colorNodes(QList<Node*> result, bool x) {
-    reset();
+    reset(x);
     for(auto n : result){
         GraphicNode* node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), x);
@@ -245,8 +245,8 @@ void GraphTable::colorNodes(QList<Node*> result, bool x) {
     }
 }
 
-void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges) {
-    reset();
+void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges, bool x) {
+    reset(x);
     for(auto n : visit){
         GraphicNode* node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), true);
@@ -272,8 +272,8 @@ void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList
     }
 }
 
-void GraphTable::colorEdges(QList<Edge*> result) {
-    reset();
+void GraphTable::colorEdges(QList<Edge*> result, bool x) {
+    reset(x);
     for(auto e : result){
         GraphicEdge* edge = getGraphicEdge(e);
 
