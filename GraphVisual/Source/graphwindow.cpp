@@ -550,15 +550,19 @@ void GraphWindow::algorithm() {
         QList<QPair<Node*, Node*>> edges1;
         int result = a->Dijkstra(*m_graph, node1, node2, path, visit, edges1);
 
-        QList<Edge*> edges2;
-        for(auto p : edges1){
-            edges2.append(m_graph->getEdge(p.first, p.second));
+        if(result == -1){
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>There is no path from"+ QString::fromStdString(node1->name())+" to "+ QString::fromStdString(node2->name())+"</FONT>");
         }
+        else{
+            QList<Edge*> edges2;
+            for(auto p : edges1){
+                edges2.append(m_graph->getEdge(p.first, p.second));
+            }
 
-        emit colorDijkstra(path, visit, edges2);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
+            emit colorDijkstra(path, visit, edges2);
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
+        }
         QWidget::setEnabled(true);
-
     }
 }
 

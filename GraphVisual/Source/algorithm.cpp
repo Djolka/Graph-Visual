@@ -82,7 +82,7 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end, QList<Node*> &pat
     Node* current = start;
     parent[current] = nullptr;
 
-    while(!(current == end)){
+    while(current != nullptr && !(current == end)){
         visited[current] = true;
         visit.append(current);
 
@@ -107,13 +107,16 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end, QList<Node*> &pat
     }
     std::reverse(path.begin(), path.end());
 
+    if(dist.find(end)==dist.end())
+        return -1;
+
     return dist[end];
 }
 
 
 Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
     int min = std::numeric_limits<int>::max();
-    Node* minNode;
+    Node* minNode = nullptr;
     for (auto iter = dist.constBegin(); iter != dist.constEnd(); ++iter) {
         if(visited.find(iter.key()) == visited.end() && iter.value()<min){
             min = iter.value();
