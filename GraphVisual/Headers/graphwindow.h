@@ -36,7 +36,7 @@ signals:
     void changeToDir();
     void changeToUndir();
     void colorMST(QList<Edge*>);
-
+    void colorDijkstra(QList<Node*>, QList<Node*>, QList<Edge*>);
 
 private slots:
     void AddNewEdge();

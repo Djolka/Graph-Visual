@@ -1,10 +1,10 @@
 #include"Headers/algorithm.h"
 
 #include<queue>
-#include<QList>
 #include<QHash>
 #include<QQueue>
 #include<QStack>
+#include<algorithm>
 
 QList<Node*> Algorithm::BFS (Node* current){
 
@@ -71,7 +71,7 @@ bool Algorithm::isAllConnected (Graph &graph){
 }
 
 
-int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
+int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end, QList<Node*> &path, QList<Node*> &visit, QList<QPair<Node*, Node*>> &edges){
 
     QHash<Node*, bool> visited;
     QHash<Node*, int> dist;
@@ -80,25 +80,39 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end){
     dist[start] = 0;
 
     Node* current = start;
+    parent[current] = nullptr;
 
     while(!(current == end)){
         visited[current] = true;
+        visit.append(current);
 
         for(auto neighb : current->neighbours()){
             if(visited.find(neighb)==visited.end() && (dist.find(neighb)==dist.end() || dist[current] + graph.weight(current, neighb) < dist[neighb])) {
                 dist[neighb] = dist[current] + graph.weight(current, neighb);
-                parent[neighb] = current;                
+                parent[neighb] = current;
+                edges.append(qMakePair(current, neighb));
             }
         }
 
         current = minDist(dist, visited);
     }
+    visit.append(end);
+
+
+    //path is min path from start to end
+    current = end;
+    while(current != nullptr){
+        path.append(current);
+        current = parent[current];
+    }
+    std::reverse(path.begin(), path.end());
+
     return dist[end];
 }
 
 
 Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
-    int min = numeric_limits<int>::max();
+    int min = std::numeric_limits<int>::max();
     Node* minNode;
     for (auto iter = dist.constBegin(); iter != dist.constEnd(); ++iter) {
         if(visited.find(iter.key()) == visited.end() && iter.value()<min){
@@ -110,15 +124,15 @@ Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
 }
 
 
-map<Node*, Node*> Algorithm::MST (Graph &graph){
+std::map<Node*, Node*> Algorithm::MST (Graph &graph){
 
-    map<Node*, Node*> parent;
-    map<Node*, bool> visited;
-    map<Node*, int> minEdge;
+    std::map<Node*, Node*> parent;
+    std::map<Node*, bool> visited;
+    std::map<Node*, int> minEdge;
 
-    priority_queue<std::pair<int, Node*>, vector<std::pair<int, Node*>>, greater<std::pair<int, Node*>>> minDist;
+    std::priority_queue<std::pair<int, Node*>, std::vector<std::pair<int, Node*>>, std::greater<std::pair<int, Node*>>> minDist;
 
-    int min = numeric_limits<int>::max();
+    int min = std::numeric_limits<int>::max();
     Node* begin;
     Node* end;
 
@@ -130,12 +144,12 @@ map<Node*, Node*> Algorithm::MST (Graph &graph){
         }
     }
 
-    minDist.push(make_pair(0, begin));
+    minDist.push(std::make_pair(0, begin));
 
     for(Node* n : graph.nodeSet()){
         if(!(n == begin)){
-            minDist.push(make_pair(numeric_limits<int>::max(), n));
-            minEdge[n] = numeric_limits<int>::max();
+            minDist.push(std::make_pair(std::numeric_limits<int>::max(), n));
+            minEdge[n] = std::numeric_limits<int>::max();
         }
     }
 
@@ -160,7 +174,7 @@ map<Node*, Node*> Algorithm::MST (Graph &graph){
         for(auto neighb : current->neighbours()){
             if(visited.find(neighb)==visited.end() && minEdge[neighb] > graph.weight(current, neighb)){
                 parent[neighb] = current;
-                minDist.push(make_pair(graph.weight(current, neighb), neighb));
+                minDist.push(std::make_pair(graph.weight(current, neighb), neighb));
                 minEdge[neighb] = graph.weight(current, neighb);
             }
         }
@@ -213,13 +227,13 @@ void Algorithm::bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
 
             bridge(graph, neighb, visited, in, low_link, parent, time, result);
 
-            low_link[node] = min(low_link[node], low_link[neighb]);
+            low_link[node] = std::min(low_link[node], low_link[neighb]);
 
             if(low_link[neighb] > in[node])
                 result.push_back(graph.getEdge(node, neighb));
         }
         else if(!(neighb == parent[node]))
-            low_link[node] = min(low_link[node], in[neighb]);
+            low_link[node] = std::min(low_link[node], in[neighb]);
     }
 
 
@@ -260,13 +274,13 @@ void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
 
             articulationNodes(neighb, visited, in, low_link, parent, time, result);
 
-            low_link[node] = min(low_link[node], low_link[neighb]);
+            low_link[node] = std::min(low_link[node], low_link[neighb]);
 
             if(!(parent.find(node)==parent.end()) && low_link[neighb] >= in[node])
                 result.insert(node);
         }
         else if(!(neighb == parent[node]))
-            low_link[node] = min(low_link[node], in[neighb]);
+            low_link[node] = std::min(low_link[node], in[neighb]);
     }
 
     if(parent.find(node)==parent.end() && children > 1)
@@ -279,7 +293,7 @@ QList<Node*> Algorithm::Hierholzer (Graph* graph){
     QList<Node*> result;
 
     QStack<Node*> currPath;
-    vector<Node*> cycle;
+    std::vector<Node*> cycle;
 
     Node* nextNode;
 

@@ -44,6 +44,7 @@ public slots:
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
     void colorNodes(QList<Node*> result, bool x);
+    void colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges);
     void colorEdges(QList<Edge*> result);
     void reset();
     void setToDir();

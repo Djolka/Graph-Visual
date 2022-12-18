@@ -66,6 +66,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::colorDFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
     connect(this, &GraphWindow::colorBFS, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodes);
     connect(this, &GraphWindow::colorMST, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
+    connect(this, &GraphWindow::colorDijkstra, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesDijkstra);
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
     connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
@@ -510,10 +511,10 @@ void GraphWindow::algorithm() {
     else if(ui->pbMST->isChecked()){  // works for undirected graph
 
         QWidget::setEnabled(false);
-        map<Node*, Node*> parent = a->MST(*m_graph);
+        std::map<Node*, Node*> parent = a->MST(*m_graph);
         QList<Edge*> result;
 
-        for (map<Node*, Node*>::iterator it=parent.begin(); it!=parent.end(); ++it){
+        for (std::map<Node*, Node*>::iterator it=parent.begin(); it!=parent.end(); ++it){
             if(it->second != nullptr)
                 result.append(m_graph->getEdge(it->second, it->first));
 
@@ -522,6 +523,42 @@ void GraphWindow::algorithm() {
         emit colorMST(result);
         QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
+    }
+    else if(ui->pbDjikstra->isChecked()){
+        Node* node1;
+        Node* node2;
+
+        auto p = new Popup();
+        if(p->exec() == QDialog::Accepted){
+            QString nodeName = p->getNodeName();
+            node1 = m_graph->getNode(nodeName.toStdString());
+            if(node1 == nullptr)
+                warning("Node with that name does not exist");
+        }
+        else return;
+        if(p->exec() == QDialog::Accepted){
+            QString nodeName = p->getNodeName();
+            node2 = m_graph->getNode(nodeName.toStdString());
+            if(node2 == nullptr)
+                warning("Node with that name does not exist");
+        }
+        else return;
+
+        QWidget::setEnabled(false);
+        QList<Node*> path;
+        QList<Node*> visit;
+        QList<QPair<Node*, Node*>> edges1;
+        int result = a->Dijkstra(*m_graph, node1, node2, path, visit, edges1);
+
+        QList<Edge*> edges2;
+        for(auto p : edges1){
+            edges2.append(m_graph->getEdge(p.first, p.second));
+        }
+
+        emit colorDijkstra(path, visit, edges2);
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
+        QWidget::setEnabled(true);
+
     }
 }
 

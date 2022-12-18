@@ -6,7 +6,11 @@
 #include"Headers/graph.h"
 #include<iostream>
 
-using namespace std;
+#include<QList>
+#include<QPair>
+
+
+//using namespace std;
 
 class Algorithm{
 public:
@@ -16,9 +20,9 @@ public:
     void DFS (Node* current, QHash<Node*, bool> &visited, QList<Node*> &steps);
     bool isConnected (Node &u, Node &v);
     bool isAllConnected (Graph &graph);
-    int Dijkstra (Graph &graph, Node* start, Node* end);
+    int Dijkstra (Graph &graph, Node* start, Node* end,  QList<Node*> &path, QList<Node*> &visit,  QList<QPair<Node*, Node*>> &edges);
     Node* minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited);
-    map<Node*, Node*> MST (Graph &graph);
+    std::map<Node*, Node*> MST (Graph &graph);
     QList<Edge*> getBridges (Graph &graph);
     void bridge (Graph &graph, Node* node, QHash<Node*, bool> &visited,
                   QHash<Node*, int> &in, QHash<Node*, int> &low_link,

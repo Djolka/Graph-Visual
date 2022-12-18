@@ -248,6 +248,33 @@ void GraphTable::colorNodes(QList<Node*> result, bool x) {
     }
 }
 
+void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges) {
+    reset();
+    for(auto n : visit){
+        GraphicNode* node = getGraphicNode(n);
+        node->setBrush(QBrush(Qt::red), true);
+        Redraw();
+
+        for(auto e : edges){
+            if(e->first()->name()==n->name() || e->second()->name()==n->name()){
+                GraphicEdge* edge = getGraphicEdge(e);
+                edge->setPen(QPen(Qt::red), true);
+                Redraw();
+                delay();
+                edge->setPen(QPen(GraphicEdge::m_color), false);
+                Redraw();
+            }
+        }
+
+        if(!path.contains(n)){
+            delay();
+            node->setBrush(QBrush(GraphicNode::m_color), false);
+        }
+        Redraw();
+        delay();
+    }
+}
+
 void GraphTable::colorEdges(QList<Edge*> result) {
     reset();
     for(auto e : result){
