@@ -243,7 +243,7 @@ void GraphTable::colorNodesSet(QSet<Node *> result, bool x) {
         Redraw();
         delay();
     }
-    reset(x);
+
 }
 
 
