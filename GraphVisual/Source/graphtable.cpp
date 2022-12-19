@@ -14,7 +14,7 @@
 
 GraphTable::GraphTable(bool dir, QObject *parent)
     : QGraphicsScene(parent) {
-    directed = dir;
+    m_directed = dir;
 }
 
 void GraphTable::AddNewNodeOnTable(GraphicNode *node) {
@@ -143,7 +143,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
             if(!hasGraphicEdge(m_tmp, node) && m_tmp != node) {
-                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, directed);
+                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, m_directed);
                 AddNewEdgeOnTable(edge);
 
 
@@ -209,7 +209,7 @@ void GraphTable::setDeleteMode(bool x) {
 
 
 void GraphTable::delay() {
-    QTime dieTime = QTime::currentTime().addSecs(1);
+    QTime dieTime = QTime::currentTime().addMSecs(5000-m_sliderValue);
     while(QTime::currentTime() < dieTime){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
@@ -318,9 +318,13 @@ void GraphTable::reset(bool x) {
 }
 
 void GraphTable::setToDir() {
-    directed = true;
+    m_directed = true;
 }
 
 void GraphTable::setToUndir() {
-    directed = false;
+    m_directed = false;
+}
+
+void GraphTable::changeSliderValue(int value) {
+    m_sliderValue = value;
 }

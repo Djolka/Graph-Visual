@@ -51,6 +51,7 @@ public slots:
     void reset(bool x);
     void setToDir();
     void setToUndir();
+    void changeSliderValue(int value);
 
 
 signals:
@@ -71,7 +72,8 @@ private:
     bool m_hasTmp = false;
     GraphicNode* m_tmp;
     QGraphicsLineItem* m_lineToDraw;
-    bool directed;
+    bool m_directed;
+    int m_sliderValue=1000;
 
     bool m_deleteMode = false;
 

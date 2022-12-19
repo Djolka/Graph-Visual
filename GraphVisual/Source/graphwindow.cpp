@@ -30,6 +30,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->horizontalSlider->setRange(1000, 5000);
+
 //    connecting scene and view
     m_GraphTable->setSceneRect(ui->graphicsView->rect());
     ui->graphicsView->setScene(m_GraphTable);
@@ -73,6 +75,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
     connect(this, &GraphWindow::changeToUndir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToUndir);
 
+    connect(ui->horizontalSlider, &QSlider::valueChanged, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::changeSliderValue);
+
 
     fillMap();
 }
@@ -111,7 +115,8 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
 }
 
 
-void GraphWindow::AddNewEdge() {    
+void GraphWindow::AddNewEdge() {
+
     const auto name1 = ui->teNode1->toPlainText();
     ui->teNode1->clear();
 
