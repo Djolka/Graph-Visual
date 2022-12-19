@@ -118,7 +118,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         //center of start and end edge
         QPointF *edgeCenter = new QPointF((m_start->x()+m_end->x())/2, (m_start->y()+m_end->y())/2);
         //control point for bezier curve
-        QPointF *targetNode = new QPointF(m_end->x(), m_end->y());
+        QPointF *targetNode = new QPointF(m_end->x(), m_end->y()); // FIXME
 
 
         //translating edgeCenter to (0,0) and targetNode with it
@@ -148,8 +148,8 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 
         QPainterPath myPath;
-        myPath.moveTo(m_start->x()+25,m_start->y()+25);
-        myPath.cubicTo(m_start->x()+25, m_start->y()+25, targetNode->x(), targetNode->y(), m_end->x()+25, m_end->y()+25);
+        myPath.moveTo(m_start->x()+GraphicNode::m_width/2,m_start->y()+GraphicNode::m_height/2);
+        myPath.cubicTo(m_start->x()+GraphicNode::m_width/2, m_start->y()+GraphicNode::m_height/2, targetNode->x(), targetNode->y(), m_end->x()+GraphicNode::m_width/2, m_end->y()+GraphicNode::m_height/2);
 
 
         painter->drawPath(myPath);
@@ -162,16 +162,22 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 
 //        arrow
-//        QRectF rect = QRectF(0, 0, 20, 20);
-//        QRectF rect = QRectF(m_end->x(), m_end->y(), 15, 15);
+        QLineF line(*targetNode, m_end->CenterPosition());
+        double angle = std::atan2(-line.dy(), line.dx());
+        QPointF offset(GraphicNode::m_width/2*cos(angle), -(GraphicNode::m_width)/2*sin(angle));
 
-//        QPainterPath path;
-//        path.moveTo(rect.left() + (rect.width() / 2), rect.bottom());
-//        path.lineTo(rect.topLeft());
-//        path.lineTo(rect.topRight());
-//        path.lineTo(rect.left() + (rect.width() / 2), rect.bottom());
 
-//        painter->fillPath(path, QBrush(QColor ("blue")));
+        QPointF arrowP1 = line.p2() - QPointF(sin(angle + M_PI/3) * m_arrowSize,
+                                            cos(angle + M_PI/3) * m_arrowSize) - offset;
+        QPointF arrowP2 = line.p2() - QPointF(sin(angle + M_PI - M_PI/4) * m_arrowSize,
+                                            cos(angle + M_PI - M_PI/4) * m_arrowSize) - offset;
+
+        QPolygonF arrowHead;
+        arrowHead.clear();
+        arrowHead << line.p2() - offset << arrowP1 << arrowP2;
+        m_brush.setStyle(Qt::SolidPattern);
+        painter->setBrush(m_brush);
+        painter->drawPolygon(arrowHead);
 
         delete edgeCenter;
         delete targetNode;
