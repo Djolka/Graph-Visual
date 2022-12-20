@@ -18,6 +18,10 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool 
     setFlags(GraphicsItemFlag::ItemIsSelectable);
     setAcceptHoverEvents(true);
     m_weightLineEdit->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    m_weightLineEdit->setMinimumHeight(20);
+    QFont font = m_weightLineEdit->font();
+    font.setPointSize(12);
+    m_weightLineEdit->setFont(font);
     m_weightLineEdit->setMinimumWidth(15);
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
 
@@ -154,7 +158,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
         painter->drawPath(myPath);
         m_weightLineEdit->move((targetNode->x()+edgeCenter->x())/2, (targetNode->y()+edgeCenter->y())/2);
-
+        m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
         auto text = m_weightLineEdit->text();
         auto width = text.length();
 
@@ -177,8 +181,8 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         delete targetNode;
     }else{
         painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
-
         m_weightLineEdit->move(getCenter().x(), getCenter().y());
+        m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
 
         auto text = m_weightLineEdit->text();
         auto width = text.length();

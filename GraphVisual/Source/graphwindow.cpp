@@ -31,6 +31,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->setupUi(this);
 
     ui->horizontalSlider->setRange(1000, 5000);
+    ui->horizontalSlider->setValue((5000+1000)/2);
 
 //    connecting scene and view
     m_GraphTable->setSceneRect(ui->graphicsView->rect());
@@ -70,6 +71,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::colorMST, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
     connect(this, &GraphWindow::colorDijkstra, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesDijkstra);
     connect(this, &GraphWindow::colorArticulation, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesSet);
+    connect(this, &GraphWindow::colorBridges, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
     connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
@@ -89,7 +91,7 @@ GraphWindow::~GraphWindow()
 }
 
 void GraphWindow::fillMap() {
-    m_colors.insert("off white", "#E4E8D6");
+    m_colors.insert("off white", "#E8E4D6");
     m_colors.insert("white", "#FFFFFF");
     m_colors.insert("black", "#000000");
     m_colors.insert("navy", "#192841");
@@ -579,6 +581,16 @@ void GraphWindow::algorithm() {
         QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
+    else if(ui->pbBridges->isChecked()){
+        QList<Edge*> result;
+
+        QWidget::setEnabled(false);
+        result = a->getBridges(*m_graph);
+        emit colorBridges(result, true);
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QWidget::setEnabled(true);
+    }
+    delete a;
 }
 
 
