@@ -43,12 +43,11 @@ public slots:
     void Redraw();
     void editWeight(GraphicEdge* edge, int w);
     void Warning (QString s);
-    void colorNodes(QList<Node*> result, bool x);
-    void colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges, bool x);
-    void colorEdges(QList<Edge*> result, bool x);
-    // void reset();
-    void colorNodesSet(QSet<Node*> result, bool x);
-    void reset(bool x);
+    void colorNodes(QList<Node*> result);
+    void colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges);
+    void colorEdges(QList<Edge*> result);
+    void reset();
+    void colorNodesSet(QSet<Node*> result);
     void setToDir();
     void setToUndir();
     void changeSliderValue(int value);
