@@ -15,6 +15,8 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <iostream>
+#include <QShortcut>
+#include <math.h>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -79,6 +81,8 @@ void GraphWindow::fillMap() {
 
 }
 
+
+
 void GraphWindow::SaveAsPic(const QString& m_ext){
     QString dir = QDir::homePath();
     QString name = "Untilted." + m_ext;
@@ -105,7 +109,7 @@ void GraphWindow::AddNewEdge() {
     Node* node2 = nullptr;
 
     const auto w = ui->teWeight->toPlainText();
-    int weight = w.toInt();
+    int weight = w == "" ? 1 : w.toInt();
     ui->teWeight->clear();
 
 
@@ -401,5 +405,69 @@ void GraphWindow::on_pbSave_clicked() {
         ui->lblMsg->setText(QString());
         ui->lblMsg->setStyleSheet(QString());
     }
+}
+
+
+void GraphWindow::on_pbBeautify_clicked()
+{
+
+    // TODO ----------------------------------------
+    // add center of gravity
+    // timeout signal emit
+    // fix parametars and num of iters
+
+    int numOfIters = 500;
+
+    double C = 0.2; // relative force strength
+    double K = 50.0; // optimal distance
+    double pointsDistance = 0.0;
+    QPointF normalizedVector = QPointF(0, 0);
+
+    QPointF repulsiveForce = QPointF(0, 0);
+    QPointF attractionForce = QPointF(0, 0);
+    QPointF moveForce = QPointF(0, 0);
+
+    QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
+
+    for(int brojac = 0; brojac < numOfIters; brojac++) {
+
+        for (int i = 0; i < nodesList.size(); i++) {
+
+            QList<Node*> neighourList = nodesList[i]->getNode()->neighbours();
+
+            for(int j = 0; j < nodesList.size(); j++) {
+
+                if(i == j)
+                    continue;
+
+                pointsDistance = nodesList[i]->distance(nodesList[j]);
+                normalizedVector = nodesList[i]->normalize(nodesList[j]);
+
+                repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2;
+
+                for(int k = 0; k < neighourList.size(); k++) {
+
+                    if(nodesList[j]->getNode() == neighourList[k]) {
+                        attractionForce += pow(pointsDistance, 2) / K  * normalizedVector * 0.001;
+                        break;
+                    }
+                }
+            }
+
+            moveForce = repulsiveForce + attractionForce;
+
+            double newX = nodesList[i]->CenterPosition().x() + moveForce.x();
+            double newY = nodesList[i]->CenterPosition().y() + moveForce.y();
+
+            double x = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().width() - GraphicNode::m_width, newX - nodesList[i]->m_width / 2);
+            double y = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().height() - GraphicNode::m_height, newY - nodesList[i]->m_height / 2);
+            x = std::fmax(0, x);
+            y = std::fmax(0, y);
+
+            nodesList[i]->setPos(x, y);
+            moveForce = repulsiveForce = attractionForce = QPointF(0, 0);
+        }
+    }
+    emit NeedRedraw();
 }
 

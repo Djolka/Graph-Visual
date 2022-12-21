@@ -19,12 +19,14 @@ public:
 
     static int m_width;
     static int m_height;
+    static QColor m_color;
 
     int type() const override;
 
-    QPointF CenterPosition();
+    QPointF CenterPosition();   
+    double distance(GraphicNode* n2);
+    QPointF normalize(GraphicNode* n2);
 
-    static QColor m_color;
 
 
 protected:

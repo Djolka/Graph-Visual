@@ -1,7 +1,8 @@
 #include "Headers/node.h"
 #include <utility>
 #include <QPointF>
-
+#include <cmath>
+#include "math.h"
 
 Node::Node(){
     this->m_inDeg=0;
@@ -129,3 +130,4 @@ std::ostream &operator<< (std::ostream &os, const Node &n){
     os<< n.name() << " " << n.inDeg() << " " << n.outDeg() << " " << n.deg() << std::endl;
     return os;
 }
+

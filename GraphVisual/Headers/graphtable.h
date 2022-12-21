@@ -59,6 +59,7 @@ private:
 
     bool m_deleteMode = false;
 
+
 //    QVector<QGraphicsLineItem *> _veze;
 };
 

@@ -1260,6 +1260,9 @@ color: rgb(211, 215, 207);</string>
           <property name="text">
            <string>Add</string>
           </property>
+          <property name="autoDefault">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -1326,6 +1329,13 @@ color: rgb(211, 215, 207);</string>
         <property name="styleSheet">
          <string notr="true">color: #e8e4d6;
 border: 1px solid #e8e4d6;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbBeautify">
+        <property name="text">
+         <string>Beautify</string>
         </property>
        </widget>
       </item>
@@ -1531,7 +1541,6 @@ color: rgb(245, 243, 242);</string>
                   <font>
                    <family>Ubuntu</family>
                    <pointsize>11</pointsize>
-                   <weight>50</weight>
                    <italic>false</italic>
                    <bold>false</bold>
                   </font>

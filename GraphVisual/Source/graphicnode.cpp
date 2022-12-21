@@ -2,6 +2,7 @@
 #include "Headers/node.h"
 #include "qgraphicsscene.h"
 #include "qgraphicssceneevent.h"
+#include "math.h"
 
 #include <QPainter>
 
@@ -81,3 +82,23 @@ void GraphicNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 int GraphicNode::type() const{
     return 1;
 }
+
+
+
+double GraphicNode::distance(GraphicNode *n2) {
+
+    return sqrt(pow(n2->CenterPosition().x() - this->CenterPosition().x(), 2)
+              + pow(n2->CenterPosition().y() - this->CenterPosition().y(), 2));
+}
+
+QPointF GraphicNode::normalize(GraphicNode* n2){
+    return QPointF((n2->CenterPosition().x() - this->CenterPosition().x()) / distance(n2),
+                   (n2->CenterPosition().y() - this->CenterPosition().y()) / distance(n2));
+}
+
+
+
+
+
+
+

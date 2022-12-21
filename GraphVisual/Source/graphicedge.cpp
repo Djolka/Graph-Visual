@@ -106,7 +106,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         m_pen = QPen(GraphicEdge::m_color);
     }
     m_pen.setWidth(2);
-    painter->setPen(QPen());
+    painter->setPen(QPen(m_pen));
 
     // painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 

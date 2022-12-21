@@ -65,6 +65,8 @@ private slots:
 
     void on_pbSave_clicked();
 
+    void on_pbBeautify_clicked();
+
 private:
     Ui::GraphWindow *ui;
     Graph *m_graph;
