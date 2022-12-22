@@ -17,6 +17,7 @@
 #include <iostream>
 #include <QShortcut>
 #include <math.h>
+#include <QTime>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -407,13 +408,18 @@ void GraphWindow::on_pbSave_clicked() {
     }
 }
 
+void GraphWindow::gravityDelay(){
+        QTime dieTime = QTime::currentTime().addMSecs(5);
+        while(QTime::currentTime() < dieTime){
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        }
+}
 
 void GraphWindow::on_pbBeautify_clicked()
 {
 
     // TODO ----------------------------------------
     // add center of gravity
-    // timeout signal emit
     // fix parametars and num of iters
 
     int numOfIters = 500;
@@ -422,10 +428,15 @@ void GraphWindow::on_pbBeautify_clicked()
     double K = 50.0; // optimal distance
     double pointsDistance = 0.0;
     QPointF normalizedVector = QPointF(0, 0);
+    double directionCorrection = 1.0;
 
     QPointF repulsiveForce = QPointF(0, 0);
     QPointF attractionForce = QPointF(0, 0);
     QPointF moveForce = QPointF(0, 0);
+
+    if(m_graph->isDirected()){
+        directionCorrection = 0.7;
+    }
 
     QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
 
@@ -443,12 +454,12 @@ void GraphWindow::on_pbBeautify_clicked()
                 pointsDistance = nodesList[i]->distance(nodesList[j]);
                 normalizedVector = nodesList[i]->normalize(nodesList[j]);
 
-                repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2;
+                repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2 * directionCorrection;
 
                 for(int k = 0; k < neighourList.size(); k++) {
 
                     if(nodesList[j]->getNode() == neighourList[k]) {
-                        attractionForce += pow(pointsDistance, 2) / K  * normalizedVector * 0.001;
+                        attractionForce += pow(pointsDistance, 2) / K  * normalizedVector * 0.001 * directionCorrection;
                         break;
                     }
                 }
@@ -467,7 +478,9 @@ void GraphWindow::on_pbBeautify_clicked()
             nodesList[i]->setPos(x, y);
             moveForce = repulsiveForce = attractionForce = QPointF(0, 0);
         }
+
+        emit NeedRedraw();
+        gravityDelay();
     }
-    emit NeedRedraw();
 }
 

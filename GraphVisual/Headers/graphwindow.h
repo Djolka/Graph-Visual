@@ -25,6 +25,7 @@ public:
     QMap<QString, QString> m_colors;
     void fillMap();
     void SaveAsPic(const QString& m_ext);
+    void gravityDelay();
 
 signals:
     void AddedNewNode(GraphicNode *);

@@ -91,6 +91,11 @@ double GraphicNode::distance(GraphicNode *n2) {
               + pow(n2->CenterPosition().y() - this->CenterPosition().y(), 2));
 }
 
+double GraphicNode::distance(QPointF point){
+    return sqrt(pow(point.x() - this->CenterPosition().x(), 2)
+              + pow(point.y() - this->CenterPosition().y(), 2));
+}
+
 QPointF GraphicNode::normalize(GraphicNode* n2){
     return QPointF((n2->CenterPosition().x() - this->CenterPosition().x()) / distance(n2),
                    (n2->CenterPosition().y() - this->CenterPosition().y()) / distance(n2));
