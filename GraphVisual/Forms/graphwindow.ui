@@ -1334,6 +1334,10 @@ border: 1px solid #e8e4d6;</string>
       </item>
       <item>
        <widget class="QPushButton" name="pbBeautify">
+        <property name="styleSheet">
+         <string notr="true">
+color: rgb(211, 215, 207);</string>
+        </property>
         <property name="text">
          <string>Beautify</string>
         </property>

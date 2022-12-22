@@ -417,33 +417,27 @@ void GraphWindow::gravityDelay(){
 
 void GraphWindow::on_pbBeautify_clicked()
 {
-
-    // TODO ----------------------------------------
-    // add center of gravity
-    // fix parametars and num of iters
-
     int numOfIters = 500;
 
-    double C = 0.2; // relative force strength
+    double C = 0.2;
     double K = 50.0; // optimal distance
     double pointsDistance = 0.0;
-    QPointF normalizedVector = QPointF(0, 0);
-    double directionCorrection = 1.0;
-
-    QPointF repulsiveForce = QPointF(0, 0);
-    QPointF attractionForce = QPointF(0, 0);
-    QPointF moveForce = QPointF(0, 0);
-
-    if(m_graph->isDirected()){
-        directionCorrection = 0.7;
-    }
+    double directionCorrection = m_graph->isDirected() ? 0.7 : 1.0;
 
     QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
 
-    for(int brojac = 0; brojac < numOfIters; brojac++) {
+    QPointF normalizedVector = QPointF(0, 0);
+    QPointF repulsiveForce = QPointF(0, 0);
+    QPointF attractionForce = QPointF(0, 0);
+    QPointF moveForce = QPointF(0, 0);
+    QPointF gravityForce = QPointF(0, 0);
+    QPointF centerForce = QPointF(415, 310);
+
+    for(int iter = 0; iter < numOfIters; iter++) {
 
         for (int i = 0; i < nodesList.size(); i++) {
 
+            gravityForce += nodesList[i]->normalize(centerForce) * 0.1;
             QList<Node*> neighourList = nodesList[i]->getNode()->neighbours();
 
             for(int j = 0; j < nodesList.size(); j++) {
@@ -453,7 +447,6 @@ void GraphWindow::on_pbBeautify_clicked()
 
                 pointsDistance = nodesList[i]->distance(nodesList[j]);
                 normalizedVector = nodesList[i]->normalize(nodesList[j]);
-
                 repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2 * directionCorrection;
 
                 for(int k = 0; k < neighourList.size(); k++) {
@@ -465,7 +458,7 @@ void GraphWindow::on_pbBeautify_clicked()
                 }
             }
 
-            moveForce = repulsiveForce + attractionForce;
+            moveForce = repulsiveForce + attractionForce + gravityForce;
 
             double newX = nodesList[i]->CenterPosition().x() + moveForce.x();
             double newY = nodesList[i]->CenterPosition().y() + moveForce.y();
@@ -476,7 +469,7 @@ void GraphWindow::on_pbBeautify_clicked()
             y = std::fmax(0, y);
 
             nodesList[i]->setPos(x, y);
-            moveForce = repulsiveForce = attractionForce = QPointF(0, 0);
+            gravityForce = moveForce = repulsiveForce = attractionForce = QPointF(0, 0);
         }
 
         emit NeedRedraw();

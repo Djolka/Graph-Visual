@@ -25,7 +25,9 @@ public:
 
     QPointF CenterPosition();   
     double distance(GraphicNode* n2);
+    double distance(QPointF point);
     QPointF normalize(GraphicNode* n2);
+    QPointF normalize(QPointF point);
 
 
 

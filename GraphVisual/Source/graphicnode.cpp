@@ -101,6 +101,10 @@ QPointF GraphicNode::normalize(GraphicNode* n2){
                    (n2->CenterPosition().y() - this->CenterPosition().y()) / distance(n2));
 }
 
+QPointF GraphicNode::normalize(QPointF point) {
+    return QPointF((point.x() - this->CenterPosition().x()) / distance(point),
+                   (point.y() - this->CenterPosition().y()) / distance(point));
+}
 
 
 
