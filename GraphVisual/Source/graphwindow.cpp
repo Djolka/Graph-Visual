@@ -5,6 +5,7 @@
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
 
+#include<QThread>
 #include "Headers/edge.h"
 #include "Headers/graphicedge.h"
 #include "Headers/graph.h"
@@ -18,6 +19,7 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <iostream>
+#include <unistd.h>
 
 #include "Headers/algorithm.h"
 #include"Headers/popup.h"
@@ -151,7 +153,6 @@ void GraphWindow::AddNewEdge() {
 
             graphicNode1 = new GraphicNode(node1);
             m_GraphTable->addItem(graphicNode1);
-
             emit AddedNewNode(graphicNode1);
         }
         else{
@@ -171,7 +172,6 @@ void GraphWindow::AddNewEdge() {
 
             graphicNode2 = new GraphicNode(node2);
             m_GraphTable->addItem(graphicNode2);
-
             emit AddedNewNode(graphicNode2);
         }
         else{
@@ -318,6 +318,11 @@ void GraphWindow::graphDirected() {
 
 }
 
+void GraphWindow::click(){
+    this->ui->pbAddNode->animateClick();
+    return;
+}
+
 
 
 void GraphWindow::graphUndirected() {
@@ -380,6 +385,12 @@ void GraphWindow::on_pbDirected_pressed() {
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
 }
 
+void GraphWindow::unesiVrednost(std::string key, std::string key2, std::string value){
+    this->ui->teNode1->insertPlainText(QString::fromStdString(key));
+    this->ui->teNode2->insertPlainText(QString::fromStdString(key2));
+    this->ui->teWeight->insertPlainText(QString::fromStdString(value));
+}
+
 void GraphWindow::on_actionOpen_triggered(){
 
 
@@ -393,14 +404,15 @@ void GraphWindow::on_actionOpen_triggered(){
             auto nodes= this->m_graph->nodeSet();
             auto edges=this->m_graph->edgeSet();
 
-            for (auto edge:edges){
+            for (auto &edge:edges){
                 this->deleteEdge(edge->first(), edge->second());
             }
 
-            for (auto node:nodes){
+            for (auto &node:nodes){
                 this->deleteNode(node);
             }
             this->DeleteGraphFromTable();
+            QWidget::update(0, 0, qApp->screens()[0]->size().height(), qApp->screens()[0]->size().width());
 
             unsigned int numNodes;
             openFile>>numNodes;
@@ -435,12 +447,20 @@ void GraphWindow::on_actionOpen_triggered(){
             index=m_indices.value(QString::fromStdString(edgeColor));
             this->ui->cbEdgecolor->setCurrentIndex(index);
 
-            emit on_pbSave_clicked();
+            this->ui->pbSave->animateClick();
+
 
             std::string name;
             std::string skip;
 
-            std::list<Node* >nodeSet;
+            std::string mode;
+            openFile>>mode;
+
+            if(mode=="undir"){
+                emit this->ui->pbUndirected->pressed();
+            }else{
+                emit this->ui->pbDirected->pressed();
+            }
 
             for (unsigned i=0;i<numNodes;i++){
                 openFile>>skip;
@@ -461,13 +481,11 @@ void GraphWindow::on_actionOpen_triggered(){
                 getline(openFile, line);
                 istringstream input(line);
                 input >> key >> key2 >>value; // set the variables
-                std::cout<<key<<"  "<<key2<<"   "<<value<<std::endl;
-                this->ui->teNode1->insertPlainText(QString::fromStdString(key));
-                this->ui->teNode2->insertPlainText(QString::fromStdString(key2));
-                this->ui->teWeight->insertPlainText(QString::fromStdString(value));
+                unesiVrednost(key, key2, value);
                 emit AddNewEdge();
+                }
 
-        }
+            openFile.close();
 
 }
 }
@@ -502,11 +520,17 @@ void GraphWindow::on_actionSave_triggered(){
                 saveFile <<nodes.size()<< " "<< edges.size()<<"\n";
                 saveFile<<nodeRadius<<"\n";
 
-                for (auto pair: graphInfo){
+                for (auto &pair: graphInfo){
                     saveFile<<pair.first<<" "<<pair.second<<"\n";
                 }
 
-                for (auto node:nodes){
+                if(this->ui->pbUndirected->isChecked()){
+                    saveFile<<"dir"<<"\n";
+                }else{
+                    saveFile<<"undir"<<"\n";
+                }
+
+                for (auto &node:nodes){
                      saveFile<<"nodeName: "<<node->name();
                      QVector<Node* > tmp=node->neighbours().toVector();
                      QPointF position=node->position();
@@ -518,13 +542,13 @@ void GraphWindow::on_actionSave_triggered(){
                      }
                      saveFile<<"\nPosition: "<<px<<" "<<py;
                      saveFile<<"\nNeighbors: ";
-                     for (auto elem : cpy){
+                     for (auto &elem : cpy){
                          saveFile<<elem<<" ";
                      }
                      saveFile<<"\n";
                 }
 
-                for (auto edge:edges){
+                for (auto &edge:edges){
                     saveFile << edge->first()->name()<<" "<<edge->second()->name()<<" "<< edge->weight()<<"\n";
                 }
 
