@@ -1,6 +1,13 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+
+#include <QVariant>
+
+#include "graphserialization_global.h"
+#include "serializable.h"
+
+
 #include <map>
 #include "Headers/node.h"
 
@@ -17,7 +24,7 @@ public:
     Node* second() const;
     int weight() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Edge e);
+    //friend std::ostream &operator<<(std::ostream &os, const Edge e);
 
     friend class Graph;
 

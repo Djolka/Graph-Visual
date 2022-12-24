@@ -9,7 +9,14 @@
 #include <QSet>
 
 
-class Graph {
+#include <QVariant>
+
+#include "graphserialization_global.h"
+#include "serializable.h"
+
+
+
+class Graph{
 
 public:
     explicit Graph(bool directed, bool weighted);
@@ -33,9 +40,13 @@ public:
     bool isolateNode(const std::string &name);
     bool setNodeName(Node *node, const std::string &new_name);
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
-    inline int countNodes() const;
+    int countNodes() const;
     Node* randomNode();
     Node* getNode(std::string name);
+
+    //QVariant toVariant() const override;
+    //void fromVariant(const QVariant& variant) override;
+
 
 //    void clearNodes();
 

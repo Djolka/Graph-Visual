@@ -29,6 +29,8 @@ public:
     void indexColors();
     void SaveAsPic(const QString& m_ext);
     bool nodeExists(std::string name);
+    void click();
+    void unesiVrednost(std::string key, std::string key2, std::string value);
 
 signals:
     void AddedNewNode(GraphicNode *);
