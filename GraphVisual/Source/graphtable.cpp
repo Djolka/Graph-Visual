@@ -32,6 +32,7 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
     connect(edge, &GraphicEdge::needWarning, this, &GraphTable::Warning);
 
+
     addItem(edge);
     addWidget(edge->getLineEdit());
 }
@@ -97,7 +98,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         if(m_hasTmp){
             setHasTmp(false);
         }
-        else{ //add new node
+        else{
             Popup* p = new Popup();
 
             if(p->exec() == QDialog::Accepted){
@@ -125,6 +126,13 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                     y = std::min(sceneRect().height() - GraphicNode::m_height, point.y());
                     x = std::fmax(0, x);
                     y = std::fmax(0, y);
+
+                    if(m_Nodes.size() >= 15){
+                        Warning("You have reached the maximum number of nodes allowed");
+                        delete node;
+                        delete graphicNode;
+                        return;
+                    }
 
                     AddNewNodeOnTable(graphicNode);
                     graphicNode->setPos(x, y);
@@ -209,7 +217,7 @@ void GraphTable::setDeleteMode(bool x) {
 
 
 void GraphTable::delay() {
-    QTime dieTime = QTime::currentTime().addMSecs(5000-m_sliderValue);
+    QTime dieTime = QTime::currentTime().addMSecs(4000-m_sliderValue);
     while(QTime::currentTime() < dieTime){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }

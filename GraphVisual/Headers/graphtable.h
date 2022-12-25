@@ -72,7 +72,7 @@ private:
     GraphicNode* m_tmp;
     QGraphicsLineItem* m_lineToDraw;
     bool m_directed;
-    int m_sliderValue=1000;
+    int m_sliderValue = 2500;
 
     bool m_deleteMode = false;
 

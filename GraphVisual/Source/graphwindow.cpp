@@ -30,8 +30,8 @@ GraphWindow::GraphWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->horizontalSlider->setRange(1000, 5000);
-    ui->horizontalSlider->setValue((5000+1000)/2);
+    ui->horizontalSlider->setRange(1000, 4000);
+    ui->horizontalSlider->setValue((ui->horizontalSlider->maximum()+ui->horizontalSlider->minimum())/2);
 
 //    connecting scene and view
     m_GraphTable->setSceneRect(ui->graphicsView->rect());
@@ -118,6 +118,14 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
 
 
 void GraphWindow::AddNewEdge() {
+
+    if(m_graph->nodeSet().size() >= 14){
+        warning("You have reached the maximum number of nodes allowed");
+        ui->teNode1->clear();
+        ui->teNode2->clear();
+        ui->teWeight->clear();
+        return;
+    }
 
     const auto name1 = ui->teNode1->toPlainText();
     ui->teNode1->clear();
@@ -432,9 +440,9 @@ void GraphWindow::on_actionClose_triggered() {
 }
 
 // delete this
-void GraphWindow::on_pbUndirected_released(){}
-void GraphWindow::on_pbUndirected_clicked(){}
-void GraphWindow::on_pbAddNode_clicked(){}
+//void GraphWindow::on_pbUndirected_released(){}
+//void GraphWindow::on_pbUndirected_clicked(){}
+//void GraphWindow::on_pbAddNode_clicked(){}
 
 
 void GraphWindow::deleteNode(Node* node) {
@@ -478,6 +486,11 @@ void GraphWindow::on_pbSave_clicked() {
 
 
 void GraphWindow::algorithm() {
+    if(m_graph->nodeSet().empty()){
+        warning("Insert nodes before running algorithm!");
+        return;
+    }
+
     auto a = new Algorithm();
     if(ui->pbBFS->isChecked()){
         auto p = new Popup();
@@ -543,14 +556,21 @@ void GraphWindow::algorithm() {
             if(node1 == nullptr)
                 warning("Node with that name does not exist");
         }
-        else return;
+        else{
+            delete a;
+            return;
+        }
         if(p->exec() == QDialog::Accepted){
             QString nodeName = p->getNodeName();
             node2 = m_graph->getNode(nodeName.toStdString());
             if(node2 == nullptr)
                 warning("Node with that name does not exist");
         }
-        else return;
+        else{
+            delete a;
+            return;
+        }
+
 
         QWidget::setEnabled(false);
         QList<Node*> path;

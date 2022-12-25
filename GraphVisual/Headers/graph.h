@@ -37,16 +37,11 @@ public:
     inline int countNodes() const;
     Node* randomNode();
 
-//    void clearNodes();
 
     //edge methods
     Edge* getEdge(Node *u, Node *v);
     bool addEdge(Node *u, Node *v);
     bool addEdge(Node *u, Node *v, int w);
-    bool setEdge(Node *u, Node *v);
-    bool setEdge(Node *u, Node *v, int w);
-    bool setEdge(const std::string &uname, const std::string &vname);
-    bool setEdge(const std::string &uname, const std::string &vname, int w);
     bool removeEdge(Node *u, Node *v);
     bool removeEdge(const std::string &uname, const std::string &vname);
     bool hasDirectedEdge(Node *u, Node *v) const;
@@ -65,7 +60,6 @@ protected:
     QList<Node*> m_nodes;
     const std::pair<int, int> m_weightRange;
 
-//private:
     bool m_directed;
     bool m_weighted;
 

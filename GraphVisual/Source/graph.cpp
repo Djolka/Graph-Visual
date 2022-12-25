@@ -80,10 +80,6 @@ bool Graph::hasEdge(Node *u, Node *v) const {
 }
 
 bool Graph::addNode(Node* node){
-//    da bi se dodavali nodovi na click koji su istog imena
-//    if (hasNode(node->name())){
-//        return false;
-//    }
     m_nodes.append(node);
     return true;
 }
@@ -103,9 +99,9 @@ bool Graph::addNode(std::string node_name) {
 bool Graph::removeNode(Node *node) {
     auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
 
-    if (it != m_nodes.end()){ // ovde it nije konst
+    if (it != m_nodes.end()){
         isolateNode(node);
-        m_nodes.erase(it);    // ovde ga konvertuje u const
+        m_nodes.erase(it);
         return true;
     }
     return false;
@@ -117,14 +113,14 @@ bool Graph::removeNode(const std::string &name) {
     for (it = m_nodes.begin(); it != m_nodes.end(); ++it)
         if((*it)->name() == name){
             isolateNode(name);
-            delete *it;          // TOFIX
+            delete *it;
             m_nodes.erase(it);
             return true;
         }
     return false;
 }
 
-// zasto nam je ovo bool ako nikad ne vraca false -> sto nije void?
+
 bool Graph::isolateNode(Node *node) {
     auto begin = m_edges.begin();
     auto end = m_edges.end();
@@ -178,62 +174,6 @@ int Graph::countNodes() const {
     return m_nodes.size();
 }
 
-//TOCHECK(some cases)
-bool Graph::setEdge(Node *u, Node *v, int w){
-    if (w < m_weightRange.first || w > m_weightRange.second){
-        return false;
-    }
-
-    if(u == v || !hasNode(u) || !hasNode(v)){
-        return false;
-    }
-
-    if(hasDirectedEdge(u,v)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == u && (*it)->second() == v){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(u,v), w);
-        m_edges.append(e);
-        return true;
-    }
-
-    if(!m_directed && hasDirectedEdge(v,u)){
-        auto it = m_edges.begin();
-        for(;it != m_edges.end(); ++it){
-            if ((*it)->first() == v && (*it)->second() == u){
-                m_edges.erase(it);
-            }
-        }
-        Edge* e = new Edge(std::make_pair(v,u), w);
-        m_edges.append(e);
-        return true;
-    }
-
-    addEdge(u,v,w);
-    return true;
-}
-
-
-bool Graph::setEdge(Node *u, Node *v) {
-    return setEdge(u, v, 1);
-}
-
-
-bool Graph::setEdge(const std::string &uname, const std::string &vname) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, 1);
-}
-
-bool Graph::setEdge(const std::string &uname, const std::string &vname, int w) {
-    Node *u = new Node(uname);
-    Node *v = new Node(vname);
-    return setEdge(u, v, w);
-}
-
 
 Edge* Graph::getEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
@@ -264,10 +204,10 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
         return false;
     }
 
-    // da li treba ovo da se brise?
+
     Edge *e = new Edge(std::make_pair(u,v), w);
     m_edges.append(e);
-//    m_edges.insert(m_edges.size(), e);
+
     if (m_directed) {
         u->incOutDeg();
         v->incInDeg();
@@ -286,17 +226,11 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
     return true;
 }
 
-//That means that if your code is not calling abort directly nor sending itself the SIGABRT signal via raise,
-//and you don't have any failing assertions, the cause must be that a support library (which could be libc) has encountered an internal error.
-//pa ok...........
 bool Graph::removeEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
         if(isUndirected()){
-            // ovde postoje grane (u, v) i (v, u) ili samo jedna od njih?
-            // jer ako postoje obe onda nema svrhe proveavati oba uslova
             if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
-                // ako nisu nullptr/invalidated
                 if(u) {
                     u->decDeg();
                     u->removeNeighbour(v);
@@ -307,9 +241,6 @@ bool Graph::removeEdge(Node *u, Node *v) {
                     v->removeNeighbour(u);
                 }
 
-
-// erase(it) erases the iterator, and hence also the element pointing by it,
-// vector::erase destroys the removed object, which involves calling its destructor
                 m_edges.erase(it);
                 return true;
             }
@@ -424,14 +355,6 @@ Node* Graph::getNode(const std::string &name){
     return nullptr;
 }
 
-
-//void Graph::clearNodes() {
-//    for(auto node: m_nodes){
-//        removeNode(node);
-//        delete node;
-//    }
-//    m_nodes.clear();
-//}
 
 
 
