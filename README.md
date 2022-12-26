@@ -3,6 +3,7 @@
 This project is made by students of computer science at the Faculty of Mathematics, University of Belgrade for the Sovtware developement course.<br><br>
 It was made with the idea of helping the other students of our faculty with understanding and mastering the knowledge of graph algorithms.<br><br>
 Using visual, the students can enter their own graph and run one of the algorithms that are supported by the program. As a result, steps of the algorithms will be displayed directly as the algorithm is running. <br><br>
+To see how the developement of this project went, visit our [Wiki pages](https://gitlab.com/matf-bg-ac-rs/course-rs/projects-2022-2023/03-visual/-/wikis/Home)
 
 # Prerequisites:
 <ul>
