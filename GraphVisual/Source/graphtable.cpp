@@ -54,7 +54,7 @@ void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     const int tableWidth = static_cast<int>(width());
     auto newNodeIndex = m_Nodes.size() - 1;
 
-    const auto xPos = (node->m_width * newNodeIndex) % tableWidth;
+    const auto xPos = ((node->m_width + 50) * newNodeIndex) % tableWidth;
     const auto yPos = node->m_height * ((node->m_width * newNodeIndex) / tableWidth);
     node->setPos(xPos, yPos);
 

@@ -422,7 +422,7 @@ void GraphWindow::on_pbBeautify_clicked()
     double C = 0.2;
     double K = 50.0; // optimal distance
     double pointsDistance = 0.0;
-    double directionCorrection = m_graph->isDirected() ? 0.7 : 1.0;
+    double directionCorrection = m_graph->isDirected() ? 0.4 : 1.0;
 
     QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
 
