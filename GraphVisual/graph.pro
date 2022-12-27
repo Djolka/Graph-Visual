@@ -23,6 +23,7 @@ SOURCES += \
     Source/graphtable.cpp \
     Source/graphicedge.cpp \
     Source/popup.cpp \
+    Source/thread.cpp \
     Source/xmlserializer.cpp
 
 HEADERS += \
@@ -41,6 +42,7 @@ HEADERS += \
     Headers/popup.h \
     Headers/serializable.h \
     Headers/serializer.h \
+    Headers/thread.h \
     Headers/xmlserializer.h \
     graphserialization_global.h
 

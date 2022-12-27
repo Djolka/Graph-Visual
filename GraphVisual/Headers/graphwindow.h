@@ -50,6 +50,7 @@ private slots:
     void deleteEdge(Node* node1, Node* node2);
     void warning(QString s);
     void nodeNameLength();
+    void updatedWindow();
 
     void graphDirected();
     void graphUndirected();

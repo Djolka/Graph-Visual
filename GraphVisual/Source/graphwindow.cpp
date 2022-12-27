@@ -4,8 +4,14 @@
 #include "Headers/graphtable.h"
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
+#include "Headers/thread.h"
 
+
+#include<future>
 #include<QThread>
+#include<QGraphicsScene>
+#include<QGraphicsView>
+#include<QDebug>
 #include "Headers/edge.h"
 #include "Headers/graphicedge.h"
 #include "Headers/graph.h"
@@ -401,19 +407,7 @@ void GraphWindow::on_actionOpen_triggered(){
         openFile.open(filename);
         if (!openFile.fail()){
 
-            auto nodes= this->m_graph->nodeSet();
-            auto edges=this->m_graph->edgeSet();
-
-            for (auto &edge:edges){
-                this->deleteEdge(edge->first(), edge->second());
-            }
-
-            for (auto &node:nodes){
-                this->deleteNode(node);
-            }
-            this->DeleteGraphFromTable();
-            QWidget::update(0, 0, qApp->screens()[0]->size().height(), qApp->screens()[0]->size().width());
-
+            emit this->ui->pbDeleteAll->clicked();
             unsigned int numNodes;
             openFile>>numNodes;
             unsigned int numEdges;
@@ -446,9 +440,10 @@ void GraphWindow::on_actionOpen_triggered(){
             std::string edgeColor=graphInfo["edgeColor:"];
             index=m_indices.value(QString::fromStdString(edgeColor));
             this->ui->cbEdgecolor->setCurrentIndex(index);
-
-            this->ui->pbSave->animateClick();
-
+            //OVDE DODAJ KOD ZA INVALIDATE
+            QGraphicsView obj=this;
+            obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+            QCoreApplication::processEvents();
 
             std::string name;
             std::string skip;
@@ -482,12 +477,25 @@ void GraphWindow::on_actionOpen_triggered(){
                 istringstream input(line);
                 input >> key >> key2 >>value; // set the variables
                 unesiVrednost(key, key2, value);
-                emit AddNewEdge();
+                emit this->ui->pbAddNode->clicked();
+                sleep(2);
+
+                //VERZIJA SA NITIMA
+                //mythread *thread=new mythread();
+                //connect(thread, &mythread::updateWindow, this, &GraphWindow::updatedWindow);
+                //connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+                //thread->start();
+                //thread->wait();
                 }
 
             openFile.close();
+            emit this->ui->pbSave->clicked();
 
 }
+}
+
+void GraphWindow::updatedWindow(){
+    this->ui->pbAddNode->animateClick();
 }
 
 void GraphWindow::on_actionSave_triggered(){
