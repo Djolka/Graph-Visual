@@ -59,7 +59,13 @@ bool Node::operator==(const Node &second) const{
 }
 
 bool Node::operator<(const Node &second) const{
-    return this->m_name<second.m_name;
+//    return this->m_name<second.m_name;
+    int res = this->m_name.compare(second.m_name);
+
+    if (res < 0)
+        return true;
+    else
+        return false;
 }
 
 bool Node::removeNeighbour(Node *n){
