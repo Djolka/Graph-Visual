@@ -41,6 +41,8 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
+    void calculate(QLineF *newLine, QPointF *controlPoint, QLineF *ghostLine, QPointF& arrowP1, QPointF& arrowP2);
+
     GraphicNode* m_start;
     GraphicNode* m_end;
     qreal m_arrowSize = 15; // from site
