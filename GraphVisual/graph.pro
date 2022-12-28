@@ -12,6 +12,7 @@ SOURCES += \
     Source/binaryserializer.cpp \
     Source/edge.cpp \
     Source/graph.cpp \
+    Source/graphInfo.cpp \
     Source/graphserialization.cpp \
     Source/jsonserializer.cpp \
     Source/main.cpp \
@@ -23,13 +24,13 @@ SOURCES += \
     Source/graphtable.cpp \
     Source/graphicedge.cpp \
     Source/popup.cpp \
-    Source/thread.cpp \
     Source/xmlserializer.cpp
 
 HEADERS += \
     Headers/binaryserializer.h \
     Headers/edge.h \
     Headers/graph.h \
+    Headers/graphInfo.h \
     Headers/graphserialization.h \
     Headers/graphwindow.h \
     Headers/jsonserializer.h \
@@ -42,7 +43,6 @@ HEADERS += \
     Headers/popup.h \
     Headers/serializable.h \
     Headers/serializer.h \
-    Headers/thread.h \
     Headers/xmlserializer.h \
     graphserialization_global.h
 

@@ -4,7 +4,6 @@
 #include "Headers/graphtable.h"
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
-#include "Headers/thread.h"
 
 
 #include<future>
@@ -397,6 +396,57 @@ void GraphWindow::unesiVrednost(std::string key, std::string key2, std::string v
     this->ui->teWeight->insertPlainText(QString::fromStdString(value));
 }
 
+void GraphWindow::fromVariant(const QVariant &variant)
+{
+    const auto map = variant.toMap();
+    QString background = map.value("background").toString();
+    QString nodeColor = map.value("nodeColor").toString();
+    QString edgeColor = map.value("edgeColor").toString();
+    QString direction = map.value("direction").toString();
+    bool hasEdges = map.value("hasEdges").toBool();
+    QVector<Edge*> edgeSet;
+
+    if (hasEdges) {
+        // Ne zaboravimo da se oslobodimo stare memorije!!!
+        qDeleteAll(edgeSet);
+
+        const auto edges = map.value("courseItems").toList();
+        for(const auto& edge : edges) {
+            auto newEdge = new Edge();
+            newEdge->fromVariant(edge);
+            edgeSet.push_back(newEdge);
+           }
+       }
+
+}
+
+QVariant GraphWindow::toVariant() const
+{
+    auto edgeSet=this->m_graph->edgeSet();
+    QString background=this->ui->cbBgcolor->currentText();
+    QString nodeColor=this->ui->cbNodecolor->currentText();
+    QString edgeColor=this->ui->cbEdgecolor->currentText();
+    QString direction=this->ui->pbDirected->isChecked()? "directed":"undirected";
+
+    QVariantMap map;
+        map.insert("background", background);
+        map.insert("nodeColor", nodeColor);
+        map.insert("edgeColor", edgeColor);
+        map.insert("direction", direction);
+        map.insert("hasEdges", !edgeSet.empty());
+
+        if (!edgeSet.empty()) {
+            QVariantList edges;
+            for (const auto & edge : edgeSet) {
+                edges.append(edge->toVariant());
+            }
+            map.insert("courseItems", edges);
+        }
+
+        return map;
+
+}
+
 void GraphWindow::on_actionOpen_triggered(){
 
 
@@ -477,17 +527,12 @@ void GraphWindow::on_actionOpen_triggered(){
                 istringstream input(line);
                 input >> key >> key2 >>value; // set the variables
                 unesiVrednost(key, key2, value);
-                emit this->ui->pbAddNode->clicked();
-                sleep(2);
+                obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+                QCoreApplication::processEvents();
+                AddNewEdge();
+                sleep(1);
 
-                //VERZIJA SA NITIMA
-                //mythread *thread=new mythread();
-                //connect(thread, &mythread::updateWindow, this, &GraphWindow::updatedWindow);
-                //connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-                //thread->start();
-                //thread->wait();
-                }
-
+            }
             openFile.close();
             emit this->ui->pbSave->clicked();
 

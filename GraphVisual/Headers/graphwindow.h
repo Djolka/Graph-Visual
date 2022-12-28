@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include<QPointF>
+#include<QVariant>
 
 
 #include"Headers/graphicedge.h"
@@ -15,7 +16,7 @@ class QGraphicsScene;
 QT_BEGIN_NAMESPACE
 namespace Ui { class GraphWindow; }
 QT_END_NAMESPACE
-
+//class GRAPHSERIALIZATION_EXPORT GraphWindow : public Serializable, public QMainWindow
 class GraphWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,6 +32,8 @@ public:
     bool nodeExists(std::string name);
     void click();
     void unesiVrednost(std::string key, std::string key2, std::string value);
+    void fromVariant(const QVariant & variant);
+    QVariant toVariant() const;
 
 signals:
     void AddedNewNode(GraphicNode *);
