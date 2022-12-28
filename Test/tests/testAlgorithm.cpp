@@ -353,4 +353,62 @@ TEST_CASE("Dijkstra", "[dijkstra]")
     }
 }
 
+TEST_CASE("MST", "[mst]")
+{
+    SECTION("01: Empty graph"){
+        Graph* g = new Graph(false, false);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->MST(*g);
+
+        REQUIRE(result.size()==0);
+    }
+
+
+    SECTION("02: Graph without edges"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->MST(*g);
+
+        REQUIRE(result.size()==1);
+    }
+
+    SECTION("03: Random graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        Node* n5 = new Node("5");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addNode(n5);
+        g->addEdge(n1, n2, 1);
+        g->addEdge(n3, n1, 5);
+        g->addEdge(n4, n3, 2);
+        g->addEdge(n3, n5, 5);
+        g->addEdge(n2, n4, 1);
+        g->addEdge(n5, n4, 10);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->MST(*g);
+        int sum = 0;
+        for(auto node : g->nodeSet()){
+            if(result[node] != nullptr)
+                sum += g->weight(node, result[node]);
+        }
+
+        REQUIRE(sum==9);
+    }
+}
+
 
