@@ -12,5 +12,7 @@
         <file>Resources/run.png</file>
         <file>Resources/reset.png</file>
         <file>Resources/warning.png</file>
+        <file>Resources/logo.png</file>
+        <file>Resources/logo.ico</file>
     </qresource>
 </RCC>

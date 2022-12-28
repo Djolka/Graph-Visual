@@ -23,6 +23,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool 
     font.setPointSize(12);
     m_weightLineEdit->setFont(font);
     m_weightLineEdit->setMinimumWidth(15);
+    m_weightLineEdit->setStyleSheet("background-color: rgb(228, 232, 214, 0)");
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
 
     QGraphicsLineItem::setZValue(-10);
@@ -109,7 +110,8 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     if(m_pen != QPen(Qt::green) && m_pen != QPen(Qt::red)) {
         m_pen = QPen(GraphicEdge::m_color);
     }
-    painter->setPen(m_pen);
+    m_pen.setWidth(2);
+    painter->setPen(QPen(m_pen));
 
     // painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
@@ -183,6 +185,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
         m_weightLineEdit->move(getCenter().x(), getCenter().y());
         m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
+
 
         auto text = m_weightLineEdit->text();
         auto width = text.length();

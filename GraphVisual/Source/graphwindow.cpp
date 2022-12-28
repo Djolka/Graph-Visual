@@ -17,6 +17,10 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <iostream>
+#include <QShortcut>
+#include <math.h>
+#include <QTime>
+#include <QIcon>
 
 #include "Headers/algorithm.h"
 #include "Headers/popup.h"
@@ -81,6 +85,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
 
     fillMap();
+    QApplication::setWindowIcon(QIcon(":/Resources/logo.ico"));
 }
 
 GraphWindow::~GraphWindow()
@@ -89,6 +94,7 @@ GraphWindow::~GraphWindow()
     delete m_GraphTable;
     delete m_graph;
 }
+
 
 void GraphWindow::fillMap() {
     m_colors.insert("off white", "#E8E4D6");
@@ -103,6 +109,8 @@ void GraphWindow::fillMap() {
     m_colors.insert("red", "#D0312D");
 
 }
+
+
 
 void GraphWindow::SaveAsPic(const QString& m_ext){
     QString dir = QDir::homePath();
@@ -139,7 +147,7 @@ void GraphWindow::AddNewEdge() {
     Node* node2 = nullptr;
 
     const auto w = ui->teWeight->toPlainText();
-    int weight = w.toInt();
+    int weight = w == "" ? 1 : w.toInt();
     ui->teWeight->clear();
 
 
@@ -484,7 +492,6 @@ void GraphWindow::on_pbSave_clicked() {
     }
 }
 
-
 void GraphWindow::algorithm() {
     if(m_graph->nodeSet().empty()){
         warning("Insert nodes before running algorithm!");
@@ -613,10 +620,72 @@ void GraphWindow::algorithm() {
     delete a;
 }
 
+void GraphWindow::gravityDelay(){
+        QTime dieTime = QTime::currentTime().addMSecs(3);
+        while(QTime::currentTime() < dieTime){
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
+        }
+}
 
+void GraphWindow::on_pbBeautify_clicked()
+{
+    int numOfIters = 500;
 
+    double C = 0.2;
+    double K = 50.0; // optimal distance
+    double pointsDistance = 0.0;
+    double directionCorrection = m_graph->isDirected() ? 0.4 : 1.0;
 
+    QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
 
+    QPointF normalizedVector = QPointF(0, 0);
+    QPointF repulsiveForce = QPointF(0, 0);
+    QPointF attractionForce = QPointF(0, 0);
+    QPointF moveForce = QPointF(0, 0);
+    QPointF gravityForce = QPointF(0, 0);
+    QPointF centerForce = QPointF(375, 300);
 
+    for(int iter = 0; iter < numOfIters; iter++) {
 
+        for (int i = 0; i < nodesList.size(); i++) {
+
+            gravityForce += nodesList[i]->normalize(centerForce) * 0.1;
+            QList<Node*> neighourList = nodesList[i]->getNode()->neighbours();
+
+            for(int j = 0; j < nodesList.size(); j++) {
+
+                if(i == j)
+                    continue;
+
+                pointsDistance = nodesList[i]->distance(nodesList[j]);
+                normalizedVector = nodesList[i]->normalize(nodesList[j]);
+                repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2 * directionCorrection;
+
+                for(int k = 0; k < neighourList.size(); k++) {
+
+                    if(nodesList[j]->getNode() == neighourList[k]) {
+                        attractionForce += pow(pointsDistance, 2) / K  * normalizedVector * 0.001 * directionCorrection;
+                        break;
+                    }
+                }
+            }
+
+            moveForce = repulsiveForce + attractionForce + gravityForce;
+
+            double newX = nodesList[i]->CenterPosition().x() + moveForce.x();
+            double newY = nodesList[i]->CenterPosition().y() + moveForce.y();
+
+            double x = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().width() - GraphicNode::m_width, newX - nodesList[i]->m_width / 2);
+            double y = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().height() - GraphicNode::m_height, newY - nodesList[i]->m_height / 2);
+            x = std::fmax(0, x);
+            y = std::fmax(0, y);
+
+            nodesList[i]->setPos(x, y);
+            gravityForce = moveForce = repulsiveForce = attractionForce = QPointF(0, 0);
+        }
+
+        emit NeedRedraw();
+        gravityDelay();
+    }
+}
 

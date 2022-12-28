@@ -77,8 +77,9 @@ private:
     bool m_deleteMode = false;
 
     //    QVector<QGraphicsLineItem *> _veze;
+
+//    QVector<QGraphicsLineItem *> _veze;
+
 };
-
-
 
 #endif // GRAPHTABLE_H

@@ -18,10 +18,18 @@ public:
     inline Node *getNode() { return m_Node; }
     inline void setBrush(QBrush b, bool x) { m_brush = b; m_algorithm = x; }
 
+
+    static int m_width;
+    static int m_height;
+    static QColor m_color;
+
     int type() const override;
 
-    QPointF CenterPosition();
-
+    QPointF CenterPosition();   
+    double distance(GraphicNode* n2);
+    double distance(QPointF point);
+    QPointF normalize(GraphicNode* n2);
+    QPointF normalize(QPointF point);
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
@@ -31,11 +39,6 @@ protected:
 
 signals:
     void needRedraw();
-
-public:
-    static QColor m_color;
-    static int m_width;
-    static int m_height;
 
 private:
     Node *m_Node;

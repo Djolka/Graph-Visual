@@ -25,6 +25,7 @@ public:
     QMap<QString, QString> m_colors;
     void fillMap();
     void SaveAsPic(const QString& m_ext);
+    void gravityDelay();
 
 signals:
     void AddedNewNode(GraphicNode *);
@@ -73,6 +74,8 @@ private slots:
 //    void on_pbAddNode_clicked();
 
     void on_pbSave_clicked();
+
+    void on_pbBeautify_clicked();
 
 private:
     Ui::GraphWindow *ui;
