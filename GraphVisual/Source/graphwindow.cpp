@@ -18,6 +18,7 @@
 #include <QShortcut>
 #include <math.h>
 #include <QTime>
+#include <QIcon>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -59,6 +60,7 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::needWarning, this, &GraphWindow::warning);
 
     fillMap();
+    QApplication::setWindowIcon(QIcon(":/Resources/logo.ico"));
 }
 
 GraphWindow::~GraphWindow()
@@ -67,6 +69,7 @@ GraphWindow::~GraphWindow()
     delete m_GraphTable;
     delete m_graph;
 }
+
 
 void GraphWindow::fillMap() {
     m_colors.insert("off white", "#E4E8D6");
