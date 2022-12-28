@@ -28,6 +28,7 @@ SOURCES +=     main.cpp     \
     ../GraphVisual/Source/edge.cpp \
     ../GraphVisual/Source/node.cpp \
     ../GraphVisual/Source/algorithm.cpp \
+    tests/testAlgorithm.cpp
 #    ../GraphVisual/Source/graphicedge.cpp \
 #    ../GraphVisual/Source/graphicnode.cpp \
 #    ../GraphVisual/Source/graphtable.cpp \

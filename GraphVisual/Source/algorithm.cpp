@@ -9,6 +9,9 @@
 QList<Node*> Algorithm::BFS (Node* current){
 
     QList<Node*> steps;
+    if(current == nullptr)
+        return steps;
+
     QQueue<Node*> q;
     QHash<Node*, bool> visited;
 
