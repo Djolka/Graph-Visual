@@ -9,12 +9,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Source/binaryserializer.cpp \
     Source/edge.cpp \
     Source/graph.cpp \
-    Source/graphInfo.cpp \
-    Source/graphserialization.cpp \
-    Source/jsonserializer.cpp \
     Source/main.cpp \
     Source/graphwindow.cpp \
     Source/mytextedit.cpp \
@@ -23,28 +19,19 @@ SOURCES += \
     Source/graphicnode.cpp \
     Source/graphtable.cpp \
     Source/graphicedge.cpp \
-    Source/popup.cpp \
-    Source/xmlserializer.cpp
+    Source/popup.cpp
 
 HEADERS += \
-    Headers/binaryserializer.h \
     Headers/edge.h \
     Headers/graph.h \
-    Headers/graphInfo.h \
-    Headers/graphserialization.h \
     Headers/graphwindow.h \
-    Headers/jsonserializer.h \
     Headers/mytextedit.h \
     Headers/node.h \
     Headers/algorithm.h \
     Headers/graphicnode.h \
     Headers/graphtable.h \
     Headers/graphicedge.h \
-    Headers/popup.h \
-    Headers/serializable.h \
-    Headers/serializer.h \
-    Headers/xmlserializer.h \
-    graphserialization_global.h
+    Headers/popup.h
 
 FORMS += \
     Forms/graphwindow.ui \
@@ -63,4 +50,6 @@ DISTFILES += \
     Resources/open.png \
     Resources/save.png \
     Resources/saveasjpg.png \
-    Resources/saveaspng.png
+    Resources/saveaspng.png \
+    Resources/toJson.png \
+    Resources/fromJson.png

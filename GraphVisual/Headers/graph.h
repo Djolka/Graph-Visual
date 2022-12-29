@@ -8,14 +8,6 @@
 #include <QString>
 #include <QSet>
 
-
-#include <QVariant>
-
-#include "graphserialization_global.h"
-#include "serializable.h"
-
-
-
 class Graph{
 
 public:

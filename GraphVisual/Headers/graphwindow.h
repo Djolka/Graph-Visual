@@ -16,7 +16,7 @@ class QGraphicsScene;
 QT_BEGIN_NAMESPACE
 namespace Ui { class GraphWindow; }
 QT_END_NAMESPACE
-//class GRAPHSERIALIZATION_EXPORT GraphWindow : public Serializable, public QMainWindow
+
 class GraphWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,7 +31,7 @@ public:
     void SaveAsPic(const QString& m_ext);
     bool nodeExists(std::string name);
     void click();
-    void unesiVrednost(std::string key, std::string key2, std::string value);
+    void enterValue(std::string key, std::string key2, std::string value);
     void fromVariant(const QVariant & variant);
     QVariant toVariant() const;
 
@@ -53,13 +53,14 @@ private slots:
     void deleteEdge(Node* node1, Node* node2);
     void warning(QString s);
     void nodeNameLength();
-    void updatedWindow();
 
     void graphDirected();
     void graphUndirected();
 
     void on_actionSaveAsPng_triggered();
     void on_actionSaveAsJpg_triggered();
+    void on_actionSaveAsJson_triggered();
+    void on_actionLoadFromJson_triggered();
 
     void on_pbUndirected_pressed();
 

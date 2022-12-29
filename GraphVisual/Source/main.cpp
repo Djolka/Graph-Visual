@@ -4,7 +4,12 @@
 #include "Headers/node.h"
 #include "Headers/edge.h"
 
+#include<iostream>
 #include <string>
+
+#include <QVector>
+#include <QString>
+
 
 #include <QApplication>
 
