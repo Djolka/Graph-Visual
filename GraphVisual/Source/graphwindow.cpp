@@ -456,7 +456,7 @@ QVariant GraphWindow::toVariant() const
     int background=this->ui->cbBgcolor->currentIndex();
     int nodeColor=this->ui->cbNodecolor->currentIndex();
     int edgeColor=this->ui->cbEdgecolor->currentIndex();
-    QString direction=this->ui->pbDirected->isChecked()? "directed":"undirected";
+    QString direction=this->m_graph->isDirected()? "directed":"undirected";
 
 
 
@@ -484,13 +484,13 @@ void GraphWindow::on_actionLoadFromJson_triggered(){
     std::string filepath = file.toStdString();
 
     QFile newFile(QString::fromStdString(filepath));
-    newFile.open(QFile::ReadOnly);
+    if(newFile.open(QFile::ReadOnly)){
 
     QJsonDocument doc = QJsonDocument::fromJson(newFile.readAll());
 
     newFile.close();
 
-    GraphWindow::fromVariant(doc.toVariant());
+    GraphWindow::fromVariant(doc.toVariant());}
 
 }
 
@@ -542,10 +542,10 @@ void GraphWindow::on_actionOpen_triggered(){
             std::string mode;
             openFile>>mode;
 
-            if(mode=="undir"){
-                emit this->ui->pbUndirected->pressed();
+            if(mode=="dir"){
+                graphDirected();
             }else{
-                emit this->ui->pbDirected->pressed();
+                graphUndirected();
             }
 
             std::string  key2;
@@ -625,7 +625,7 @@ void GraphWindow::on_actionSave_triggered(){
                     saveFile<<pair.first<<" "<<pair.second<<"\n";
                 }
 
-                if(this->ui->pbUndirected->isChecked()){
+                if(this->m_graph->isDirected()){
                     saveFile<<"dir"<<"\n";
                 }else{
                     saveFile<<"undir"<<"\n";
