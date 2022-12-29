@@ -293,9 +293,7 @@ void GraphTable::colorNodesSet(QSet<Node *> result, bool x) {
         Redraw();
         delay();
     }
-
 }
-
 
 // void GraphTable::reset() {
 //     for(GraphicNode* node : m_Nodes){

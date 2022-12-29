@@ -10,6 +10,7 @@ class Edge{
 
 public:
     Edge(std::pair<Node*, Node*>, int weight);
+    Edge(const Edge *other);
     ~Edge();
 
     explicit Edge(edges::iterator& iter);
@@ -26,7 +27,7 @@ public:
 
 private:
     int m_weight;
-    const std::pair<Node*, Node*> m_nodePair;
+    std::pair<Node*, Node*> m_nodePair;
 };
 
 #endif // EDGE_H

@@ -68,6 +68,8 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::colorMST, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
     connect(this, &GraphWindow::colorDijkstra, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesDijkstra);
     connect(this, &GraphWindow::colorArticulation, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorNodesSet);
+    connect(this, &GraphWindow::colorEulerCycle, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::colorEdges);
+
 
     connect(ui->pbRESET, &QPushButton::clicked, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::reset);
     connect(this, &GraphWindow::changeToDir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToDir);
@@ -472,6 +474,7 @@ void GraphWindow::on_pbSave_clicked() {
 
 void GraphWindow::algorithm() {
     auto a = new Algorithm();
+
     if(ui->pbBFS->isChecked()){
         auto p = new Popup();
         if(p->exec() == QDialog::Accepted){
@@ -536,14 +539,20 @@ void GraphWindow::algorithm() {
             if(node1 == nullptr)
                 warning("Node with that name does not exist");
         }
-        else return;
+        else {
+            delete a;
+            return;
+        }
         if(p->exec() == QDialog::Accepted){
             QString nodeName = p->getNodeName();
             node2 = m_graph->getNode(nodeName.toStdString());
             if(node2 == nullptr)
                 warning("Node with that name does not exist");
         }
-        else return;
+        else {
+            delete a;
+            return;
+        }
 
         QWidget::setEnabled(false);
         QList<Node*> path;
@@ -574,6 +583,34 @@ void GraphWindow::algorithm() {
         QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
+    else if(ui->pbEulerian->isChecked()) {
+        QWidget::setEnabled(false);
+        QList<std::string> result = a->getEulerianCircuit(*m_graph);
+
+        if(result.size() == 0) {
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>There is no Euler cycle in this graph</FONT>");
+        }
+        else {
+            QList<Edge*> coloring;
+            auto start = result.begin();
+            auto end = result.end() - 1;
+
+            while(start != end) {
+                Node* u = m_graph->getNode(*start);
+                Node* v = m_graph->getNode((*(start+1)));
+                coloring.push_back(m_graph->getEdge(u, v));
+                ++start;
+            }
+
+            emit colorEulerCycle(coloring, true);
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        }
+
+        QWidget::setEnabled(true);
+    }
+
+
+    delete a;
 }
 
 

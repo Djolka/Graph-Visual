@@ -9,6 +9,14 @@ Node::Node(){
     this->m_deg=0;
 }
 
+Node::Node(const Node *other) {
+    m_inDeg = other->inDeg();
+    m_outDeg = other->outDeg();
+    m_deg = other->m_deg;
+    m_name = other->m_name;
+    m_position = other->m_position;
+}
+
 Node::Node(std::string name){
     this->m_inDeg=0;
     this->m_outDeg=0;

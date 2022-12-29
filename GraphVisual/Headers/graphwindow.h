@@ -39,6 +39,7 @@ signals:
     void changeToUndir();
     void colorMST(QList<Edge*>, bool x);
     void colorDijkstra(QList<Node*>, QList<Node*>, QList<Edge*>, bool x);
+    void colorEulerCycle(QList<Edge*>, bool x);
 
 private slots:
     void AddNewEdge();

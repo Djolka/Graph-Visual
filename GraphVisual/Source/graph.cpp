@@ -6,6 +6,43 @@
 
 Graph::Graph(bool directed, bool weighted): m_weightRange(calcWeightRange(weighted)), m_directed(directed),  m_weighted(weighted) {}
 
+Graph::Graph(Graph &other) {
+    for(const auto node : other.nodeSet()) {
+        Node *n = new Node(node);
+        m_nodes.append(n);
+    }
+
+    for(const auto node : other.nodeSet()) {
+        Node* n = getNode(node->name());
+        for(auto oldNeighbour : node->neighbours()) {
+            std::string name = oldNeighbour->name();
+            Node* newNeighbour = getNode(name);
+            n->addNeighbour(newNeighbour);
+        }
+    }
+
+
+    for(auto edge : other.edgeSet()) {
+        Node *otherNode1 = edge->first();
+        Node *otherNode2 = edge->second();
+
+        Node *newNode1 = getNode(otherNode1->name());
+        Node *newNode2 = getNode(otherNode2->name());
+
+        std::pair<Node*, Node*> newEdge(newNode1, newNode2);
+
+        Edge *e = new Edge(newEdge, edge->m_weight);
+        m_edges.append(e);
+    }
+
+
+    m_weightRange.first = other.m_weightRange.first;
+    m_weightRange.second = other.m_weightRange.second;
+
+    m_directed = other.m_directed;
+    m_weighted = other.m_weighted;
+}
+
 std::pair<int, int> Graph::calcWeightRange(bool weighted) {
     auto _max = weighted ? INT_MAX - 1 : 1;
     auto _min = 1;
@@ -286,18 +323,12 @@ bool Graph::addEdge(Node *u, Node *v, int w) {
     return true;
 }
 
-//That means that if your code is not calling abort directly nor sending itself the SIGABRT signal via raise,
-//and you don't have any failing assertions, the cause must be that a support library (which could be libc) has encountered an internal error.
-//pa ok...........
 bool Graph::removeEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
     for(;it != m_edges.end(); ++it){
         if(isUndirected()){
-            // ovde postoje grane (u, v) i (v, u) ili samo jedna od njih?
-            // jer ako postoje obe onda nema svrhe proveavati oba uslova
             if (((*it)->first() == u && (*it)->second() == v) || ((*it)->first() == v && (*it)->second() == u)){
-                // ako nisu nullptr/invalidated
-                if(u) {
+               if(u) {
                     u->decDeg();
                     u->removeNeighbour(v);
                 }
@@ -308,8 +339,6 @@ bool Graph::removeEdge(Node *u, Node *v) {
                 }
 
 
-// erase(it) erases the iterator, and hence also the element pointing by it,
-// vector::erase destroys the removed object, which involves calling its destructor
                 m_edges.erase(it);
                 return true;
             }
@@ -408,12 +437,21 @@ QList<Node*> Graph::nodeSet() {
 }
 
 Node* Graph::randomNode() {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(m_nodes.begin(), m_nodes.end(), g);
-    Node* n = m_nodes.takeFirst();
 
-    return n;
+//      ovako izbacuje izabrani cvor iz liste cvorova
+//    std::random_device rd;
+//    std::mt19937 g(rd());
+//    std::shuffle(m_nodes.begin(), m_nodes.end(), g);
+//    Node* n = m_nodes.takeFirst();
+
+    int n = rand() % countNodes();
+    auto it = m_nodes.begin();
+    while(n > 0) {
+        ++it;
+        --n;
+    }
+
+    return *it;
 }
 
 

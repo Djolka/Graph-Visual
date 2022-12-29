@@ -10,6 +10,7 @@ class Node{
 
 public:
     Node();
+    Node(const Node *node);
     explicit Node(std::string name);
     explicit Node(std::string name, QPointF position);
     ~Node();
