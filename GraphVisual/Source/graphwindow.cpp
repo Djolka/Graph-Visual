@@ -144,7 +144,7 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
     QString dir = QDir::homePath();
     QString name = "Untilted." + m_ext;
     QString fileType = m_ext.toUpper() + "(*." + m_ext.toUpper() + ")";
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, fileType);
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, fileType, nullptr, QFileDialog::DontUseNativeDialog);
         if (!fileName.isNull()) {
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
@@ -551,7 +551,7 @@ QVariant GraphWindow::toVariant() const
 }
 
 void GraphWindow::on_actionLoadFromJson_triggered(){
-    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "JSON files (*.json)");
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "JSON files (*.json)", nullptr, QFileDialog::DontUseNativeDialog);
     std::string filepath = file.toStdString();
 
     QFile newFile(QString::fromStdString(filepath));
@@ -568,7 +568,7 @@ void GraphWindow::on_actionLoadFromJson_triggered(){
 void GraphWindow::on_actionOpen_triggered(){
 
 
-    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)");
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)", nullptr, QFileDialog::DontUseNativeDialog);
     std::string filename = file.toStdString();
     std::ifstream openFile;
     std::string path = filename;
@@ -643,7 +643,7 @@ void GraphWindow::on_actionSaveAsJson_triggered(){
     if (this->m_graph->countNodes()==0){
             QMessageBox::information(this, tr("Error"), "The scene is empty");
     }else{
-        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "JSON files (*.json)");
+        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "JSON files (*.json)", nullptr, QFileDialog::DontUseNativeDialog);
         if (!file.isEmpty()){
             std::string filename = file.toStdString();
             if (filename.substr(filename.size()-5).compare(".json")!=0){
@@ -668,7 +668,7 @@ void GraphWindow::on_actionSave_triggered(){
     if (this->m_graph->countNodes()==0){
             QMessageBox::information(this, tr("Error"), "The scene is empty");
     }else{
-        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "GRAPH files (*.graph)");
+        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "GRAPH files (*.graph)", nullptr, QFileDialog::DontUseNativeDialog);
         if (!file.isEmpty()){
             std::string filename = file.toStdString();
             if (filename.substr(filename.size()-6).compare(".graph")!=0){
