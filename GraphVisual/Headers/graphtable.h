@@ -48,6 +48,7 @@ public slots:
     void colorEdges(QList<Edge*> result);
     void reset();
     void colorNodesSet(QSet<Node*> result);
+//    void colorEulerEdges(QList<Node*> result, bool x);
     void setToDir();
     void setToUndir();
     void changeSliderValue(int value);

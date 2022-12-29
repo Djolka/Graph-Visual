@@ -292,16 +292,16 @@ void Algorithm::articulationNodes (Node* node, QHash<Node*, bool> &visited,
 }
 
 
-QList<Node*> Algorithm::Hierholzer (Graph* graph){
+QList<std::string> Algorithm::Hierholzer (Graph graph){
 
-    QList<Node*> result;
+    QList<std::string> result;
 
     QStack<Node*> currPath;
     std::vector<Node*> cycle;
 
     Node* nextNode;
 
-    Node* currNode = graph->randomNode();
+    Node* currNode = graph.randomNode();
     currPath.push(currNode);
 
     while (!currPath.empty()) {
@@ -310,7 +310,7 @@ QList<Node*> Algorithm::Hierholzer (Graph* graph){
 
             nextNode = currNode->neighbours().back();
 
-            graph->removeEdge(currNode, nextNode);
+            graph.removeEdge(currNode, nextNode);
 
             currNode = nextNode;
         } else {
@@ -319,12 +319,13 @@ QList<Node*> Algorithm::Hierholzer (Graph* graph){
             currPath.pop();
         }
     }
-    for (int i = (int) cycle.size() - 1; i >= 1; --i){
-        result.push_back(cycle[i]);
+    for (int i = (int) cycle.size() - 1; i >= 0; --i){
+        result.push_back(cycle[i]->name());
     }
 
     return result;
 }
+
 
 
 
@@ -346,15 +347,17 @@ bool Algorithm::hasEulerianCircuit (Graph &graph){
 }
 
 
-QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-    if(!hasEulerianCircuit(*graph)){
-        return QList<Node*>();
+QList<std::string> Algorithm::getEulerianCircuit (Graph graph){
+
+    if(!hasEulerianCircuit(graph)){
+        return QList<std::string>();
     }
 
-    QList<Node*> result = Hierholzer (graph);
+    QList<std::string> result = Hierholzer (graph);
 
     return result;
 }
+
 
 

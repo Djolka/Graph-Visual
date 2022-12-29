@@ -41,11 +41,15 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
+    void calculate(QLineF *newLine, QPointF *controlPoint, QLineF *ghostLine, QPointF& arrowP1, QPointF& arrowP2);
+
     GraphicNode* m_start;
     GraphicNode* m_end;
+    qreal m_arrowSize = 15; // from site
     int m_weight;
     QLineEdit* m_weightLineEdit;
     QPen m_pen = QPen(Qt::black);
+    QBrush m_brush = QBrush(Qt::black);
     bool directed;
     bool m_algorithm = false;
 };

@@ -47,10 +47,10 @@ QRectF GraphicEdge::boundingRect() const {
     QPointF offset2;
 
     if(directed){
-        dx *= 40;
-        dy *= 40;
-        offset1 = QPointF(-dx, -dy);
-        offset2 = QPointF(0, 0);
+        dx *= 50;
+        dy *= 50;
+        offset1 = QPointF(dx, dy);
+        offset2 = QPointF(20, 20);
     }
     else {
         dx *= 20;
@@ -83,10 +83,10 @@ QPainterPath GraphicEdge::shape() const{
     QPointF offset2;
 
     if(directed){
-        dx *= 40;
-        dy *= 40;
-        offset1 = QPointF(-dx, -dy);
-        offset2 = QPointF(0, 0);
+        dx *= 50;
+        dy *= 50;
+        offset1 = QPointF(dx, dy);
+        offset2 = QPointF(20, 20);
     }
     else {
         dx *= 20;
@@ -102,7 +102,6 @@ QPainterPath GraphicEdge::shape() const{
     return ret;
 }
 
-
 void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -110,77 +109,70 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     if(m_pen != QPen(Qt::green) && m_pen != QPen(Qt::red)) {
         m_pen = QPen(GraphicEdge::m_color);
     }
-    m_pen.setWidth(2);
     painter->setPen(QPen(m_pen));
-
-    // painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
 
     //draw arc
     if(directed){
-        double angleRad= 90 * (M_PI/ 180);
-        double cosTheta = cos(-angleRad);
-        double sinTheta = sin(-angleRad);
-
-        //center of start and end edge
         QPointF *edgeCenter = new QPointF((m_start->x()+m_end->x())/2, (m_start->y()+m_end->y())/2);
-        //control point for bezier curve
-        QPointF *targetNode = new QPointF(m_end->x(), m_end->y());
 
 
-        //translating edgeCenter to (0,0) and targetNode with it
-        targetNode->setX(targetNode->x()-(m_start->x()+m_end->x())/2);
-        targetNode->setY(targetNode->y()-(m_start->y()+m_end->y())/2);
-        edgeCenter->setX(edgeCenter->x()-(m_start->x()+m_end->x())/2);
-        edgeCenter->setY(edgeCenter->y()-(m_start->y()+m_end->y())/2);
+        qreal dX = m_end->CenterPosition().x() - m_start->CenterPosition().x();
+        qreal dY = m_end->CenterPosition().y() - m_start->CenterPosition().y();
+        qreal distance = sqrt(pow(dX, 2) + pow(dY, 2));
 
 
+        QLineF *newLine =  new QLineF(m_start->CenterPosition(), m_end->CenterPosition());
+        newLine->setLength(newLine->length() - GraphicNode::m_width/2);
 
-        //rotating aroung edgeCenter targetNode
-        double x = targetNode->x();
-        targetNode->setX(targetNode->x()*cosTheta - targetNode->y()*sinTheta);
-        targetNode->setY(x*sinTheta + targetNode->y()*cosTheta);
+        qreal mX = (m_start->CenterPosition().x() + newLine->p2().x()) / 2;
+        qreal mY = (m_start->CenterPosition().y() + newLine->p2().y()) / 2;
 
+        qreal cX = 90 * (-1 * (dY / distance)) + mX;
+        qreal cY = 90 * (dX / distance) + mY;
+        QPointF *controlPoint = new QPointF(cX, cY);
 
-        //translating back
-        targetNode->setX(targetNode->x()+(m_start->x()+m_end->x())/2);
-        targetNode->setY(targetNode->y()+(m_start->y()+m_end->y())/2);
-        edgeCenter->setX(edgeCenter->x()+(m_start->x()+m_end->x())/2);
-        edgeCenter->setY(edgeCenter->y()+(m_start->y()+m_end->y())/2);
+        QLineF *ghostLine = new QLineF(*controlPoint, m_end->CenterPosition());
+        ghostLine->setLength(ghostLine->length() - GraphicNode::m_width/2);
 
-        targetNode->setX((targetNode->x()+edgeCenter->x())/2);
-        targetNode->setY((targetNode->y()+edgeCenter->y())/2);
+        double angle = ::acos(ghostLine->dx() / ghostLine->length());
+        if (ghostLine->dy() >= 0) {
+            angle = (M_PI * 2) - angle;
+        }
 
-        //limit edge to scene
-
+        setLine(*newLine); // ??
+        prepareGeometryChange();
 
         QPainterPath myPath;
-        myPath.moveTo(m_start->x()+25,m_start->y()+25);
-        myPath.cubicTo(m_start->x()+25, m_start->y()+25, targetNode->x(), targetNode->y(), m_end->x()+25, m_end->y()+25);
 
-
+        myPath.moveTo(m_start->CenterPosition());
+        myPath.quadTo(*controlPoint, ghostLine->p2());
         painter->drawPath(myPath);
-        m_weightLineEdit->move((targetNode->x()+edgeCenter->x())/2, (targetNode->y()+edgeCenter->y())/2);
+
+        m_weightLineEdit->move((controlPoint->x()+edgeCenter->x())/2, (controlPoint->y()+edgeCenter->y())/2);
         m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
+
         auto text = m_weightLineEdit->text();
         auto width = text.length();
-
         m_weightLineEdit->resize(std::fmax(10*width, 20), 20);
 
 
 //        arrow
-//        QRectF rect = QRectF(0, 0, 20, 20);
-//        QRectF rect = QRectF(m_end->x(), m_end->y(), 15, 15);
+        QPointF arrowP1 = ghostLine->p2() - QPointF(sin(angle + M_PI/3) * m_arrowSize,
+                                            cos(angle + M_PI/3) * m_arrowSize);
+        QPointF arrowP2 = ghostLine->p2() - QPointF(sin(angle + M_PI - M_PI/4) * m_arrowSize,
+                                            cos(angle + M_PI - M_PI/4) * m_arrowSize);
 
-//        QPainterPath path;
-//        path.moveTo(rect.left() + (rect.width() / 2), rect.bottom());
-//        path.lineTo(rect.topLeft());
-//        path.lineTo(rect.topRight());
-//        path.lineTo(rect.left() + (rect.width() / 2), rect.bottom());
+        QPolygonF arrowHead;
+        arrowHead.clear();
+        arrowHead << ghostLine->p2() << arrowP1 << arrowP2;
+        m_brush.setStyle(Qt::SolidPattern);
+        painter->setBrush(m_brush);
 
-//        painter->fillPath(path, QBrush(QColor ("blue")));
+        painter->drawPolygon(arrowHead);
+
 
         delete edgeCenter;
-        delete targetNode;
+        delete controlPoint;
     }else{
         painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
         m_weightLineEdit->move(getCenter().x(), getCenter().y());

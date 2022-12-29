@@ -9,7 +9,7 @@
 GraphicNode::GraphicNode(Node *node)
     : QGraphicsObject()
     , m_Node(node) {
-     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable);
+     setFlags(GraphicsItemFlag::ItemIsSelectable | GraphicsItemFlag::ItemIsMovable | GraphicsItemFlag::ItemSendsGeometryChanges);
     setAcceptHoverEvents(true);
 
 }

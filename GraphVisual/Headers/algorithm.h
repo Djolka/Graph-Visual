@@ -31,9 +31,9 @@ public:
     void articulationNodes (Node* node, QHash<Node*, bool> &visited,
                             QHash<Node*, int> &in, QHash<Node*, int> &low_link,
                             QHash<Node*, Node*> &parent, int time, QSet<Node*> &result);
-    QList<Node*> Hierholzer (Graph* graph);
+    QList<std::string> Hierholzer (Graph graph);
     bool hasEulerianCircuit (Graph &graph);
-    QList<Node*> getEulerianCircuit (Graph* graph);
+    QList<std::string> getEulerianCircuit (Graph graph);
 };
 
 

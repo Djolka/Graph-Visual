@@ -647,7 +647,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -712,7 +712,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -777,7 +777,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -882,7 +882,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -947,7 +947,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -1012,7 +1012,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="128">
+               <color alpha="255">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -1445,7 +1445,7 @@ color: rgb(211, 215, 207);</string>
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer_2">
+       <spacer name="verticalSpacer_21">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1706,7 +1706,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="128">
+                      <color alpha="255">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
@@ -1771,7 +1771,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="128">
+                      <color alpha="255">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
@@ -1836,7 +1836,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="128">
+                      <color alpha="255">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
