@@ -42,10 +42,10 @@ QRectF GraphicEdge::boundingRect() const {
     QPointF offset2;
 
     if(directed){
-        dx *= 40;
-        dy *= 40;
-        offset1 = QPointF(-dx, -dy);
-        offset2 = QPointF(0, 0);
+        dx *= 50;
+        dy *= 50;
+        offset1 = QPointF(dx, dy);
+        offset2 = QPointF(20, 20);
     }
     else {
         dx *= 20;
@@ -78,10 +78,10 @@ QPainterPath GraphicEdge::shape() const{
     QPointF offset2;
 
     if(directed){
-        dx *= 40;
-        dy *= 40;
-        offset1 = QPointF(-dx, -dy);
-        offset2 = QPointF(0, 0);
+        dx *= 50;
+        dy *= 50;
+        offset1 = QPointF(dx, dy);
+        offset2 = QPointF(20, 20);
     }
     else {
         dx *= 20;
