@@ -5,6 +5,7 @@
 #include<QQueue>
 #include<QStack>
 #include<algorithm>
+#include<limits>
 
 QList<Node*> Algorithm::BFS (Node* current){
 
