@@ -1,0 +1,10 @@
+stages:
+  - BuildGraph
+
+BuildGraph:
+  stage: BuildGraph
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t graphvisual ./GraphVisual
