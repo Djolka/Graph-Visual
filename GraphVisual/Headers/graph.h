@@ -8,8 +8,7 @@
 #include <QString>
 #include <QSet>
 
-
-class Graph {
+class Graph{
 
 public:
     explicit Graph(bool directed, bool weighted);
@@ -34,8 +33,11 @@ public:
     bool isolateNode(const std::string &name);
     bool setNodeName(Node *node, const std::string &new_name);
     bool changeNodeName(const std::string &old_name, const std::string &new_name);
-    inline int countNodes() const;
+    int countNodes() const;
     Node* randomNode();
+
+    //QVariant toVariant() const override;
+    //void fromVariant(const QVariant& variant) override;
 
 
     //edge methods

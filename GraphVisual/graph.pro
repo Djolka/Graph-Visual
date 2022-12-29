@@ -50,4 +50,6 @@ DISTFILES += \
     Resources/open.png \
     Resources/save.png \
     Resources/saveasjpg.png \
-    Resources/saveaspng.png
+    Resources/saveaspng.png \
+    Resources/toJson.png \
+    Resources/fromJson.png

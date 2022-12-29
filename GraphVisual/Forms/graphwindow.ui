@@ -1574,7 +1574,7 @@ color: rgb(245, 243, 242);</string>
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_Config">
            <property name="styleSheet">
@@ -3354,6 +3354,8 @@ view.
     <addaction name="actionSaveAsJpg"/>
     <addaction name="actionSaveAsPng"/>
     <addaction name="actionClose"/>
+    <addaction name="actionSaveAsJson"/>
+    <addaction name="actionLoadFromJson"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -3816,6 +3818,29 @@ view.
    </property>
    <property name="text">
     <string>Save as .jpg</string>
+   </property>
+  </action>
+  <action name="actionSave_as_bin">
+   <property name="text">
+    <string>Save as .bin</string>
+   </property>
+  </action>
+  <action name="actionSaveAsJson">
+   <property name="icon">
+    <iconset resource="../Resources.qrc">
+     <normaloff>:/new/rec/Resources/toJson.png</normaloff>:/new/rec/Resources/toJson.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as .json</string>
+   </property>
+  </action>
+  <action name="actionLoadFromJson">
+   <property name="icon">
+    <iconset resource="../Resources.qrc">
+     <normaloff>:/new/rec/Resources/fromJson.png</normaloff>:/new/rec/Resources/fromJson.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load from .json</string>
    </property>
   </action>
  </widget>

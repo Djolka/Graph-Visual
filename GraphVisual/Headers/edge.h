@@ -1,6 +1,10 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+
+#include <QVariant>
+
+
 #include <map>
 #include "Headers/node.h"
 
@@ -9,6 +13,7 @@ typedef std::map<std::pair<Node*, Node*>, int> edges;
 class Edge{
 
 public:
+    Edge(){};
     Edge(std::pair<Node*, Node*>, int weight);
     ~Edge();
 
@@ -16,8 +21,9 @@ public:
     Node* first() const;
     Node* second() const;
     int weight() const;
-
-    friend std::ostream &operator<<(std::ostream &os, const Edge e);
+    QVariant toVariant();
+    void fromVariant(const QVariant& variant);
+    //friend std::ostream &operator<<(std::ostream &os, const Edge e);
 
     friend class Graph;
 

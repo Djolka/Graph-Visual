@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include<QPointF>
+#include<QVariant>
+
 
 #include"Headers/graphicedge.h"
 #include"Headers/graph.h"
@@ -23,9 +25,16 @@ public:
     GraphWindow(QWidget *parent = nullptr);
     ~GraphWindow();
     QMap<QString, QString> m_colors;
+    QMap<QString, int> m_indices;
     void fillMap();
+    void indexColors();
     void SaveAsPic(const QString& m_ext);
     void gravityDelay();
+    bool nodeExists(std::string name);
+    void click();
+    void enterValue(std::string key, std::string key2, std::string value);
+    void fromVariant(const QVariant & variant);
+    QVariant toVariant() const;
 
 signals:
     void AddedNewNode(GraphicNode *);
@@ -60,6 +69,8 @@ private slots:
 
     void on_actionSaveAsPng_triggered();
     void on_actionSaveAsJpg_triggered();
+    void on_actionSaveAsJson_triggered();
+    void on_actionLoadFromJson_triggered();
 
     void on_pbUndirected_pressed();
 
@@ -70,6 +81,11 @@ private slots:
 //    void on_pbUndirected_clicked();
 
     void on_actionClose_triggered();
+
+//    void on_pbAddNode_clicked();
+    void on_actionSave_triggered();
+
+    void on_actionOpen_triggered();
 
 //    void on_pbAddNode_clicked();
 

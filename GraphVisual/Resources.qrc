@@ -2,6 +2,8 @@
     <qresource prefix="/new/rec">
         <file>Resources/saveaspng.png</file>
         <file>Resources/saveasjpg.png</file>
+        <file>Resources/toJson.png</file>
+        <file>Resources/fromJson.png</file>
         <file>Resources/save.png</file>
         <file>Resources/open.png</file>
         <file>Resources/close.png</file>

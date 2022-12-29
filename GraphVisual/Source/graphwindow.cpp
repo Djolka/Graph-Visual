@@ -9,7 +9,19 @@
 #include "Headers/edge.h"
 #include "Headers/graphicedge.h"
 #include "Headers/algorithm.h"
+#include "Headers/graph.h"
 
+#include "Headers/algorithm.h"
+#include"Headers/popup.h"
+#include"ui_popup.h"
+
+#include <QJsonDocument>
+#include <future>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QDebug>
+#include <fstream>
+#include <string>
 #include <QString>
 #include <QListWidgetItem>
 #include <QFileDialog>
@@ -25,6 +37,7 @@
 #include "Headers/algorithm.h"
 #include "Headers/popup.h"
 #include "ui_popup.h"
+#include <unistd.h>
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -86,6 +99,7 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     fillMap();
     QApplication::setWindowIcon(QIcon(":/Resources/logo.ico"));
+    indexColors();
 }
 
 GraphWindow::~GraphWindow()
@@ -110,6 +124,19 @@ void GraphWindow::fillMap() {
 
 }
 
+void GraphWindow::indexColors() {
+    m_indices.insert("off white", 7);
+    m_indices.insert("white", 1);
+    m_indices.insert("black", 8);
+    m_indices.insert("navy", 6);
+    m_indices.insert("yellow", 5);
+    m_indices.insert("green", 4);
+    m_indices.insert("purple", 3);
+    m_indices.insert("blue", 2);
+    m_indices.insert("dark grey", 0);
+    m_indices.insert("red", 9);
+}
+
 
 
 void GraphWindow::SaveAsPic(const QString& m_ext){
@@ -123,7 +150,6 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
         }
 
 }
-
 
 void GraphWindow::AddNewEdge() {
 
@@ -168,7 +194,6 @@ void GraphWindow::AddNewEdge() {
 
             graphicNode1 = new GraphicNode(node1);
             m_GraphTable->addItem(graphicNode1);
-
             emit AddedNewNode(graphicNode1);
         }
         else{
@@ -187,7 +212,6 @@ void GraphWindow::AddNewEdge() {
 
             graphicNode2 = new GraphicNode(node2);
             m_GraphTable->addItem(graphicNode2);
-
             emit AddedNewNode(graphicNode2);
         }
         else{
@@ -217,6 +241,14 @@ void GraphWindow::AddNewEdge() {
         emit NeedRedraw();
     }
 }
+
+bool GraphWindow::nodeExists(std::string name){
+    if(!m_graph->hasNode(name))
+          return true;
+    return false;
+}
+
+
 
 void GraphWindow::DeleteGraphFromTable() {
     for(auto node : m_graph->nodeSet()) {
@@ -355,6 +387,11 @@ void GraphWindow::graphDirected() {
     return;
 }
 
+void GraphWindow::click(){
+    this->ui->pbAddNode->animateClick();
+    return;
+}
+
 
 
 void GraphWindow::graphUndirected() {
@@ -416,6 +453,261 @@ void GraphWindow::on_pbUndirected_pressed() {
 void GraphWindow::on_pbDirected_pressed() {
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+}
+
+void GraphWindow::enterValue(std::string key, std::string key2, std::string value){
+    this->ui->teNode1->insertPlainText(QString::fromStdString(key));
+    this->ui->teNode2->insertPlainText(QString::fromStdString(key2));
+    this->ui->teWeight->insertPlainText(QString::fromStdString(value));
+}
+
+
+
+void GraphWindow::fromVariant(const QVariant &variant)
+{
+    const auto map = variant.toMap();
+
+    emit this->ui->pbDeleteAll->clicked();
+
+
+    int background = map.value("background").toInt();
+    int nodeColor = map.value("nodeColor").toInt();
+    int edgeColor = map.value("edgeColor").toInt();
+    QString direction = map.value("direction").toString();
+
+    indexColors();
+
+    QString color=m_indices.key(background);
+    this->ui->cbBgcolor->setCurrentIndex(background);
+
+    color=m_indices.key(nodeColor);
+    this->ui->cbNodecolor->setCurrentIndex(nodeColor);
+
+    color=m_indices.key(edgeColor);
+    this->ui->cbEdgecolor->setCurrentIndex(edgeColor);
+    emit this->ui->pbSave->clicked();
+
+    if(direction=="directed"){
+        graphDirected();
+    }else{
+        graphUndirected();
+    }
+
+    //OVDE DODAJ KOD ZA INVALIDATE
+    QGraphicsView obj=this;
+    obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+    QCoreApplication::processEvents();
+
+    bool hasEdges = map.value("hasEdges").toBool();
+    QVector<Edge*> edgeSet;
+
+    if (hasEdges) {
+        // Ne zaboravimo da se oslobodimo stare memorije!!!
+        qDeleteAll(edgeSet);
+
+        const auto edges = map.value("edges").toList();
+        for(const auto& edge : edges) {
+            const auto map2=edge.toMap();
+            QString node1=map2.value("node1").toString();
+            QString node2=map2.value("node2").toString();
+            QString weight=map2.value("weight").toString();
+            enterValue(node1.toStdString(), node2.toStdString(), weight.toStdString());
+            obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+            QCoreApplication::processEvents();
+            AddNewEdge();
+            sleep(1);
+           }
+       }
+}
+
+QVariant GraphWindow::toVariant() const
+{
+    auto edgeSet=this->m_graph->edgeSet();
+    int background=this->ui->cbBgcolor->currentIndex();
+    int nodeColor=this->ui->cbNodecolor->currentIndex();
+    int edgeColor=this->ui->cbEdgecolor->currentIndex();
+    QString direction=this->m_graph->isDirected()? "directed":"undirected";
+
+
+
+    QVariantMap map;
+        map.insert("background", background);
+        map.insert("nodeColor", nodeColor);
+        map.insert("edgeColor", edgeColor);
+        map.insert("direction", direction);
+        map.insert("hasEdges", !edgeSet.empty());
+
+        if (!edgeSet.empty()) {
+            QVariantList edges;
+            for (const auto & edge : edgeSet) {
+                edges.append(edge->toVariant());
+            }
+            map.insert("edges", edges);
+        }
+
+        return map;
+
+}
+
+void GraphWindow::on_actionLoadFromJson_triggered(){
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "JSON files (*.json)");
+    std::string filepath = file.toStdString();
+
+    QFile newFile(QString::fromStdString(filepath));
+    if(newFile.open(QFile::ReadOnly)){
+
+    QJsonDocument doc = QJsonDocument::fromJson(newFile.readAll());
+
+    newFile.close();
+
+    GraphWindow::fromVariant(doc.toVariant());}
+
+}
+
+void GraphWindow::on_actionOpen_triggered(){
+
+
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)");
+    std::string filename = file.toStdString();
+    std::ifstream openFile;
+    std::string path = filename;
+    openFile.open(filename);
+    if (!openFile.fail()){
+
+        emit this->ui->pbDeleteAll->clicked();
+        int radius;
+        openFile>>radius;
+        char c;
+        openFile.get(c);
+
+        std::map<std::string, int> graphInfo;
+        std::string line;
+        std::string key, value;
+        int colorInfo=3;
+        for(unsigned i=0;i<colorInfo;i++){
+            std::getline(openFile, line);
+            std::istringstream input(line);
+            input >> key >> value;
+            graphInfo[key] = std::stoi(value);
+        }
+        indexColors();
+
+
+        int colorIndex=graphInfo["background:"];
+        this->ui->cbBgcolor->setCurrentIndex(colorIndex);
+
+        colorIndex=graphInfo["nodeColor:"];
+        this->ui->cbNodecolor->setCurrentIndex(colorIndex);
+
+        colorIndex=graphInfo["edgeColor:"];
+        this->ui->cbEdgecolor->setCurrentIndex(colorIndex);
+
+        QGraphicsView obj=this;
+        obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+        QCoreApplication::processEvents();
+
+        std::string name;
+        std::string skip;
+
+        std::string mode;
+        openFile>>mode;
+
+        if(mode=="dir"){
+            graphDirected();
+        }else{
+            graphUndirected();
+        }
+
+        std::string  key2;
+        getline(openFile, line);
+        while (!openFile.eof()){
+            getline(openFile, line);
+            std::istringstream input(line);
+            input >> key >> key2 >>value;
+            enterValue(key, key2, value);
+            obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+            QCoreApplication::processEvents();
+            AddNewEdge();
+            sleep(1);
+
+        }
+        openFile.close();
+        emit this->ui->pbSave->clicked();
+
+    }
+}
+
+
+void GraphWindow::on_actionSaveAsJson_triggered(){
+    if (this->m_graph->countNodes()==0){
+            QMessageBox::information(this, tr("Error"), "The scene is empty");
+    }else{
+        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "JSON files (*.json)");
+        if (!file.isEmpty()){
+            std::string filename = file.toStdString();
+            if (filename.substr(filename.size()-5).compare(".json")!=0){
+                filename+=".json";
+            }
+
+            QJsonDocument doc = QJsonDocument::fromVariant(GraphWindow::toVariant());
+
+            QFile file(QString::fromStdString(filename));
+
+            file.open(QFile::WriteOnly);
+
+            file.write(doc.toJson(QJsonDocument::JsonFormat::Indented));
+
+            file.close();
+
+        }
+    }
+}
+
+void GraphWindow::on_actionSave_triggered(){
+    if (this->m_graph->countNodes()==0){
+            QMessageBox::information(this, tr("Error"), "The scene is empty");
+    }else{
+        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "GRAPH files (*.graph)");
+        if (!file.isEmpty()){
+            std::string filename = file.toStdString();
+            if (filename.substr(filename.size()-6).compare(".graph")!=0){
+                filename+=".graph";
+            }
+            std::string path = filename;
+            std::ofstream saveFile;
+            saveFile.open(filename);
+
+
+            std::map<std::string, int> graphInfo;
+            int backgroundColor=this->ui->cbBgcolor->currentIndex();
+            int nodeRadius=this->ui->sbRadius->displayIntegerBase();
+            int nodeColor=this->ui->cbNodecolor->currentIndex();
+            int edgeColor=this->ui->cbEdgecolor->currentIndex();
+
+            graphInfo.insert({"background: ", backgroundColor});
+            graphInfo.insert({"nodeColor: ", nodeColor});
+            graphInfo.insert({"edgeColor: ", edgeColor});
+
+            auto edges=this->m_graph->edgeSet();
+            saveFile<<nodeRadius<<"\n";
+
+            for (auto &pair: graphInfo){
+                saveFile<<pair.first<<" "<<pair.second<<"\n";
+            }
+
+            if(this->m_graph->isDirected()){
+                saveFile<<"dir"<<"\n";
+            }else{
+                saveFile<<"undir"<<"\n";
+            }
+
+            for (auto &edge:edges){
+                saveFile << edge->first()->name()<<" "<<edge->second()->name()<<" "<< edge->weight()<<"\n";
+            }
+
+            saveFile.close();
+        }
+    }
 }
 
 void GraphWindow::on_actionClose_triggered() {
