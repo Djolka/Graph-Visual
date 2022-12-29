@@ -423,6 +423,12 @@ void GraphWindow::fromVariant(const QVariant &variant)
     this->ui->cbEdgecolor->setCurrentIndex(edgeColor);
     emit this->ui->pbSave->clicked();
 
+    if(direction=="directed"){
+        graphDirected();
+    }else{
+        graphUndirected();
+    }
+
     //OVDE DODAJ KOD ZA INVALIDATE
     QGraphicsView obj=this;
     obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
