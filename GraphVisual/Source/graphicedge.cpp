@@ -23,7 +23,7 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool 
     font.setPointSize(12);
     m_weightLineEdit->setFont(font);
     m_weightLineEdit->setMinimumWidth(15);
-    m_weightLineEdit->setStyleSheet("background-color: rgb(228, 232, 214, 0)");
+    m_weightLineEdit->setStyleSheet("background: transparent");
     connect(m_weightLineEdit, &QLineEdit::textEdited, this, &GraphicEdge::editWeight);
 
     QGraphicsLineItem::setZValue(-10);

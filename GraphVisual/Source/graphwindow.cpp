@@ -33,6 +33,7 @@
 #include <math.h>
 #include <QTime>
 #include <QIcon>
+#include <sstream>
 
 #include "Headers/algorithm.h"
 #include "Headers/popup.h"
@@ -112,7 +113,7 @@ GraphWindow::~GraphWindow()
 
 
 void GraphWindow::fillMap() {
-    m_colors.insert("off white", "#E4E8D6");
+    m_colors.insert("off white", "#E8E4D6");
     m_colors.insert("white", "#FFFFFF");
     m_colors.insert("black", "#000000");
     m_colors.insert("navy", "#192841");
@@ -322,7 +323,7 @@ void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
 }
 
 void GraphWindow::warning(QString s) {
-    QMessageBox::warning(this, "Error", "<FONT COLOR='#FFEFD5'>"+s+"</FONT>");
+    QMessageBox::warning(this, "Error", "<FONT COLOR='#171717'>"+s+"</FONT>");
 }
 
 void GraphWindow::nodeNameLength() {
@@ -356,9 +357,11 @@ void GraphWindow::graphDirected() {
             ui->pbDirected->setEnabled(false);
             m_graph->setDirected(true);
             shouldPopUpUndir = true;
+            ui->pbMST->setDisabled(true);
+            ui->pbArticulation->setDisabled(true);
     }else if(shouldPopUpDir){
         switch(QMessageBox::question(this, "Error",
-                "<FONT COLOR='#FFEFD5'>Current progress will be deleted if you change to directed graph, click yes to continue</FONT>",
+                "<FONT COLOR='#171717'>Current progress will be deleted if you change to directed graph and some algorithms only work on undirected graphs. Click yes to continue</FONT>",
 
                 QMessageBox::Yes |
                 QMessageBox::No |
@@ -366,6 +369,8 @@ void GraphWindow::graphDirected() {
                 QMessageBox::No) )
         {
           case QMessageBox::Yes:
+            ui->pbMST->setDisabled(true);
+            ui->pbArticulation->setDisabled(true);
             emit changeToDir();
             ui->pbUndirected->setEnabled(true);
             emit ui->pbDeleteAll->clicked();
@@ -390,6 +395,9 @@ void GraphWindow::graphDirected() {
 
 void GraphWindow::graphUndirected() {
     if(m_graph->nodeSet().empty()){
+            ui->pbMST->setDisabled(false);
+            ui->pbArticulation->setDisabled(false);
+
             emit changeToUndir();
             ui->pbUndirected->setEnabled(false);
             ui->pbDirected->setEnabled(true);
@@ -397,7 +405,7 @@ void GraphWindow::graphUndirected() {
             shouldPopUpDir = true;
     }else if(shouldPopUpUndir){
         switch(QMessageBox::question(this, "Error",
-                "<FONT COLOR='#FFEFD5'>Current progress will be deleted if you change to undirected graph, click yes to continue</FONT>",
+                "<FONT COLOR='#171717'>Current progress will be deleted if you change to undirected graph, click yes to continue</FONT>",
 
                 QMessageBox::Yes |
                 QMessageBox::No |
@@ -406,6 +414,8 @@ void GraphWindow::graphUndirected() {
         {
           case QMessageBox::Yes:
             emit changeToUndir();
+            ui->pbMST->setDisabled(false);
+            ui->pbArticulation->setDisabled(false);
             ui->pbUndirected->setEnabled(false);
             ui->pbDirected->setEnabled(true);
             emit ui->pbDeleteAll->clicked();
@@ -716,7 +726,7 @@ void GraphWindow::on_actionSave_triggered(){
 
 void GraphWindow::on_actionClose_triggered() {
     switch(QMessageBox::question(this, "Warning",
-            "<FONT COLOR='#FFEFD5'>Do you want to save changes?</FONT>",
+            "<FONT COLOR='#171717'>Do you want to save changes?</FONT>",
 
                 QMessageBox::Save |
                 QMessageBox::No |
@@ -804,7 +814,7 @@ void GraphWindow::algorithm() {
                 QWidget::setEnabled(false);
                 QList<Node*> result = a->BFS(node);
                 emit colorBFS(result, true);
-                QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+                QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
             }
             else{
@@ -824,7 +834,7 @@ void GraphWindow::algorithm() {
                 QWidget::setEnabled(false);
                 a->DFS(node, visited, result);
                 emit colorDFS(result, true);
-                QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+                QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
             }
             else{
@@ -845,7 +855,7 @@ void GraphWindow::algorithm() {
         }
 
         emit colorMST(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
     else if(ui->pbDjikstra->isChecked()){
@@ -881,7 +891,7 @@ void GraphWindow::algorithm() {
         int result = a->Dijkstra(*m_graph, node1, node2, path, visit, edges1);
 
         if(result == -1){
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>There is no path from"+ QString::fromStdString(node1->name())+" to "+ QString::fromStdString(node2->name())+"</FONT>");
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>There is no path from"+ QString::fromStdString(node1->name())+" to "+ QString::fromStdString(node2->name())+"</FONT>");
         }
         else{
             QList<Edge*> edges2;
@@ -890,7 +900,7 @@ void GraphWindow::algorithm() {
             }
 
             emit colorDijkstra(path, visit, edges2, true);
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
         }
         QWidget::setEnabled(true);
     }
@@ -900,7 +910,7 @@ void GraphWindow::algorithm() {
         QWidget::setEnabled(false);
         result = a->getArticulationNodes(*m_graph);
         emit colorArticulation(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QMessageBox::information(this, "Finished", "<FONT COLOR'#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
     else if(ui->pbBridges->isChecked()){
@@ -909,7 +919,7 @@ void GraphWindow::algorithm() {
         QWidget::setEnabled(false);
         result = a->getBridges(*m_graph);
         emit colorBridges(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+        QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
     }
     else if(ui->pbEulerian->isChecked()) {
@@ -917,7 +927,7 @@ void GraphWindow::algorithm() {
         QList<std::string> result = a->getEulerianCircuit(*m_graph);
 
         if(result.size() == 0) {
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>There is no Euler cycle in this graph</FONT>");
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>There is no Euler cycle in this graph</FONT>");
         }
         else {
             QList<Edge*> coloring;
@@ -932,7 +942,7 @@ void GraphWindow::algorithm() {
             }
 
             emit colorEulerCycle(coloring, true);
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#FFEFD5'>Algorithm is finished</FONT>");
+            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         }
 
         QWidget::setEnabled(true);
