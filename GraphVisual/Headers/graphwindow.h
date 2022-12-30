@@ -31,10 +31,14 @@ public:
     void SaveAsPic(const QString& m_ext);
     void gravityDelay();
     bool nodeExists(std::string name);
-    void click();
     void enterValue(std::string key, std::string key2, std::string value);
     void fromVariant(const QVariant & variant);
     QVariant toVariant() const;
+    void setDirection(QString direction);
+    void invalidateRegion();
+    std::map<std::string, int> fillGraphInfo(int *colorInfo,std::ifstream *openFile);
+    void readFromFile(std::ifstream *openFile);
+    void saveInfoIntoFile(std::ofstream *saveFile);
 
 signals:
     void AddedNewNode(GraphicNode *);
@@ -51,6 +55,7 @@ signals:
     void colorBridges(QList<Edge*>, bool x);
     void colorDijkstra(QList<Node*>, QList<Node*>, QList<Edge*>, bool x);
     void colorEulerCycle(QList<Edge*>, bool x);
+
 
 private slots:
     void AddNewEdge();
@@ -100,6 +105,7 @@ private:
     QGraphicsScene *m_GraphTable;
     bool shouldPopUpUndir = true;
     bool shouldPopUpDir = true;
+    std::string m_path="";
 
 };
 #endif // GRAPHWINDOW_H
