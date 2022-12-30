@@ -10,6 +10,8 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->inDeg() == 0);
         REQUIRE(n1->outDeg() == 0);
         REQUIRE(n1->deg() == 0);
+        REQUIRE(n1->name()=="");
+        REQUIRE(n1->position()==QPointF(0,0));
     }
 
     SECTION("02: Node::NodeConstructor1 (constructing the node when the name of the node is given)"){
@@ -19,6 +21,7 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->outDeg() == 0);
         REQUIRE(n1->deg() == 0);
         REQUIRE(n1->name() == "n1");
+        REQUIRE(n1->position()==QPointF(0,0));
     }
 
     SECTION("03: Node::NodeConstructor2 (constructing the node when the name and the position of the said node is given)"){
@@ -104,7 +107,12 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->position() == point);
     }
 
-    SECTION("11: Node::SetPosition (setting the position of the node)"){
+    SECTION("11: Node::Position2 (returning the position of the node when it was not forwarded in constructor)"){
+        Node *n1 = new Node("n1");
+        REQUIRE(n1->position() == QPointF(0,0));
+    }
+
+    SECTION("12: Node::SetPosition (setting the position of the node)"){
         Node *n1 = new Node("n1");
 
         QPointF point = QPointF(50,50);
@@ -114,42 +122,42 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->position() == point);
     }
 
-    SECTION("12: Node::Name (returning the name of the node)"){
+    SECTION("13: Node::Name (returning the name of the node)"){
         Node *n1 = new Node("n1");
         std::string name = "n1";
 
         REQUIRE(n1->name() == name);
     }
 
-    SECTION("13: Node::Compare== (comparing the name of the nodes when the names are differnnt)"){
+    SECTION("14: Node::Compare== (comparing the name of the nodes when the names are differnnt)"){
         Node *n1 = new Node("n1");
         Node *n2 = new Node("n2");
 
         REQUIRE_FALSE(n1 == n2);
     }
 
-    SECTION("14: Node::Compare== (comparing the name of the nodes when the nodes are te sahme)"){
+    SECTION("15: Node::Compare== (comparing the name of the nodes when the nodes are te sahme)"){
         Node *n1 = new Node("n1");
         Node *n2 = n1;
 
         REQUIRE(n1 == n2);
     }
 
-    SECTION("15: Node::Compare< (check if the first node is alphabetically before the second node)"){
+    SECTION("16: Node::Compare< (check if the first node is alphabetically before the second node)"){
         Node *n1 = new Node("n1");
         Node *n2 = new Node("n2");
 
         REQUIRE(n1->name() < n2->name());
     }
 
-    SECTION("16: Node::Compare< (check if the first node is alphabetically before the second node)"){
+    SECTION("17: Node::Compare< (check if the first node is alphabetically before the second node)"){
         Node *n1 = new Node("n1");
         Node *n2 = new Node("n1");
 
         REQUIRE_FALSE(n1->name() < n2->name());
     }
 
-    SECTION("17: Node::Neighbours (return the list of the neighbours of the node)"){
+    SECTION("18: Node::Neighbours (return the list of the neighbours of the node)"){
         Graph *g = new Graph(false, false);
         Node *n1 = new Node("n1");
         g->addNode(n1);
@@ -159,7 +167,7 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->neighbours() == neighbours);
     }
 
-    SECTION("18: Node::Neighbours (return the list of the neighbours of the node)"){
+    SECTION("19: Node::Neighbours (return the list of the neighbours of the node)"){
         Graph *g = new Graph(false, false);
         Node *n1 = new Node("n1");
         Node *n2 = new Node("n2");
@@ -178,4 +186,69 @@ TEST_CASE("Node", "[node]")
         REQUIRE(n1->neighbours() == neighbours);
     }
 
+    SECTION("20: Node::addNeighbours (if the edge between nodes does not exist, append neighbours list)"){
+        Graph *g = new Graph(false, false);
+        Node *n1 = new Node("n1");
+        Node *n2 = new Node("n2");
+        Node *n3 = new Node("n3");
+        g->addEdge(n1,n2);
+
+        QList<Node*> neighbours = QList<Node*>()<< n2 << n3;
+
+        REQUIRE(n1->addNeighbour(n3)==true);
+        REQUIRE(n1->neighbours()==neighbours);
+    }
+
+    SECTION("21: Node::addNeighbours (if the node exists, expand its list of neighbours)"){
+        Graph *g = new Graph(false, false);
+        Node *n1 = new Node("n1");
+        Node *n2 = new Node("n2");
+        Node *n3 = new Node("n3");
+        g->addEdge(n1,n2);
+        g->addEdge(n1,n3);
+        QList<Node*> neighbours = QList<Node*>()<< n2 << n3;
+
+        REQUIRE_FALSE(n1->addNeighbour(n3)==true);
+        REQUIRE(n1->neighbours()==neighbours);
+    }
+
+    SECTION("22: Node::removeNeighbour (if the nodes are connected, remove the edge between them)"){
+        Graph *g = new Graph(false, false);
+        Node *n1 = new Node("n1");
+        Node *n2 = new Node("n2");
+        Node *n3 = new Node("n3");
+        g->addEdge(n1,n2);
+        g->addEdge(n1,n3);
+
+        QList<Node*> neighbours = QList<Node*>()<< n2;
+
+        REQUIRE(n1->removeNeighbour(n3)==true);
+        REQUIRE(n1->neighbours()==neighbours);
+    }
+
+    SECTION("23: Node::removeNeighbour (if the nodes are connected, remove the edge between them)"){
+        Graph *g = new Graph(false, false);
+        Node *n1 = new Node("n1");
+        Node *n2 = new Node("n2");
+        Node *n3 = new Node("n3");
+        g->addEdge(n1,n2);
+
+        QList<Node*> neighbours = QList<Node*>()<< n2;
+
+        REQUIRE_FALSE(n1->removeNeighbour(n3)==true);
+        REQUIRE(n1->neighbours()==neighbours);
+    }
+
+    SECTION("24: Node::removeNeighbour (if the nodes are connected, remove the edge between them)"){
+        Graph *g = new Graph(false, false);
+        Node *n1 = new Node("n1");
+        Node *n2 = new Node("n2");
+        Node *n3 = new Node("n3");
+        g->addEdge(n1,n2);
+
+        QList<Node*> neighbours = QList<Node*>();
+
+        REQUIRE(n1->removeNeighbour(n2)==true);
+        REQUIRE(n1->neighbours()==neighbours);
+    }
 }

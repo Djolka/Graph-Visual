@@ -7,6 +7,8 @@ Node::Node(){
     this->m_inDeg=0;
     this->m_outDeg=0;
     this->m_deg=0;
+    this->m_name="";
+    this->m_position=QPointF(0,0);
 }
 
 Node::Node(std::string name){
@@ -14,6 +16,7 @@ Node::Node(std::string name){
     this->m_outDeg=0;
     this->m_deg=0;
     this->m_name=name;
+    this->m_position=QPointF(0,0);
 }
 
 Node::Node(std::string name, QPointF position){
