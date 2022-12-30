@@ -44,16 +44,6 @@ QVariant Edge::toVariant()
     return map;
 }
 
-void Edge::fromVariant(const QVariant &variant)
-{
-    const auto map = variant.toMap();
-    QString node1 = map.value("node1").toString();
-    QString node2 = map.value("node2").toString();
-    int weight=map.value("weight").toInt();
-}
-
-
-
 std::ostream &operator<<(std::ostream &os, const Edge &e){
     os << e.first()->name() << " " << e.second()->name() << e.weight() << std::endl;
     return os;

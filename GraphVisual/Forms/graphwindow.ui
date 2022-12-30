@@ -647,7 +647,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -712,7 +712,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -777,7 +777,7 @@
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>211</red>
                 <green>215</green>
                 <blue>207</blue>
@@ -882,7 +882,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -947,7 +947,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -1012,7 +1012,7 @@ border-color:rgb(10, 10, 10); border-style: solid; border-width: 2px</string>
              </colorrole>
              <colorrole role="PlaceholderText">
               <brush brushstyle="SolidPattern">
-               <color alpha="255">
+               <color alpha="128">
                 <red>245</red>
                 <green>243</green>
                 <blue>242</blue>
@@ -1706,7 +1706,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="255">
+                      <color alpha="128">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
@@ -1771,7 +1771,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="255">
+                      <color alpha="128">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
@@ -1836,7 +1836,7 @@ color: rgb(245, 243, 242);</string>
                     </colorrole>
                     <colorrole role="PlaceholderText">
                      <brush brushstyle="SolidPattern">
-                      <color alpha="255">
+                      <color alpha="128">
                        <red>245</red>
                        <green>243</green>
                        <blue>242</blue>
@@ -3354,8 +3354,8 @@ view.
     <addaction name="actionSaveAsJpg"/>
     <addaction name="actionSaveAsPng"/>
     <addaction name="actionClose"/>
-    <addaction name="actionSaveAsJson"/>
-    <addaction name="actionLoadFromJson"/>
+    <addaction name="actionLoadFromJson_2"/>
+    <addaction name="actionSaveAsJson_2"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -3771,6 +3771,9 @@ view.
    <addaction name="actionSaveAsJpg"/>
    <addaction name="actionSaveAsPng"/>
    <addaction name="actionClose"/>
+   <addaction name="actionSaveAsJson"/>
+   <addaction name="actionLoadFromJson"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionSave">
    <property name="checkable">
@@ -3841,6 +3844,27 @@ view.
    </property>
    <property name="text">
     <string>Load from .json</string>
+   </property>
+  </action>
+  <action name="actionSaveAsJson_2">
+   <property name="icon">
+    <iconset resource="../Resources.qrc">
+     <normaloff>:/new/rec/Resources/toJson.png</normaloff>:/new/rec/Resources/toJson.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as .json</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as .json</string>
+   </property>
+  </action>
+  <action name="actionLoadFromJson_2">
+   <property name="icon">
+    <iconset resource="../Resources.qrc">
+     <normaloff>:/new/rec/Resources/fromJson.png</normaloff>:/new/rec/Resources/fromJson.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open .json</string>
    </property>
   </action>
  </widget>
