@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y 
 RUN apt-get install qtcreator -y
 RUN apt-get install build-essential -y 
-RUN apt install qtbase5-dev qt5-qmake -y
+RUN apt install qt6-base-dev qt6-qmake -y
 
 COPY . /usr/src/GraphVisual
 WORKDIR /usr/src/GraphVisual
