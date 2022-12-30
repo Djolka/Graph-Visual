@@ -23,6 +23,8 @@ FORMS += \
 
 
 SOURCES +=     main.cpp     \
+    tests/testClassEdge.cpp \
+    tests/testClassNode.cpp \
     tests/testGraph.cpp \
     ../GraphVisual/Source/graph.cpp \
     ../GraphVisual/Source/edge.cpp \
