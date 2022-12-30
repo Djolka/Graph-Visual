@@ -162,7 +162,6 @@ std::map<Node*, Node*> Algorithm::MST (Graph &graph){
 
 
     while(!minDist.empty()) {
-//        cout<<"while"<<endl;
         auto node = minDist.top();
         minDist.pop();
 

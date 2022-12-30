@@ -612,7 +612,6 @@ void GraphWindow::readFromFile(std::ifstream *openFile){
 
     int numEdges;
     *openFile>>numEdges;
-    std::cout<<numEdges<<std::endl;
     std::string line, key, value, key2;
     getline(*openFile, line);
     for (int i=0;i<numEdges;i++){

@@ -8,6 +8,8 @@ Node::Node(){
     this->m_inDeg=0;
     this->m_outDeg=0;
     this->m_deg=0;
+    this->m_name="";
+    this->m_position=QPointF(0,0);
 }
 
 Node::Node(const Node *other) {
@@ -23,6 +25,7 @@ Node::Node(std::string name){
     this->m_outDeg=0;
     this->m_deg=0;
     this->m_name=name;
+    this->m_position=QPointF(0,0);
 }
 
 Node::Node(std::string name, QPointF position){
@@ -106,7 +109,7 @@ void Node::decInDeg(){
     if(m_inDeg>0){
         this->m_inDeg--;
     }else{
-        std::cerr<<"Ovaj cvor nema ulaznih grana koje se mogu obrisati!!!"<<std::endl;
+        std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
 }
 
@@ -114,7 +117,7 @@ void Node::decOutDeg(){
     if(m_outDeg>0){
         this->m_outDeg--;
     }else{
-        std::cerr<<"Ovaj cvor nema izlaznih grana koje se mogu obrisati!!!"<<std::endl;
+        std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
 }
 
@@ -126,7 +129,7 @@ void Node::decDeg(){
     if(m_deg>0){
         this->m_deg--;
     }else{
-        std::cerr<<"Ovaj cvor nema grana koje se mogu obrisati!!!"<<std::endl;
+        std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
 }
 
