@@ -3351,7 +3351,7 @@ background-color: #171717;</string>
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>Find directed Eulerian cycle</string>
+             <string>Find Eulerian cycle</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
