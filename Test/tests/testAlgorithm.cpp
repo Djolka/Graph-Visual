@@ -585,5 +585,493 @@ TEST_CASE("getArticulationNodes", "[articulationNodes]")
     }
 }
 
+TEST_CASE("isConnected", "[isConnected]")
+{
+    SECTION("01: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
 
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isConnected(*n1, *n3);
 
+        REQUIRE(result);
+    }
+
+    SECTION("02: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addEdge(n1, n2);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isConnected(*n1, *n3);
+
+        REQUIRE_FALSE(result);
+    }
+
+    SECTION("03: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isConnected(*n1, *n3);
+
+        REQUIRE(result);
+    }
+
+    SECTION("04: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isConnected(*n1, *n3);
+
+        REQUIRE_FALSE(result);
+    }
+
+    SECTION("05: From n to n"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isConnected(*n1, *n1);
+
+        REQUIRE(result);
+    }
+}
+
+TEST_CASE("isAllConnected", "[isAllConnected]")
+{
+    SECTION("01: Empty graph"){
+        Graph* g = new Graph(true, false);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isAllConnected(*g);
+
+        REQUIRE(result);
+    }
+
+    SECTION("02: Graph without edges"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->isAllConnected(*g);
+
+        REQUIRE_FALSE(result);
+    }
+
+    SECTION("03: Random directed graph"){
+            Graph* g = new Graph(true, false);
+            Node* n1 = new Node("1");
+            Node* n2 = new Node("2");
+            Node* n3 = new Node("3");
+            Node* n4 = new Node("4");
+            g->addNode(n1);
+            g->addNode(n2);
+            g->addNode(n3);
+            g->addNode(n4);
+            g->addEdge(n1, n2);
+            g->addEdge(n2, n3);
+            g->addEdge(n3, n4);
+            g->addEdge(n4, n1);
+
+            Algorithm* alg = new Algorithm();
+            auto result = alg->isAllConnected(*g);
+
+            REQUIRE(result);
+    }
+
+    SECTION("04: Random directed graph"){
+            Graph* g = new Graph(true, false);
+            Node* n1 = new Node("1");
+            Node* n2 = new Node("2");
+            Node* n3 = new Node("3");
+            Node* n4 = new Node("4");
+            g->addNode(n1);
+            g->addNode(n2);
+            g->addNode(n3);
+            g->addNode(n4);
+            g->addEdge(n1, n2);
+            g->addEdge(n2, n3);
+            g->addEdge(n3, n4);
+
+            Algorithm* alg = new Algorithm();
+            auto result = alg->isAllConnected(*g);
+
+            REQUIRE_FALSE(result);
+    }
+
+    SECTION("05: Random undirected graph"){
+            Graph* g = new Graph(false, false);
+            Node* n1 = new Node("1");
+            Node* n2 = new Node("2");
+            Node* n3 = new Node("3");
+            Node* n4 = new Node("4");
+            g->addNode(n1);
+            g->addNode(n2);
+            g->addNode(n3);
+            g->addNode(n4);
+            g->addEdge(n1, n2);
+            g->addEdge(n2, n3);
+            g->addEdge(n3, n4);
+
+            Algorithm* alg = new Algorithm();
+            auto result = alg->isAllConnected(*g);
+
+            REQUIRE(result);
+    }
+
+    SECTION("06: Random undirected graph"){
+            Graph* g = new Graph(false, false);
+            Node* n1 = new Node("1");
+            Node* n2 = new Node("2");
+            Node* n3 = new Node("3");
+            Node* n4 = new Node("4");
+            g->addNode(n1);
+            g->addNode(n2);
+            g->addNode(n3);
+            g->addNode(n4);
+            g->addEdge(n1, n2);
+            g->addEdge(n3, n4);
+
+            Algorithm* alg = new Algorithm();
+            auto result = alg->isAllConnected(*g);
+
+            REQUIRE_FALSE(result);
+    }
+}
+
+TEST_CASE("Hierholzer", "[hierholzer]")
+{
+    SECTION("01: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+        g->addEdge(n3, n4);
+        g->addEdge(n4, n1);
+        QList<Node*> expected;
+        expected.append(n1);
+        expected.append(n2);
+        expected.append(n3);
+        expected.append(n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->Hierholzer(g);
+
+        for(auto node : result){
+            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        }
+    }
+
+    SECTION("02: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+        g->addEdge(n3, n4);
+        g->addEdge(n1, n4);
+        QList<Node*> expected;
+        expected.append(n1);
+        expected.append(n2);
+        expected.append(n3);
+        expected.append(n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->Hierholzer(g);
+
+        for(auto node : result){
+            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        }
+    }
+
+    SECTION("03: Graph without edges"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->Hierholzer(g);
+
+        REQUIRE(result.empty());
+    }
+}
+
+TEST_CASE("hasEulerianCircuit", "[hasEulerian]")
+{
+    SECTION("01: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+        g->addEdge(n3, n4);
+        g->addEdge(n4, n1);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->hasEulerianCircuit(*g);
+
+        REQUIRE(result);
+    }
+
+    SECTION("02: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+        g->addEdge(n3, n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->hasEulerianCircuit(*g);
+
+        REQUIRE_FALSE(result);
+    }
+
+    SECTION("03: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+        g->addEdge(n3, n4);
+        g->addEdge(n1, n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->hasEulerianCircuit(*g);
+
+        REQUIRE(result);
+    }
+
+    SECTION("04: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+        g->addEdge(n1, n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->hasEulerianCircuit(*g);
+
+        REQUIRE_FALSE(result);
+    }
+
+    SECTION("05: Graph without edges"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->hasEulerianCircuit(*g);
+
+        REQUIRE_FALSE(result);
+    }
+}
+
+TEST_CASE("getEulerianCircuit", "[getEulerian]")
+{
+    SECTION("01: Graph without edges") {
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        REQUIRE(result.empty());
+    }
+
+    SECTION("02: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+        g->addEdge(n3, n4);
+        g->addEdge(n4, n1);
+        QList<Node*> expected;
+        expected.append(n1);
+        expected.append(n2);
+        expected.append(n3);
+        expected.append(n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        for(auto node : result){
+            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        }
+    }
+
+    SECTION("03: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+        g->addEdge(n3, n4);
+        g->addEdge(n1, n4);
+        QList<Node*> expected;
+        expected.append(n1);
+        expected.append(n2);
+        expected.append(n3);
+        expected.append(n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        for(auto node : result){
+            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        }
+    }
+
+    SECTION("04: Random directed graph"){
+        Graph* g = new Graph(true, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n2, n3);
+        g->addEdge(n3, n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        REQUIRE(result.empty());
+    }
+
+    SECTION("05: Random undirected graph"){
+        Graph* g = new Graph(false, false);
+        Node* n1 = new Node("1");
+        Node* n2 = new Node("2");
+        Node* n3 = new Node("3");
+        Node* n4 = new Node("4");
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+        g->addNode(n4);
+        g->addEdge(n1, n2);
+        g->addEdge(n3, n2);
+        g->addEdge(n1, n4);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        REQUIRE(result.empty());
+    }
+
+    SECTION("06: Empty graph"){
+        Graph* g = new Graph(false, false);
+
+        Algorithm* alg = new Algorithm();
+        auto result = alg->getEulerianCircuit(g);
+
+        REQUIRE(result.empty());
+    }
+}

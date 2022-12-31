@@ -36,7 +36,8 @@ SOURCES += \
     ../GraphVisual/Source/graphtable.cpp \
     ../GraphVisual/Source/graphwindow.cpp \
     ../GraphVisual/Source/popup.cpp \
-    ../GraphVisual/Source/mytextedit.cpp
+    ../GraphVisual/Source/mytextedit.cpp \
+    tests/testGraphicNode.cpp
 
 HEADERS += \
     catch.hpp \
