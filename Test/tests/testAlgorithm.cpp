@@ -1069,13 +1069,4 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
 
         REQUIRE(result.empty());
     }
-
-    SECTION("06: Empty graph"){
-        Graph* g = new Graph(false, false);
-
-        Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(*g);
-
-        REQUIRE(result.empty());
-    }
 }
