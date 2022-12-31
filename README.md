@@ -33,7 +33,7 @@ When you type the command, the project will be cloned onto your local device.
 </ul>
 
 # Demo 
-You can find the link to our demonstration [here](https://you.be/-0BiQlCnlIU).
+You can find the link to our demonstration [here](https://youtu.be/-0BiQlCnlIU).
 
 
 # Developers
