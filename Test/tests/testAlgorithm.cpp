@@ -802,10 +802,11 @@ TEST_CASE("Hierholzer", "[hierholzer]")
         expected.append(n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->Hierholzer(g);
+        auto result = alg->Hierholzer(*g);
 
-        for(auto node : result){
-            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        for(std::string node : result){
+            Node *n = g->getNode(node);
+            REQUIRE_FALSE(expected.indexOf(n) == -1);
         }
     }
 
@@ -830,10 +831,11 @@ TEST_CASE("Hierholzer", "[hierholzer]")
         expected.append(n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->Hierholzer(g);
+        auto result = alg->Hierholzer(*g);
 
-        for(auto node : result){
-            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        for(std::string node: result){
+            Node *n1 = g->getNode(node);
+            REQUIRE_FALSE(expected.indexOf(n1) == -1);
         }
     }
 
@@ -847,9 +849,9 @@ TEST_CASE("Hierholzer", "[hierholzer]")
         g->addNode(n3);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->Hierholzer(g);
+        auto result = alg->Hierholzer(*g);
 
-        REQUIRE(result.empty());
+        REQUIRE(result.empty() == false);
     }
 }
 
@@ -965,7 +967,7 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         g->addNode(n3);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
         REQUIRE(result.empty());
     }
@@ -991,10 +993,11 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         expected.append(n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
-        for(auto node : result){
-            REQUIRE_FALSE(expected.indexOf(node) == -1);
+        for(std::string node: result){
+            Node *n = g->getNode(node);
+            REQUIRE_FALSE(expected.indexOf(n) == -1);
         }
     }
 
@@ -1019,10 +1022,11 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         expected.append(n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
         for(auto node : result){
-            REQUIRE_FALSE(expected.indexOf(node) == -1);
+            Node *n = g->getNode(node);
+            REQUIRE_FALSE(expected.indexOf(n) == -1);
         }
     }
 
@@ -1041,7 +1045,7 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         g->addEdge(n3, n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
         REQUIRE(result.empty());
     }
@@ -1061,7 +1065,7 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         g->addEdge(n1, n4);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
         REQUIRE(result.empty());
     }
@@ -1070,7 +1074,7 @@ TEST_CASE("getEulerianCircuit", "[getEulerian]")
         Graph* g = new Graph(false, false);
 
         Algorithm* alg = new Algorithm();
-        auto result = alg->getEulerianCircuit(g);
+        auto result = alg->getEulerianCircuit(*g);
 
         REQUIRE(result.empty());
     }

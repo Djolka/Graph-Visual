@@ -243,7 +243,6 @@ TEST_CASE("Node", "[node]")
         Graph *g = new Graph(false, false);
         Node *n1 = new Node("n1");
         Node *n2 = new Node("n2");
-        Node *n3 = new Node("n3");
         g->addEdge(n1,n2);
 
         QList<Node*> neighbours = QList<Node*>();
