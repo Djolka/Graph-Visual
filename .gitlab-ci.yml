@@ -1,6 +1,5 @@
 stages:
   - BuildGraph
-  - BuildTests
   
 BuildGraph:
   stage: BuildGraph
@@ -9,11 +8,3 @@ BuildGraph:
     - docker:dind
   script:
     - docker build -t graphvisual ./GraphVisual
-
-BuildTests:
-  stage: BuildTests
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker build -t tests ./Test
