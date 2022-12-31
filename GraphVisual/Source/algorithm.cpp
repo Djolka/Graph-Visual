@@ -360,7 +360,7 @@ bool Algorithm::hasEulerianCircuit (Graph &graph){
 
 QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-    if(!hasEulerianCircuit(*graph)){
+    if(!hasEulerianCircuit(*graph) || graph->nodeSet().empty()){
         return QList<Node*>();
     }
 
