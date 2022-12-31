@@ -9,9 +9,6 @@
 #include<QList>
 #include<QPair>
 
-
-//using namespace std;
-
 class Algorithm{
 public:
     Algorithm(){}

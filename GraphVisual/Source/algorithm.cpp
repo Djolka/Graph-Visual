@@ -99,8 +99,6 @@ int Algorithm::Dijkstra (Graph &graph, Node* start, Node* end, QList<Node*> &pat
     }
     visit.append(end);
 
-
-    //path is min path from start to end
     current = end;
     while(current != nullptr){
         path.append(current);
@@ -182,13 +180,6 @@ std::map<Node*, Node*> Algorithm::MST (Graph &graph){
             }
         }
     }
-
-    //print MST
-//    for (auto node : graph.nodeSet()){
-//        if (node != begin){
-//            cout<< node->name() << " -> " << parent[node]->name() << endl;
-//        }
-//    }
 
     parent[begin] = nullptr;
 

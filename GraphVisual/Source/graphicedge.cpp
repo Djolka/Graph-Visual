@@ -62,7 +62,6 @@ QRectF GraphicEdge::boundingRect() const {
              << line.p1() + offset2
              << line.p2() + offset2
              << line.p2() + offset1;
-//    ret.addPolygon(nPolygon);
     return nPolygon.boundingRect();
 }
 
@@ -139,7 +138,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             angle = (M_PI * 2) - angle;
         }
 
-        setLine(*newLine); // ??
+        setLine(*newLine);
         prepareGeometryChange();
 
         QPainterPath myPath;

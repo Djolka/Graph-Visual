@@ -48,7 +48,6 @@ public slots:
     void colorEdges(QList<Edge*> result);
     void reset();
     void colorNodesSet(QSet<Node*> result);
-//    void colorEulerEdges(QList<Node*> result, bool x);
     void setToDir();
     void setToUndir();
     void changeSliderValue(int value);
@@ -76,11 +75,6 @@ private:
     int m_sliderValue = 2500;
 
     bool m_deleteMode = false;
-
-    //    QVector<QGraphicsLineItem *> _veze;
-
-//    QVector<QGraphicsLineItem *> _veze;
-
 };
 
 #endif // GRAPHTABLE_H

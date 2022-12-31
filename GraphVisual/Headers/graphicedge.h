@@ -45,7 +45,7 @@ private:
 
     GraphicNode* m_start;
     GraphicNode* m_end;
-    qreal m_arrowSize = 15; // from site
+    qreal m_arrowSize = 15;
     int m_weight;
     QLineEdit* m_weightLineEdit;
     QPen m_pen = QPen(Qt::black);

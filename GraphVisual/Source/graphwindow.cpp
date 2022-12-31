@@ -154,7 +154,6 @@ void GraphWindow::SaveAsPic(const QString& m_ext){
 }
 
 void GraphWindow::AddNewEdge() {
-
     if(m_graph->nodeSet().size() >= 14){
         warning("You have reached the maximum number of nodes allowed");
         ui->teNode1->clear();
@@ -292,8 +291,6 @@ void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
     }
 }
 void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
-    //update list
-
     QString edge;
     if(m_graph->isDirected()){
         edge = QString::fromStdString(n1->name()+"->"+n2->name());
@@ -350,7 +347,6 @@ void GraphWindow::nodeNameLength() {
 }
 
 void GraphWindow::graphDirected() {
-
     if(m_graph->nodeSet().empty()){
             emit changeToDir();
             ui->pbUndirected->setEnabled(true);
@@ -734,16 +730,13 @@ void GraphWindow::on_actionClose_triggered() {
                 QMessageBox::Cancel) )
     {
       case QMessageBox::Save:
-        qDebug("Yes");
         emit on_actionSave_triggered();
         close();
         break;
       case QMessageBox::No:
-        qDebug("No");
         close();
         break;
       case QMessageBox::Cancel:
-        qDebug("Cancel");
         break;
       default:
         break;
@@ -759,6 +752,10 @@ void GraphWindow::on_actionClose_triggered() {
 
 void GraphWindow::deleteNode(Node* node) {
     m_graph->removeNode(node);
+    QList<QListWidgetItem *> edges = ui->lw->findItems(QString::fromStdString(node->name()), Qt::MatchContains);
+    for(auto edge : edges){
+        delete edge;
+    }
 }
 void GraphWindow::deleteEdge(Node* node1, Node* node2) {
 
