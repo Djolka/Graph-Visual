@@ -203,14 +203,6 @@ bool Graph::changeNodeName(const std::string &old_name, const std::string &new_n
     return false;
 }
 
-int Graph::countEdges() const {
-    return m_edges.size();
-}
-
-int Graph::countNodes() const {
-    return m_nodes.size();
-}
-
 
 Edge* Graph::getEdge(Node *u, Node *v) {
     auto it = m_edges.begin();
