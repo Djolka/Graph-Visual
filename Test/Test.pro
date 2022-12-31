@@ -1,4 +1,5 @@
-QT = gui
+QT += core gui
+QT += widgets
 
 TEMPLATE = app
 
@@ -18,8 +19,8 @@ SRC_DIR = $$PWD/../GraphVisual/Sources
 HDR_DIR = $$PWD/../GraphVisual/Headers
 
 FORMS += \
-    $$PROJECT_DIR/graphwindow.ui \
-    $$PROJECT_DIR/popup.ui
+    ../GraphVisual/Forms/graphwindow.ui \
+    ../GraphVisual/Forms/popup.ui
 
 
 SOURCES +=     main.cpp     \
@@ -30,10 +31,14 @@ SOURCES +=     main.cpp     \
     ../GraphVisual/Source/edge.cpp \
     ../GraphVisual/Source/node.cpp \
     ../GraphVisual/Source/algorithm.cpp \
-#    ../GraphVisual/Source/graphicedge.cpp \
-#    ../GraphVisual/Source/graphicnode.cpp \
-#    ../GraphVisual/Source/graphtable.cpp \
-#    ../GraphVisual/Source/graphwindow.cpp
+    ../GraphVisual/Source/graphicnode.cpp \
+    tests/testAlgorithm.cpp \
+    ../GraphVisual/Source/graphicedge.cpp \
+    ../GraphVisual/Source/graphtable.cpp \
+    ../GraphVisual/Source/graphwindow.cpp \
+    ../GraphVisual/Source/popup.cpp \
+    ../GraphVisual/Source/mytextedit.cpp \
+    tests/testGraphicNode.cpp
 
 HEADERS += \
     catch.hpp \
@@ -41,10 +46,13 @@ HEADERS += \
     ../GraphVisual/Headers/edge.h \
     ../GraphVisual/Headers/node.h \
     ../GraphVisual/Headers/algorithm.h \
-#    ../GraphVisual/Headers/graphicedge.h \
-#    ../GraphVisual/Headers/graphicnode.h \
-#    ../GraphVisual/Headers/graphtable.h \
-#    ../GraphVisual/Headers/graphwindow.h
+    ../GraphVisual/Headers/graphicnode.h \
+    ../GraphVisual/Headers/graphicedge.h \
+    ../GraphVisual/Headers/graphtable.h \
+    ../GraphVisual/Headers/graphwindow.h \
+    ../GraphVisual/Headers/popup.h \
+    ../GraphVisual/Headers/mytextedit.h
+
 
 
 TARGET = Test

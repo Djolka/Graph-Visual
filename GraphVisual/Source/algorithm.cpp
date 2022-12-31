@@ -9,6 +9,9 @@
 QList<Node*> Algorithm::BFS (Node* current){
 
     QList<Node*> steps;
+    if(current == nullptr)
+        return steps;
+
     QQueue<Node*> q;
     QHash<Node*, bool> visited;
 
@@ -130,6 +133,16 @@ Node* Algorithm::minDist(QHash<Node*, int> dist, QHash<Node*, bool> visited){
 std::map<Node*, Node*> Algorithm::MST (Graph &graph){
 
     std::map<Node*, Node*> parent;
+    if(graph.edgeSet().size()==0){
+        if(graph.nodeSet().size()==0)
+            return parent;
+        else{
+            parent[graph.randomNode()] = nullptr;
+            return parent;
+        }
+    }
+
+
     std::map<Node*, bool> visited;
     std::map<Node*, int> minEdge;
 
@@ -347,7 +360,7 @@ bool Algorithm::hasEulerianCircuit (Graph &graph){
 
 QList<Node*> Algorithm::getEulerianCircuit (Graph* graph){
 
-    if(!hasEulerianCircuit(*graph)){
+    if(!hasEulerianCircuit(*graph) || graph->nodeSet().empty()){
         return QList<Node*>();
     }
 

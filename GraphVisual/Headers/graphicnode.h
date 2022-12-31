@@ -17,6 +17,7 @@ public:
 
     inline Node *getNode() { return m_Node; }
     inline void setBrush(QBrush b, bool x) { m_brush = b; m_algorithm = x; }
+    inline QBrush getBrush(){return m_brush;}
 
     int type() const override;
 
