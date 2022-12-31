@@ -187,8 +187,6 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                 ++i;
         }
 
-        //TODO DELETE FROM LIST
-
         emit deletedNode(node);
     }
     else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)){ //delete edge

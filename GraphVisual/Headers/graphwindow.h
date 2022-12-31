@@ -79,24 +79,11 @@ private slots:
     void on_actionLoadFromJson_triggered();
 
     void on_pbUndirected_pressed();
-
-//    void on_pbUndirected_released();
-
     void on_pbDirected_pressed();
-
-//    void on_pbUndirected_clicked();
-
     void on_actionClose_triggered();
-
-//    void on_pbAddNode_clicked();
     void on_actionSave_triggered();
-
     void on_actionOpen_triggered();
-
-//    void on_pbAddNode_clicked();
-
     void on_pbSave_clicked();
-
     void on_pbBeautify_clicked();
 
 private:

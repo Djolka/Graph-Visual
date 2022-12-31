@@ -61,7 +61,7 @@ public:
 protected:
     QList<Edge*> m_edges;
     QList<Node*> m_nodes;
-    const std::pair<int, int> m_weightRange; //todelete?
+    std::pair<int, int> m_weightRange; //todelete?
 
     bool m_directed;
     bool m_weighted;

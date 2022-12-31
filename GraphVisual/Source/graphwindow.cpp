@@ -5,21 +5,16 @@
 #include "Headers/graphtable.h"
 #include "Headers/node.h"
 #include "Headers/graphicnode.h"
-
 #include "Headers/edge.h"
-#include "Headers/graphicedge.h"
 #include "Headers/algorithm.h"
 #include "Headers/graph.h"
-
-#include "Headers/algorithm.h"
-#include"Headers/popup.h"
-#include"ui_popup.h"
+#include "Headers/graphicedge.h"
+#include "Headers/popup.h"
 
 #include <QJsonDocument>
 #include <future>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QDebug>
 #include <fstream>
 #include <string>
 #include <QString>
@@ -34,11 +29,9 @@
 #include <QTime>
 #include <QIcon>
 #include <sstream>
-
-#include "Headers/algorithm.h"
-#include "Headers/popup.h"
-#include "ui_popup.h"
 #include <unistd.h>
+
+//#include "ui_popup.h"
 
 GraphWindow::GraphWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -327,8 +320,8 @@ void GraphWindow::nodeNameLength() {
     auto text = ui->teNode1->toPlainText();
 
     if (text.length() > 5){
-        text.chop(text.length() - 5); // Cut off at 5 characters
-        ui->teNode1->setPlainText(text); // Reset text
+        text.chop(text.length() - 5);
+        ui->teNode1->setPlainText(text);
         QTextCursor cursor = ui->teNode1->textCursor();
         cursor.setPosition(ui->teNode1->document()->characterCount() - 1);
         ui->teNode1->setTextCursor(cursor);
@@ -337,8 +330,8 @@ void GraphWindow::nodeNameLength() {
     text = ui->teNode2->toPlainText();
 
     if (text.length() > 5){
-        text.chop(text.length() - 5); // Cut off at 5 characters
-        ui->teNode2->setPlainText(text); // Reset text
+        text.chop(text.length() - 5);
+        ui->teNode2->setPlainText(text);
 
         QTextCursor cursor = ui->teNode2->textCursor();
         cursor.setPosition(ui->teNode2->document()->characterCount() - 1);
@@ -744,15 +737,10 @@ void GraphWindow::on_actionClose_triggered() {
     return;
 }
 
-// delete this
-//void GraphWindow::on_pbUndirected_released(){}
-//void GraphWindow::on_pbUndirected_clicked(){}
-//void GraphWindow::on_pbAddNode_clicked(){}
-
-
 void GraphWindow::deleteNode(Node* node) {
     m_graph->removeNode(node);
     QList<QListWidgetItem *> edges = ui->lw->findItems(QString::fromStdString(node->name()), Qt::MatchContains);
+
     for(auto edge : edges){
         delete edge;
     }
@@ -958,7 +946,7 @@ void GraphWindow::on_pbBeautify_clicked()
     int numOfIters = 500;
 
     double C = 0.2;
-    double K = 50.0; // optimal distance
+    double K = 50.0;
     double pointsDistance = 0.0;
     double directionCorrection = m_graph->isDirected() ? 0.4 : 1.0;
 
