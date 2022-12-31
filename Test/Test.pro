@@ -38,6 +38,7 @@ SOURCES +=     main.cpp     \
     ../GraphVisual/Source/graphwindow.cpp \
     ../GraphVisual/Source/popup.cpp \
     ../GraphVisual/Source/mytextedit.cpp \
+    tests/testGraphicEdge.cpp \
     tests/testGraphicNode.cpp
 
 HEADERS += \
