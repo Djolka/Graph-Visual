@@ -1,4 +1,4 @@
-#include"Headers/graphicedge.h"
+#include"graphicedge.h"
 #include<climits>
 
 #include <QPen>

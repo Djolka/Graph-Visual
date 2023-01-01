@@ -1,15 +1,15 @@
-#include "Headers/graphwindow.h"
-#include "Headers/popup.h"
+#include "graphwindow.h"
+#include "popup.h"
 #include "ui_graphwindow.h"
 
-#include "Headers/graphtable.h"
-#include "Headers/node.h"
-#include "Headers/graphicnode.h"
-#include "Headers/edge.h"
-#include "Headers/algorithm.h"
-#include "Headers/graph.h"
-#include "Headers/graphicedge.h"
-#include "Headers/popup.h"
+#include "graphtable.h"
+#include "node.h"
+#include "graphicnode.h"
+#include "edge.h"
+#include "algorithm.h"
+#include "graph.h"
+#include "graphicedge.h"
+#include "popup.h"
 
 #include <QJsonDocument>
 #include <future>

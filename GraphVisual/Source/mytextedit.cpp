@@ -1,4 +1,4 @@
-#include "Headers/mytextedit.h"
+#include "mytextedit.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
 

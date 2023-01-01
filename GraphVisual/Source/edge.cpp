@@ -1,5 +1,5 @@
-#include "Headers/edge.h"
-#include "Headers/node.h"
+#include "edge.h"
+#include "node.h"
 
 Edge::Edge(std::pair<Node*, Node*> nodePair, int weight):m_weight(weight), m_nodePair(nodePair){}
 

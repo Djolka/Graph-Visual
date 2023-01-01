@@ -1,5 +1,5 @@
-#include "Headers/graphicnode.h"
-#include "Headers/node.h"
+#include "graphicnode.h"
+#include "node.h"
 #include "qgraphicsscene.h"
 #include "qgraphicssceneevent.h"
 #include "math.h"

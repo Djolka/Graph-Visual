@@ -1,8 +1,8 @@
-#include "Headers/graphtable.h"
-#include "Headers/graphicnode.h"
-#include "Headers/graphicedge.h"
+#include "graphtable.h"
+#include "graphicnode.h"
+#include "graphicedge.h"
 
-#include "Headers/popup.h"
+#include "popup.h"
 #include "qapplication.h"
 #include "qdatetime.h"
 #include <QMessageBox>

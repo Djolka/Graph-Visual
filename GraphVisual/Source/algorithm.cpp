@@ -1,4 +1,4 @@
-#include"Headers/algorithm.h"
+#include"algorithm.h"
 
 #include<queue>
 #include<QHash>
