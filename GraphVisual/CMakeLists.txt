@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-set(HDR_PATH "./Headers")
-set(SRC_PATH "./Source")
-set(UI_PATH "./Forms")
+set(HDR_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Headers")
+set(SRC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Source")
+set(UI_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Forms")
 
 project(graphvisual VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
