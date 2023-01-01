@@ -37,7 +37,6 @@ QColor GraphicEdge::m_color = QColor("black");
 
 
 QRectF GraphicEdge::boundingRect() const {
-    QPainterPath ret;
     QPolygonF nPolygon;
     auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
     qreal radAngle = line.angle()* M_PI / 180;

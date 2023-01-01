@@ -2,7 +2,7 @@
 #define GRAPHICEDGE_H
 
 #include <QGraphicsLineItem>
-#include"Headers/graphicnode.h"
+#include"graphicnode.h"
 #include<QLineEdit>
 #include<QPen>
 #include<QPolygon>

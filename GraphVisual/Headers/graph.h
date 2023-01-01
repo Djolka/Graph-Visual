@@ -1,8 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "Headers/edge.h"
-#include "Headers/node.h"
+#include "edge.h"
+#include "node.h"
 
 #include <QList>
 #include <QString>

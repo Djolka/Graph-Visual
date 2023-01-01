@@ -6,7 +6,7 @@
 
 
 #include <map>
-#include "Headers/node.h"
+#include "node.h"
 
 typedef std::map<std::pair<Node*, Node*>, int> edges;
 

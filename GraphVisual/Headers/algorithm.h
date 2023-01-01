@@ -1,9 +1,9 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include"Headers/node.h"
-#include"Headers/edge.h"
-#include"Headers/graph.h"
+#include"node.h"
+#include"edge.h"
+#include"graph.h"
 #include<iostream>
 
 #include<QList>

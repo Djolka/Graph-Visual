@@ -4,7 +4,7 @@
 #include <QGraphicsObject>
 #include<QBrush>
 
-#include "Headers/node.h"
+#include "node.h"
 
 class GraphicNode : public QGraphicsObject {
     Q_OBJECT

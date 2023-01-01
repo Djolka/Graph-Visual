@@ -6,8 +6,8 @@
 #include<QVariant>
 
 
-#include"Headers/graphicedge.h"
-#include"Headers/graph.h"
+#include"graphicedge.h"
+#include"graph.h"
 
 class Node;
 class GraphicNode;
@@ -73,18 +73,18 @@ private slots:
     void graphDirected();
     void graphUndirected();
 
-    void on_actionSaveAsPng_triggered();
-    void on_actionSaveAsJpg_triggered();
-    void on_actionSaveAsJson_triggered();
-    void on_actionLoadFromJson_triggered();
+    void onActionSaveAsPngTriggered();
+    void onActionSaveAsJpgTriggered();
+    void onActionSaveAsJsonTriggered();
+    void onActionLoadFromJsonTriggered();
 
-    void on_pbUndirected_pressed();
-    void on_pbDirected_pressed();
-    void on_actionClose_triggered();
-    void on_actionSave_triggered();
-    void on_actionOpen_triggered();
-    void on_pbSave_clicked();
-    void on_pbBeautify_clicked();
+    void onPbUndirectedPressed();
+    void onPbDirectedPressed();
+    void onActionCloseTriggered();
+    void onActionSaveTriggered();
+    void onActionOpenTriggered();
+    void onPbSaveClicked();
+    void onPbBeautifyClicked();
 
 private:
     Ui::GraphWindow *ui;

@@ -174,7 +174,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         Node* node = graphicNode->getNode();
 
         // delete edges around the node
-        auto i = m_Edges.begin();
+        QVector<GraphicEdge *>::iterator i = m_Edges.begin();
         while (i != m_Edges.end()) {
             if((*i)->getStart()->getNode()==node || (*i)->getEnd()->getNode()==node){
                 removeItem(*i);

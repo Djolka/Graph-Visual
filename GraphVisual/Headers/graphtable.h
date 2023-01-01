@@ -10,10 +10,10 @@
 #include<QTimer>
 #include<QApplication>
 
-#include "Headers/node.h"
-#include "Headers/edge.h"
-#include "Headers/graphicnode.h"
-#include "Headers/graphicedge.h"
+#include "node.h"
+#include "edge.h"
+#include "graphicnode.h"
+#include "graphicedge.h"
 
 class GraphTable : public QGraphicsScene {
 Q_OBJECT

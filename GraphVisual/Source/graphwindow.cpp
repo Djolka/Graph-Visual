@@ -51,8 +51,6 @@ GraphWindow::GraphWindow(QWidget *parent)
     ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
 //    connecting singals and slots
-    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
-    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
     connect(ui->teNode1, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
     connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
@@ -90,6 +88,21 @@ GraphWindow::GraphWindow(QWidget *parent)
     connect(this, &GraphWindow::changeToUndir, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::setToUndir);
 
     connect(ui->horizontalSlider, &QSlider::valueChanged, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::changeSliderValue);
+
+
+    connect(ui->actionClose, &QAction::triggered, this, &GraphWindow::onActionCloseTriggered);
+    connect(ui->actionSaveAsJpg, &QAction::triggered, this, &GraphWindow::onActionSaveAsJpgTriggered);
+    connect(ui->actionSaveAsPng, &QAction::triggered, this, &GraphWindow::onActionSaveAsPngTriggered);
+    connect(ui->actionSaveAsJson, &QAction::triggered, this, &GraphWindow::onActionSaveAsJsonTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &GraphWindow::onActionOpenTriggered);
+    connect(ui->actionLoadFromJson, &QAction::triggered, this, &GraphWindow::onActionLoadFromJsonTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &GraphWindow::onActionSaveTriggered);
+
+    connect(ui->pbSave, &QPushButton::clicked, this, &GraphWindow::onPbSaveClicked);
+    connect(ui->pbBeautify, &QPushButton::clicked, this, &GraphWindow::onPbBeautifyClicked);
+    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
+    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
+
 
 
     fillMap();
@@ -341,6 +354,7 @@ void GraphWindow::nodeNameLength() {
 
 void GraphWindow::graphDirected() {
     if(m_graph->nodeSet().empty()){
+            onPbDirectedPressed();
             emit changeToDir();
             ui->pbUndirected->setEnabled(true);
             ui->pbDirected->setEnabled(false);
@@ -358,6 +372,7 @@ void GraphWindow::graphDirected() {
                 QMessageBox::No) )
         {
           case QMessageBox::Yes:
+            onPbDirectedPressed();
             ui->pbMST->setDisabled(true);
             ui->pbArticulation->setDisabled(true);
             emit changeToDir();
@@ -384,6 +399,7 @@ void GraphWindow::graphDirected() {
 
 void GraphWindow::graphUndirected() {
     if(m_graph->nodeSet().empty()){
+            onPbUndirectedPressed();
             ui->pbMST->setDisabled(false);
             ui->pbArticulation->setDisabled(false);
 
@@ -402,6 +418,7 @@ void GraphWindow::graphUndirected() {
                 QMessageBox::No) )
         {
           case QMessageBox::Yes:
+            onPbUndirectedPressed();
             emit changeToUndir();
             ui->pbMST->setDisabled(false);
             ui->pbArticulation->setDisabled(false);
@@ -426,24 +443,24 @@ void GraphWindow::graphUndirected() {
     return;
 }
 
-        
 
 
-void GraphWindow::on_actionSaveAsPng_triggered() {
+
+void GraphWindow::onActionSaveAsPngTriggered() {
     GraphWindow::SaveAsPic("png");
 }
 
 
-void GraphWindow::on_actionSaveAsJpg_triggered() {
+void GraphWindow::onActionSaveAsJpgTriggered() {
     GraphWindow::SaveAsPic("jpeg");
 }
 
-void GraphWindow::on_pbUndirected_pressed() {
+void GraphWindow::onPbUndirectedPressed() {
     ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
 }
 
-void GraphWindow::on_pbDirected_pressed() {
+void GraphWindow::onPbDirectedPressed() {
     ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
     ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
 }
@@ -513,7 +530,7 @@ void GraphWindow::fromVariant(const QVariant &variant)
             AddNewEdge();
         }
     }
-    on_pbBeautify_clicked();
+    onPbBeautifyClicked();
 }
 
 QVariant GraphWindow::toVariant() const
@@ -545,7 +562,7 @@ QVariant GraphWindow::toVariant() const
 
 }
 
-void GraphWindow::on_actionLoadFromJson_triggered(){
+void GraphWindow::onActionLoadFromJsonTriggered(){
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "JSON files (*.json)", nullptr, QFileDialog::DontUseNativeDialog);
     std::string filepath = file.toStdString();
 
@@ -613,10 +630,10 @@ void GraphWindow::readFromFile(std::ifstream *openFile){
     }
     openFile->close();
     emit this->ui->pbSave->clicked();
-    on_pbBeautify_clicked();
+    onPbBeautifyClicked();
 }
 
-void GraphWindow::on_actionOpen_triggered(){
+void GraphWindow::onActionOpenTriggered(){
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)", nullptr, QFileDialog::DontUseNativeDialog);
     std::string filename = file.toStdString();
     std::ifstream openFile;
@@ -630,7 +647,7 @@ void GraphWindow::on_actionOpen_triggered(){
 }
 
 
-void GraphWindow::on_actionSaveAsJson_triggered(){
+void GraphWindow::onActionSaveAsJsonTriggered(){
     if (this->m_graph->countNodes()==0){
             QMessageBox::information(this, tr("Error"), "The scene is empty");
     }else{
@@ -688,7 +705,7 @@ void GraphWindow::saveInfoIntoFile(std::ofstream *saveFile){
     saveFile->close();
 }
 
-void GraphWindow::on_actionSave_triggered(){
+void GraphWindow::onActionSaveTriggered(){
     if (m_path==""){
         if (this->m_graph->countNodes()==0){
                 QMessageBox::information(this, tr("Error"), "The scene is empty");
@@ -712,7 +729,7 @@ void GraphWindow::on_actionSave_triggered(){
     }
 }
 
-void GraphWindow::on_actionClose_triggered() {
+void GraphWindow::onActionCloseTriggered() {
     switch(QMessageBox::question(this, "Warning",
             "<FONT COLOR='#171717'>Do you want to save changes?</FONT>",
 
@@ -723,7 +740,7 @@ void GraphWindow::on_actionClose_triggered() {
                 QMessageBox::Cancel) )
     {
       case QMessageBox::Save:
-        emit on_actionSave_triggered();
+        onActionSaveTriggered();
         close();
         break;
       case QMessageBox::No:
@@ -765,7 +782,7 @@ void GraphWindow::deleteEdge(Node* node1, Node* node2) {
     m_graph->removeEdge(node1, node2);
 }
 
-void GraphWindow::on_pbSave_clicked() {
+void GraphWindow::onPbSaveClicked() {
     GraphicNode::m_height = ui->sbRadius->value();
     GraphicNode::m_width = ui->sbRadius->value();
     GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
@@ -850,8 +867,11 @@ void GraphWindow::algorithm() {
         if(p->exec() == QDialog::Accepted){
             QString nodeName = p->getNodeName();
             node1 = m_graph->getNode(nodeName.toStdString());
-            if(node1 == nullptr)
+            if(node1 == nullptr){
                 warning("Node with that name does not exist");
+                return;
+            }
+
         }
         else{
             delete a;
@@ -860,8 +880,10 @@ void GraphWindow::algorithm() {
         if(p->exec() == QDialog::Accepted){
             QString nodeName = p->getNodeName();
             node2 = m_graph->getNode(nodeName.toStdString());
-            if(node2 == nullptr)
+            if(node2 == nullptr){
                 warning("Node with that name does not exist");
+                return;
+            }
         }
         else {
             delete a;
@@ -941,7 +963,7 @@ void GraphWindow::gravityDelay(){
         }
 }
 
-void GraphWindow::on_pbBeautify_clicked()
+void GraphWindow::onPbBeautifyClicked()
 {
     int numOfIters = 500;
 
