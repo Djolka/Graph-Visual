@@ -32,13 +32,13 @@ int Edge::weight() const{
 QVariant Edge::toVariant()
 {
     QVariantMap map;
-    QString nodeName=QString::fromStdString(this->m_nodePair.first->name());
+    QString nodeName=QString::fromStdString(m_nodePair.first->name());
     map.insert("node1", nodeName);
 
-    nodeName=QString::fromStdString(this->m_nodePair.second->name());
+    nodeName=QString::fromStdString(m_nodePair.second->name());
     map.insert("node2", nodeName);
 
-    int nodeWeight= this->weight();
+    int nodeWeight= weight();
     map.insert("weight", nodeWeight);
 
     return map;

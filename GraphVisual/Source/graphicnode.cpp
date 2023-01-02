@@ -2,7 +2,7 @@
 #include "node.h"
 #include "qgraphicsscene.h"
 #include "qgraphicssceneevent.h"
-#include "math.h"
+#include <cmath>
 
 #include <QPainter>
 
@@ -14,9 +14,7 @@ GraphicNode::GraphicNode(Node *node)
 
 }
 
-GraphicNode::~GraphicNode() {
-
-}
+GraphicNode::~GraphicNode() = default;
 
 QColor GraphicNode::m_color = QColor("white");
 int GraphicNode::m_height = 50;

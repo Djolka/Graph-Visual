@@ -25,7 +25,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include <QShortcut>
-#include <math.h>
+#include <cmath>
 #include <QTime>
 #include <QIcon>
 #include <sstream>

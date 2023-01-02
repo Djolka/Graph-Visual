@@ -2,14 +2,13 @@
 #include <utility>
 #include <QPointF>
 #include <cmath>
-#include "math.h"
 
 Node::Node(){
-    this->m_inDeg=0;
-    this->m_outDeg=0;
-    this->m_deg=0;
-    this->m_name="";
-    this->m_position=QPointF(0,0);
+    m_inDeg=0;
+    m_outDeg=0;
+    m_deg=0;
+    m_name="";
+    m_position=QPointF(0,0);
 }
 
 Node::Node(const Node *other) {
@@ -21,19 +20,19 @@ Node::Node(const Node *other) {
 }
 
 Node::Node(std::string name){
-    this->m_inDeg=0;
-    this->m_outDeg=0;
-    this->m_deg=0;
-    this->m_name=name;
-    this->m_position=QPointF(0,0);
+    m_inDeg=0;
+    m_outDeg=0;
+    m_deg=0;
+    m_name=name;
+    m_position=QPointF(0,0);
 }
 
 Node::Node(std::string name, QPointF position){
-    this->m_inDeg=0;
-    this->m_outDeg=0;
-    this->m_deg=0;
-    this->m_name=name;
-    this->m_position=position;
+    m_inDeg=0;
+    m_outDeg=0;
+    m_deg=0;
+    m_name=name;
+    m_position=position;
 }
 
 Node::~Node() {
@@ -43,19 +42,19 @@ Node::~Node() {
 }
 
 unsigned Node::inDeg() const{
-    return this->m_inDeg;
+    return m_inDeg;
 }
 
 unsigned Node::outDeg() const{
-    return this->m_outDeg;
+    return m_outDeg;
 }
 
 unsigned Node::deg() const{
-    return this->m_deg;
+    return m_deg;
 }
 
 QPointF Node::position() const{
-    return this->m_position;
+    return m_position;
 }
 
 std::string Node::name() const{
@@ -63,15 +62,15 @@ std::string Node::name() const{
 }
 
 void Node::setPosition(const QPointF &position){
-    this->m_position=position;
+    m_position=position;
 }
 
 bool Node::operator==(const Node &second) const{
-    return this->m_name==second.m_name;
+    return m_name==second.m_name;
 }
 
 bool Node::operator<(const Node &second) const{
-    int res = this->m_name.compare(second.m_name);
+    int res = m_name.compare(second.m_name);
 
     if (res < 0)
         return true;
@@ -103,16 +102,16 @@ bool Node::addNeighbour(Node* n){
 }
 
 void Node::incInDeg(){
-    this->m_inDeg++;
+    m_inDeg++;
 }
 
 void Node::incOutDeg(){
-    this->m_outDeg++;
+    m_outDeg++;
 }
 
 void Node::decInDeg(){
     if(m_inDeg>0){
-        this->m_inDeg--;
+        m_inDeg--;
     }else{
         std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
@@ -120,26 +119,26 @@ void Node::decInDeg(){
 
 void Node::decOutDeg(){
     if(m_outDeg>0){
-        this->m_outDeg--;
+        m_outDeg--;
     }else{
         std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
 }
 
 void Node::incDeg(){
-    this->m_deg++;
+    m_deg++;
 }
 
 void Node::decDeg(){
     if(m_deg>0){
-        this->m_deg--;
+        m_deg--;
     }else{
         std::cerr<<"There are no edges to be deleted"<<std::endl;
     }
 }
 
 void Node::setName(const std::string name){
-    this->m_name=name;
+    m_name=name;
 }
 
 std::ostream &operator<< (std::ostream &os, const Node &n){

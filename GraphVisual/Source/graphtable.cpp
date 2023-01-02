@@ -94,12 +94,12 @@ bool GraphTable::hasGraphicEdge(GraphicNode *u, GraphicNode *v) {
 
 void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
 
-    if(m_drawingMode && itemAt(event->scenePos(), QTransform()) == NULL){
+    if(m_drawingMode && itemAt(event->scenePos(), QTransform()) == nullptr){
         if(m_hasTmp){
             setHasTmp(false);
         }
         else{
-            Popup* p = new Popup();
+            auto p = new Popup();
 
             if(p->exec() == QDialog::Accepted){
 
@@ -118,7 +118,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                 if(!alreadyExists && !(nodeName.length()==0)){
 
                     Node* node = new Node(nodeName.toStdString());
-                    GraphicNode* graphicNode = new GraphicNode(node);
+                    auto graphicNode = new GraphicNode(node);
 
                     QPointF point = event->scenePos() - QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2);
                     qreal x = 0, y = 0;
@@ -151,7 +151,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
             GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
 
             if(!hasGraphicEdge(m_tmp, node) && m_tmp != node) {
-                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, m_directed);
+                auto edge = new GraphicEdge(m_tmp, node, 1, m_directed);
                 AddNewEdgeOnTable(edge);
 
 
@@ -162,7 +162,7 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
         }
         this->update();
     }
-    else if(m_deleteMode && itemAt(event->scenePos(), QTransform()) == NULL){
+    else if(m_deleteMode && itemAt(event->scenePos(), QTransform()) == nullptr){
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
     }
