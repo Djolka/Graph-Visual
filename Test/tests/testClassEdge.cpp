@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../GraphVisual/Headers/edge.h"
+#include "edge.h"
 
 
 TEST_CASE("Edge", "[edge]")

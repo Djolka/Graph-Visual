@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "../GraphVisual/Headers/graphicnode.h"
-#include "../GraphVisual/Headers/node.h"
+#include "graphicnode.h"
+#include "node.h"
 
 TEST_CASE("Graphic Node Class", "[graphicNode]")
 {

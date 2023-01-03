@@ -1,7 +1,7 @@
 #include "catch.hpp"
-#include "../GraphVisual/Headers/algorithm.h"
-#include "../GraphVisual/Headers/node.h"
-#include "../GraphVisual/Headers/graph.h"
+#include "algorithm.h"
+#include "node.h"
+#include "graph.h"
 #include<QList>
 
 
