@@ -146,7 +146,7 @@ void GraphWindow::SaveAsPic(const QString &m_ext) {
             this, "Save image", dir + "/" + name, fileType, nullptr,
             QFileDialog::DontUseNativeDialog);
     if (!fileName.isNull()) {
-        QPixmap pixMap = this->ui->graphicsView->grab();
+        QPixmap pixMap = ui->graphicsView->grab();
         pixMap.save(fileName);
     }
 }
@@ -464,31 +464,31 @@ void GraphWindow::onPbDirectedPressed() {
 
 void GraphWindow::enterValue(std::string key, std::string key2,
                                                          std::string value) {
-    this->ui->teNode1->insertPlainText(QString::fromStdString(key));
-    this->ui->teNode2->insertPlainText(QString::fromStdString(key2));
-    this->ui->teWeight->insertPlainText(QString::fromStdString(value));
+    ui->teNode1->insertPlainText(QString::fromStdString(key));
+    ui->teNode2->insertPlainText(QString::fromStdString(key2));
+    ui->teWeight->insertPlainText(QString::fromStdString(value));
 }
 
 void GraphWindow::setDirection(QString direction) {
     if (direction == "directed") {
         graphDirected();
-        emit this->ui->pbDirected->pressed();
+        emit ui->pbDirected->pressed();
     } else {
         graphUndirected();
-        emit this->ui->pbUndirected->pressed();
+        emit ui->pbUndirected->pressed();
     }
 }
 
 void GraphWindow::invalidateRegion() {
     QGraphicsView obj = this;
-    obj.invalidateScene(this->ui->graphicsView->sceneRect(),
+    obj.invalidateScene(ui->graphicsView->sceneRect(),
                                             QGraphicsScene::SceneLayers());
     QCoreApplication::processEvents();
 }
 
 void GraphWindow::fromVariant(const QVariant &variant) {
     const auto map = variant.toMap();
-    emit this->ui->pbDeleteAll->clicked();
+    emit ui->pbDeleteAll->clicked();
 
     int background = map.value("background").toInt();
     int nodeColor = map.value("nodeColor").toInt();
@@ -498,14 +498,14 @@ void GraphWindow::fromVariant(const QVariant &variant) {
     indexColors();
 
     QString color = m_indices.key(background);
-    this->ui->cbBgcolor->setCurrentIndex(background);
+    ui->cbBgcolor->setCurrentIndex(background);
 
     color = m_indices.key(nodeColor);
-    this->ui->cbNodecolor->setCurrentIndex(nodeColor);
+    ui->cbNodecolor->setCurrentIndex(nodeColor);
 
     color = m_indices.key(edgeColor);
-    this->ui->cbEdgecolor->setCurrentIndex(edgeColor);
-    emit this->ui->pbSave->clicked();
+    ui->cbEdgecolor->setCurrentIndex(edgeColor);
+    emit ui->pbSave->clicked();
 
     setDirection(direction);
     invalidateRegion();
@@ -533,11 +533,11 @@ void GraphWindow::fromVariant(const QVariant &variant) {
 }
 
 QVariant GraphWindow::toVariant() const {
-    auto edgeSet = this->m_graph->edgeSet();
-    int background = this->ui->cbBgcolor->currentIndex();
-    int nodeColor = this->ui->cbNodecolor->currentIndex();
-    int edgeColor = this->ui->cbEdgecolor->currentIndex();
-    QString direction = this->m_graph->isDirected() ? "directed" : "undirected";
+    auto edgeSet = m_graph->edgeSet();
+    int background = ui->cbBgcolor->currentIndex();
+    int nodeColor = ui->cbNodecolor->currentIndex();
+    int edgeColor = ui->cbEdgecolor->currentIndex();
+    QString direction = m_graph->isDirected() ? "directed" : "undirected";
 
     QVariantMap map;
     map.insert("background", background);
@@ -599,13 +599,13 @@ void GraphWindow::readFromFile(std::ifstream *openFile) {
     indexColors();
 
     int colorIndex = graphInfo["background:"];
-    this->ui->cbBgcolor->setCurrentIndex(colorIndex);
+    ui->cbBgcolor->setCurrentIndex(colorIndex);
 
     colorIndex = graphInfo["nodeColor:"];
-    this->ui->cbNodecolor->setCurrentIndex(colorIndex);
+    ui->cbNodecolor->setCurrentIndex(colorIndex);
 
     colorIndex = graphInfo["edgeColor:"];
-    this->ui->cbEdgecolor->setCurrentIndex(colorIndex);
+    ui->cbEdgecolor->setCurrentIndex(colorIndex);
 
     invalidateRegion();
 
@@ -627,7 +627,7 @@ void GraphWindow::readFromFile(std::ifstream *openFile) {
         AddNewEdge();
     }
     openFile->close();
-    emit this->ui->pbSave->clicked();
+    emit ui->pbSave->clicked();
     onPbBeautifyClicked();
 }
 
@@ -641,13 +641,13 @@ void GraphWindow::onActionOpenTriggered() {
     openFile.open(filename);
 
     if (!openFile.fail()) {
-        emit this->ui->pbDeleteAll->clicked();
+        emit ui->pbDeleteAll->clicked();
         readFromFile(&openFile);
     }
 }
 
 void GraphWindow::onActionSaveAsJsonTriggered() {
-    if (this->m_graph->countNodes() == 0) {
+    if (m_graph->countNodes() == 0) {
         QMessageBox::information(this, tr("Error"), "The scene is empty");
     } else {
         QString file = QFileDialog::getSaveFileName(
@@ -674,23 +674,23 @@ void GraphWindow::onActionSaveAsJsonTriggered() {
 
 void GraphWindow::saveInfoIntoFile(std::ofstream *saveFile) {
     std::map<std::string, int> graphInfo;
-    int backgroundColor = this->ui->cbBgcolor->currentIndex();
-    int nodeRadius = this->ui->sbRadius->displayIntegerBase();
-    int nodeColor = this->ui->cbNodecolor->currentIndex();
-    int edgeColor = this->ui->cbEdgecolor->currentIndex();
+    int backgroundColor = ui->cbBgcolor->currentIndex();
+    int nodeRadius = ui->sbRadius->displayIntegerBase();
+    int nodeColor = ui->cbNodecolor->currentIndex();
+    int edgeColor = ui->cbEdgecolor->currentIndex();
 
     graphInfo.insert({"background: ", backgroundColor});
     graphInfo.insert({"nodeColor: ", nodeColor});
     graphInfo.insert({"edgeColor: ", edgeColor});
 
-    auto edges = this->m_graph->edgeSet();
+    auto edges = m_graph->edgeSet();
     (*saveFile) << nodeRadius << "\n";
 
     for (auto &pair : graphInfo) {
         (*saveFile) << pair.first << " " << pair.second << "\n";
     }
 
-    if (this->m_graph->isDirected()) {
+    if (m_graph->isDirected()) {
         (*saveFile) << "dir" << "\n";
     } else {
         (*saveFile) << "undir" << "\n";
@@ -709,7 +709,7 @@ void GraphWindow::saveInfoIntoFile(std::ofstream *saveFile) {
 
 void GraphWindow::onActionSaveTriggered() {
     if (m_path == "") {
-        if (this->m_graph->countNodes() == 0) {
+        if (m_graph->countNodes() == 0) {
             QMessageBox::information(this, tr("Error"), "The scene is empty");
         } else {
             QString file = QFileDialog::getSaveFileName(

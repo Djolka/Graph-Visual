@@ -48,7 +48,7 @@ void GraphTable::DeleteGraphFromTable() {
     update();
 }
 
-void GraphTable::Redraw() { this->update(); }
+void GraphTable::Redraw() { update(); }
 
 void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     const int tableWidth = static_cast<int>(width());
@@ -133,8 +133,7 @@ void GraphTable::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     } else if (m_drawingMode &&
                (itemAt(event->scenePos(), QTransform())->type() == 1)) { // click on node
         if (!m_hasTmp) {
-            this->m_tmp =
-                    dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
+            m_tmp = dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
             setHasTmp(true);
         } else {
             GraphicNode *node = dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
@@ -148,7 +147,7 @@ void GraphTable::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
             setHasTmp(false);
         }
-        this->update();
+        update();
     } else if (m_deleteMode && itemAt(event->scenePos(), QTransform()) == nullptr) {
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
