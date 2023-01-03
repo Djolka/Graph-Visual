@@ -1,18 +1,16 @@
-#include"graphicedge.h"
-#include<climits>
+#include "graphicedge.h"
+#include <climits>
 
-#include <QPen>
 #include <QPainter>
-#include <QtMath>
 #include <QPainterPath>
+#include <QPen>
+#include <QtMath>
 #include <cmath>
 
-GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool dir)
-    :QGraphicsLineItem(),
-    m_start (start),
-    m_end (end),
-    m_weight(weight),
-    directed(dir){
+GraphicEdge::GraphicEdge(GraphicNode *start, GraphicNode *end, int weight,
+                         bool dir)
+        : QGraphicsLineItem(), m_start(start), m_end(end), m_weight(weight),
+          directed(dir) {
     m_weightLineEdit = new QLineEdit(QString::fromStdString(std::to_string(weight)));
     connect(m_weightLineEdit, &QLineEdit::editingFinished, this, &GraphicEdge::editWeight);
     setFlags(GraphicsItemFlag::ItemIsSelectable);
@@ -29,98 +27,92 @@ GraphicEdge::GraphicEdge(GraphicNode* start, GraphicNode* end, int weight, bool 
     QGraphicsLineItem::setZValue(-10);
 }
 
-GraphicEdge::~GraphicEdge(){
-    delete m_weightLineEdit;
-}
+GraphicEdge::~GraphicEdge() { delete m_weightLineEdit; }
 
 QColor GraphicEdge::m_color = QColor("black");
-
 
 QRectF GraphicEdge::boundingRect() const {
     QPolygonF nPolygon;
     auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
-    qreal radAngle = line.angle()* M_PI / 180;
+    qreal radAngle = line.angle() * M_PI / 180;
     qreal dx = sin(radAngle);
     qreal dy = cos(radAngle);
     QPointF offset1;
     QPointF offset2;
 
-    if(directed){
+    if (directed) {
         dx *= 50;
         dy *= 50;
         offset1 = QPointF(dx, dy);
         offset2 = QPointF(20, 20);
-    }
-    else {
+    } else {
         dx *= 20;
         dy *= 20;
         offset1 = QPointF(dx, dy);
         offset2 = QPointF(-dx, -dy);
     }
-    nPolygon << line.p1() + offset1
-             << line.p1() + offset2
-             << line.p2() + offset2
-             << line.p2() + offset1;
+    nPolygon << line.p1() + offset1 << line.p1() + offset2 << line.p2() + offset2
+                     << line.p2() + offset1;
     return nPolygon.boundingRect();
 }
 
-QPointF GraphicEdge::getCenter(){
-    return QPointF(m_start->CenterPosition().rx() - (m_start->CenterPosition().rx() - m_end->CenterPosition().rx())/2.0,
-                   m_start->CenterPosition().ry() - (m_start->CenterPosition().ry() - m_end->CenterPosition().ry())/2.0);
+QPointF GraphicEdge::getCenter() {
+    return QPointF(
+            m_start->CenterPosition().rx() -
+                    (m_start->CenterPosition().rx() - m_end->CenterPosition().rx()) / 2.0,
+            m_start->CenterPosition().ry() -
+                    (m_start->CenterPosition().ry() - m_end->CenterPosition().ry()) / 2.0);
 }
 
-
-QPainterPath GraphicEdge::shape() const{
+QPainterPath GraphicEdge::shape() const {
     QPainterPath ret;
     QPolygonF nPolygon;
     auto line = QLineF(m_start->CenterPosition(), m_end->CenterPosition());
-    qreal radAngle = line.angle()* M_PI / 180;
+    qreal radAngle = line.angle() * M_PI / 180;
     qreal dx = sin(radAngle);
     qreal dy = cos(radAngle);
     QPointF offset1;
     QPointF offset2;
 
-    if(directed){
+    if (directed) {
         dx *= 50;
         dy *= 50;
         offset1 = QPointF(dx, dy);
         offset2 = QPointF(20, 20);
-    }
-    else {
+    } else {
         dx *= 20;
         dy *= 20;
         offset1 = QPointF(dx, dy);
         offset2 = QPointF(-dx, -dy);
     }
-    nPolygon << line.p1() + offset1
-             << line.p1() + offset2
-             << line.p2() + offset2
-             << line.p2() + offset1;
+    nPolygon << line.p1() + offset1 << line.p1() + offset2 << line.p2() + offset2
+                     << line.p2() + offset1;
     ret.addPolygon(nPolygon);
     return ret;
 }
 
-void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+void GraphicEdge::paint(QPainter *painter,
+						const QStyleOptionGraphicsItem *option,
+                        QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if(m_pen != QPen(Qt::green) && m_pen != QPen(Qt::red)) {
+    if (m_pen != QPen(Qt::green) && m_pen != QPen(Qt::red)) {
         m_pen = QPen(GraphicEdge::m_color);
     }
     painter->setPen(QPen(m_pen));
 
-    //draw arc
-    if(directed){
-        auto edgeCenter = new QPointF((m_start->x()+m_end->x())/2, (m_start->y()+m_end->y())/2);
-
+    // draw arc
+    if (directed) {
+        auto edgeCenter = new QPointF((m_start->x() + m_end->x()) / 2,
+                                      (m_start->y() + m_end->y()) / 2);
 
         qreal dX = m_end->CenterPosition().x() - m_start->CenterPosition().x();
         qreal dY = m_end->CenterPosition().y() - m_start->CenterPosition().y();
         qreal distance = sqrt(pow(dX, 2) + pow(dY, 2));
 
-
-        auto newLine =  new QLineF(m_start->CenterPosition(), m_end->CenterPosition());
-        newLine->setLength(newLine->length() - GraphicNode::m_width/2);
+        auto newLine =new QLineF(m_start->CenterPosition(), m_end->CenterPosition());
+        newLine->setLength(newLine->length() - GraphicNode::m_width / 2);
 
         qreal mX = (m_start->CenterPosition().x() + newLine->p2().x()) / 2;
         qreal mY = (m_start->CenterPosition().y() + newLine->p2().y()) / 2;
@@ -130,7 +122,7 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         auto controlPoint = new QPointF(cX, cY);
 
         auto ghostLine = new QLineF(*controlPoint, m_end->CenterPosition());
-        ghostLine->setLength(ghostLine->length() - GraphicNode::m_width/2);
+        ghostLine->setLength(ghostLine->length() - GraphicNode::m_width / 2);
 
         double angle = ::acos(ghostLine->dx() / ghostLine->length());
         if (ghostLine->dy() >= 0) {
@@ -146,19 +138,21 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         myPath.quadTo(*controlPoint, ghostLine->p2());
         painter->drawPath(myPath);
 
-        m_weightLineEdit->move((controlPoint->x()+edgeCenter->x())/2, (controlPoint->y()+edgeCenter->y())/2);
-        m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
+        m_weightLineEdit->move((controlPoint->x() + edgeCenter->x()) / 2,
+							   (controlPoint->y() + edgeCenter->y()) / 2);
+        m_weightLineEdit->setStyleSheet("background: transparent;    border: 0px ;");
 
         auto text = m_weightLineEdit->text();
         auto width = text.length();
-        m_weightLineEdit->resize(std::fmax(10*width, 20), 20);
+        m_weightLineEdit->resize(std::fmax(10 * width, 20), 20);
 
-
-//        arrow
-        QPointF arrowP1 = ghostLine->p2() - QPointF(sin(angle + M_PI/3) * m_arrowSize,
-                                            cos(angle + M_PI/3) * m_arrowSize);
-        QPointF arrowP2 = ghostLine->p2() - QPointF(sin(angle + M_PI - M_PI/4) * m_arrowSize,
-                                            cos(angle + M_PI - M_PI/4) * m_arrowSize);
+        // arrow
+        QPointF arrowP1 =
+                ghostLine->p2() - QPointF(sin(angle + M_PI / 3) * m_arrowSize,
+                                          cos(angle + M_PI / 3) * m_arrowSize);
+        QPointF arrowP2 =
+                ghostLine->p2() - QPointF(sin(angle + M_PI - M_PI / 4) * m_arrowSize,
+                                          cos(angle + M_PI - M_PI / 4) * m_arrowSize);
 
         QPolygonF arrowHead;
         arrowHead.clear();
@@ -168,49 +162,41 @@ void GraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
         painter->drawPolygon(arrowHead);
 
-
         delete edgeCenter;
         delete controlPoint;
-    }else{
+    } else {
         painter->drawLine(m_start->CenterPosition(), m_end->CenterPosition());
         m_weightLineEdit->move(getCenter().x(), getCenter().y());
-        m_weightLineEdit->setStyleSheet("background: transparent;  border: 0px ;");
-
+        m_weightLineEdit->setStyleSheet("background: transparent;    border: 0px ;");
 
         auto text = m_weightLineEdit->text();
         auto width = text.length();
 
-        m_weightLineEdit->resize(std::fmax(10*width, 20), 20);
+        m_weightLineEdit->resize(std::fmax(10 * width, 20), 20);
     }
-
-
 }
 
-
-void GraphicEdge::editWeight(){
+void GraphicEdge::editWeight() {
     auto text = m_weightLineEdit->text();
 
-    if(text.toStdString().empty()){
+    if (text.toStdString().empty()) {
         m_weightLineEdit->setText(QString("1"));
 
         emit weightEdited(this, 1);
         emit needRedraw();
-    }
-    else if(text.toInt() == 0){
+    } else if (text.toInt() == 0) {
         m_weightLineEdit->setText(QString("1"));
 
         emit weightEdited(this, 1);
         emit needRedraw();
         emit needWarning(QString("Edge weight must be a number"));
 
-    }
-    else if(text.length() < 6){
+    } else if (text.length() < 6) {
         int weight = text.toInt();
 
         emit weightEdited(this, weight);
         emit needRedraw();
-    }
-    else{
+    } else {
         m_weightLineEdit->setText(QString("1"));
 
         emit weightEdited(this, 1);
@@ -226,10 +212,9 @@ void GraphicEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsLineItem::hoverEnterEvent(event);
 }
 void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    if(!m_algorithm) {
+    if (!m_algorithm) {
         m_pen = QPen(GraphicNode::m_color);
-    }
-    else {
+    } else {
         m_pen = QPen(Qt::red);
     }
 
@@ -237,8 +222,4 @@ void GraphicEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     QGraphicsLineItem::hoverLeaveEvent(event);
 }
 
-
-int GraphicEdge::type() const {
-    return 2;
-}
-
+int GraphicEdge::type() const { return 2; }
