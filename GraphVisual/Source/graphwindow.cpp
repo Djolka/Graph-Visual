@@ -275,7 +275,7 @@ void GraphWindow::AddEdge(Node *n1, Node *n2, int weight) {
         if (m_graph->isDirected()) {
             ui->lw->addItem(QString::fromStdString(n1->name()) + "->" +
                             QString::fromStdString(n2->name()) + "	weight=" +
-                            String::fromStdString(std::to_string(weight)));
+                            QString::fromStdString(std::to_string(weight)));
         } else {
             ui->lw->addItem(QString::fromStdString(n1->name()) + "-" +
                             QString::fromStdString(n2->name()) + "	weight=" +
