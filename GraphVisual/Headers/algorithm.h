@@ -30,9 +30,9 @@ public:
                           QHash<Node *, int> &in, QHash<Node *, int> &low_link,
                           QHash<Node *, Node *> &parent, int time,
                           QSet<Node *> &result);
-    QList<std::string> Hierholzer(Graph graph);
+    QList<std::string> Hierholzer(Graph *graph);
     bool hasEulerianCircuit(Graph &graph);
-    QList<std::string> getEulerianCircuit(Graph graph);
+    QList<std::string> getEulerianCircuit(Graph *graph);
 };
 
 #endif // ALGORITHM_H

@@ -12,7 +12,9 @@ class Graph {
 
 public:
 	explicit Graph(bool directed, bool weighted);
-	Graph(Graph &other);
+    Graph(Graph &other);
+
+    ~Graph() = default;
 
 	static std::pair<int, int> calcWeightRange(bool weighted); // todelete?
 	bool isWeighted() const;
@@ -57,6 +59,8 @@ public:
 
 	QList<Edge *> edgeSet();
 	QList<Node *> nodeSet();
+
+//    Graph &operator=(const Graph &graph) = default;
 
 protected:
 	QList<Edge *> m_edges;

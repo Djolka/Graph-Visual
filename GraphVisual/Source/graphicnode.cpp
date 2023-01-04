@@ -13,7 +13,9 @@ GraphicNode::GraphicNode(Node *node) : QGraphicsObject(), m_Node(node) {
     setAcceptHoverEvents(true);
 }
 
-GraphicNode::~GraphicNode() = default;
+GraphicNode::~GraphicNode() {
+    delete m_Node;
+}
 
 QColor GraphicNode::m_color = QColor("white");
 int GraphicNode::m_height = 50;

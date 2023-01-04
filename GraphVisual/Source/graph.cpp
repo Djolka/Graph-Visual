@@ -243,33 +243,24 @@ bool Graph::removeEdge(Node *u, Node *v) {
         if (isUndirected()) {
             if (((*it)->first() == u && (*it)->second() == v) ||
                     ((*it)->first() == v && (*it)->second() == u)) {
-                if (u) {
-                    u->decDeg();
-                    u->removeNeighbour(v);
-                }
-
-                if (v) {
-                    v->decDeg();
-                    v->removeNeighbour(u);
-                }
+                u->decDeg();
+                v->decDeg();
+                u->removeNeighbour(v);
+                v->removeNeighbour(u);
                 m_edges.erase(it);
+                delete *it;
                 return true;
             }
         } else {
             if ((*it)->first() == u && (*it)->second() == v) {
-                if (u) {
-                    u->decOutDeg();
-                    u->removeNeighbour(v);
-                }
-
-                if (v) {
-                    v->decInDeg();
-                }
-
+                u->decOutDeg();
+                v->decInDeg();
+                u->removeNeighbour(v);
                 m_edges.erase(it);
+                delete *it;
                 return true;
             }
-        }
+         }
     }
     return true;
 }

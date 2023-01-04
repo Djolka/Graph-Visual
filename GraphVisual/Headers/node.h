@@ -13,7 +13,7 @@ public:
     Node(const Node *node);
     explicit Node(std::string name);
     explicit Node(std::string name, QPointF position);
-    ~Node();
+    ~Node() = default;
 
     // getters
     unsigned inDeg() const;
@@ -28,6 +28,8 @@ public:
     // overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
     bool operator<(const Node &second) const;
+
+    // Node &operator=(const Node &node) = default;
     friend std::ostream &operator<<(std::ostream &os, const Node &n);
     bool removeNeighbour(Node *v);
 

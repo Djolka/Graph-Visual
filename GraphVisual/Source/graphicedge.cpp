@@ -111,7 +111,7 @@ void GraphicEdge::paint(QPainter *painter,
         qreal dY = m_end->CenterPosition().y() - m_start->CenterPosition().y();
         qreal distance = sqrt(pow(dX, 2) + pow(dY, 2));
 
-        auto newLine =new QLineF(m_start->CenterPosition(), m_end->CenterPosition());
+        auto newLine = new QLineF(m_start->CenterPosition(), m_end->CenterPosition());
         newLine->setLength(newLine->length() - GraphicNode::m_width / 2);
 
         qreal mX = (m_start->CenterPosition().x() + newLine->p2().x()) / 2;
@@ -162,6 +162,8 @@ void GraphicEdge::paint(QPainter *painter,
 
         painter->drawPolygon(arrowHead);
 
+        delete ghostLine;
+        delete newLine;
         delete edgeCenter;
         delete controlPoint;
     } else {

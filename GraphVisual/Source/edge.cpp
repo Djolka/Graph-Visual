@@ -14,11 +14,6 @@ Edge::Edge(const Edge *other) {
 Edge::Edge(edges::iterator &iter)
     : m_weight(iter->second), m_nodePair(iter->first) {}
 
-Edge::~Edge() {
-    delete m_nodePair.first;
-    delete m_nodePair.second;
-}
-
 Node *Edge::first() const { return m_nodePair.first; }
 
 Node *Edge::second() const { return m_nodePair.second; }

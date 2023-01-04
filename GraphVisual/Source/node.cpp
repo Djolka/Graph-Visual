@@ -35,12 +35,6 @@ Node::Node(std::string name, QPointF position) {
     m_position = position;
 }
 
-Node::~Node() {
-    for (auto node : m_neighbours) {
-        delete node;
-    }
-}
-
 unsigned Node::inDeg() const { return m_inDeg; }
 
 unsigned Node::outDeg() const { return m_outDeg; }

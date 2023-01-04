@@ -109,6 +109,11 @@ GraphWindow::GraphWindow(QWidget *parent)
 GraphWindow::~GraphWindow() {
     delete ui;
     delete m_GraphTable;
+
+    for (auto edge : m_graph->edgeSet()) {
+        delete edge;
+    }
+
     delete m_graph;
 }
 
@@ -270,6 +275,7 @@ void GraphWindow::ChangeMode(int index) {
 }
 
 void GraphWindow::AddNode(Node *node) { m_graph->addNode(node); }
+
 void GraphWindow::AddEdge(Node *n1, Node *n2, int weight) {
     if (m_graph->addEdge(n1, n2, weight)) {
         if (m_graph->isDirected()) {
@@ -769,7 +775,13 @@ void GraphWindow::deleteNode(Node *node) {
 }
 void GraphWindow::deleteEdge(Node *node1, Node *node2) {
 
-    QString edge = QString::fromStdString(node1->name() + "->" + node2->name());
+    QString edge;
+    if(m_graph->isDirected()){
+        edge = QString::fromStdString(node1->name() + "->" + node2->name());
+    } else {
+        edge = QString::fromStdString(node1->name() + "-" + node2->name());
+    }
+
 
     int n = ui->lw->count();
     for (int i = 0; i < n; ++i) {
@@ -939,7 +951,7 @@ void GraphWindow::algorithm() {
         QWidget::setEnabled(true);
     } else if (ui->pbEulerian->isChecked()) {
         QWidget::setEnabled(false);
-        QList<std::string> result = a->getEulerianCircuit(*m_graph);
+        QList<std::string> result = a->getEulerianCircuit(m_graph);
 
         if (result.size() == 0) {
             QMessageBox::information(

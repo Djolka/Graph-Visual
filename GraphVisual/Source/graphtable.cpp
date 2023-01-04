@@ -73,10 +73,20 @@ void GraphTable::Warning(QString s) { emit needWarning(s); }
 bool GraphTable::hasGraphicEdge(GraphicNode *u, GraphicNode *v) {
     auto it = m_Edges.begin();
     for (; it != m_Edges.end(); ++it) {
-        if ((*it)->getStart()->getNode() == u->getNode() &&
-            (*it)->getEnd()->getNode() == v->getNode()) {
-            return true;
+        if (m_directed) {
+            if ((*it)->getStart()->getNode() == u->getNode() &&
+                (*it)->getEnd()->getNode() == v->getNode()) {
+                return true;
+            }
+        } else {
+            if (((*it)->getStart()->getNode() == u->getNode() &&
+                (*it)->getEnd()->getNode() == v->getNode()) ||
+                ((*it)->getEnd()->getNode() == u->getNode() &&
+                (*it)->getStart()->getNode() == v->getNode())) {
+                return true;
+            }
         }
+
     }
     return false;
 }
@@ -129,6 +139,7 @@ void GraphTable::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                     emit addedNewNode(node);
                 }
             }
+            delete p;
         }
     } else if (m_drawingMode &&
                (itemAt(event->scenePos(), QTransform())->type() == 1)) { // click on node

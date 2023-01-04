@@ -13,7 +13,7 @@ class Edge {
 public:
 	Edge(std::pair<Node *, Node *>, int weight);
 	Edge(const Edge *other);
-	~Edge();
+    ~Edge() = default;
 
 	explicit Edge(edges::iterator &iter);
 	Node *first() const;
@@ -25,6 +25,7 @@ public:
 	friend class Graph;
 
 	void setWeight(int n) { m_weight = n; }
+//    Edge &operator=(const Edge &edge) = default;
 
 private:
 	int m_weight;
