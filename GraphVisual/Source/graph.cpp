@@ -247,8 +247,10 @@ bool Graph::removeEdge(Node *u, Node *v) {
                 v->decDeg();
                 u->removeNeighbour(v);
                 v->removeNeighbour(u);
-                m_edges.erase(it);
                 delete *it;
+                (*it)->m_nodePair.first = u;
+                (*it)->m_nodePair.second = v;
+                m_edges.erase(it);
                 return true;
             }
         } else {
@@ -256,11 +258,13 @@ bool Graph::removeEdge(Node *u, Node *v) {
                 u->decOutDeg();
                 v->decInDeg();
                 u->removeNeighbour(v);
-                m_edges.erase(it);
                 delete *it;
+                (*it)->m_nodePair.first = u;
+                (*it)->m_nodePair.second = v;
+                m_edges.erase(it);
                 return true;
             }
-         }
+        }
     }
     return true;
 }

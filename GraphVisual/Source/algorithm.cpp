@@ -307,8 +307,6 @@ QList<std::string> Algorithm::Hierholzer(Graph *graph) {
             nextNode = currNode->neighbours().back();
 
             g1.removeEdge(currNode, nextNode);
-//            nextNode->removeNeighbour(currNode); // bez ovog ne radi a trebalo bi jer removeEdge bi trebao da brise susede a ne brise
-//            currNode->removeNeighbour(nextNode); // bez ovog ne radi a trebalo bi jer removeEdge bi trebao da brise susede a ne brise
 
             currNode = nextNode;
         } else {
