@@ -45,15 +45,6 @@ void Algorithm::DFS(Node *current, QHash<Node *, bool> &visited,
             DFS(neighb, visited, steps);
 }
 
-bool Algorithm::isConnected(Node &u, Node &v) {
-
-    QHash<Node *, bool> visited;
-    QList<Node *> steps;
-
-    DFS(&u, visited, steps);
-
-    return visited[&v];
-}
 
 bool Algorithm::isAllConnected(Graph &graph) {
 

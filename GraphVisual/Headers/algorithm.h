@@ -15,7 +15,6 @@ public:
 
     QList<Node *> BFS(Node *current);
     void DFS(Node *current, QHash<Node *, bool> &visited, QList<Node *> &steps);
-    bool isConnected(Node &u, Node &v);
     bool isAllConnected(Graph &graph);
     int Dijkstra(Graph &graph, Node *start, Node *end, QList<Node *> &path,
                 QList<Node *> &visit, QList<QPair<Node *, Node *>> &edges);

@@ -9,10 +9,8 @@
 class Node {
 
 public:
-    Node();
     Node(const Node *node);
     explicit Node(std::string name);
-    explicit Node(std::string name, QPointF position);
     ~Node() = default;
 
     // getters
@@ -22,15 +20,12 @@ public:
     QPointF position() const;
     std::string name() const;
 
-    // setters
-    void setPosition(const QPointF &position);
-
     // overriding operator == so we can compare the nodes by their name
     bool operator==(const Node &second) const;
     bool operator<(const Node &second) const;
 
     // Node &operator=(const Node &node) = default;
-    friend std::ostream &operator<<(std::ostream &os, const Node &n);
+    // friend std::ostream &operator<<(std::ostream &os, const Node &n);
     bool removeNeighbour(Node *v);
 
     QList<Node *> neighbours();
@@ -51,7 +46,6 @@ private:
 	void decOutDeg();
 	void incDeg();
 	void decDeg();
-	void setName(std::string name);
 
 	friend class Graph;
 };

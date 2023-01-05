@@ -35,7 +35,7 @@
 
 GraphWindow::GraphWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::GraphWindow),
-            m_graph(new Graph(false, true)),
+            m_graph(new Graph(false)),
             m_GraphTable(new GraphTable(m_graph->isDirected(), this)) {
     ui->setupUi(this);
 
@@ -766,13 +766,8 @@ void GraphWindow::onActionCloseTriggered() {
 
 void GraphWindow::deleteNode(Node *node) {
     m_graph->removeNode(node);
-    QList<QListWidgetItem *> edges = ui->lw->findItems(
-            QString::fromStdString(node->name()), Qt::MatchContains);
-
-    for (auto edge : edges) {
-        delete edge;
-    }
 }
+
 void GraphWindow::deleteEdge(Node *node1, Node *node2) {
 
     QString edge;
