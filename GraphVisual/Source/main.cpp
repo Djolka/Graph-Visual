@@ -1,4 +1,4 @@
-#include "Headers/graphwindow.h"
+#include "graphwindow.h"
 #include <QApplication>
 
 int main(int argc, char *argv[]) {

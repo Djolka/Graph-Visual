@@ -1,15 +1,14 @@
 #ifndef POPUP_H
 #define POPUP_H
 
-#include <QDialog>
 #include <QAbstractButton>
+#include <QDialog>
 
 namespace Ui {
 class Popup;
 }
 
-class Popup : public QDialog
-{
+class Popup : public QDialog {
     Q_OBJECT
 
 public:

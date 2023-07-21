@@ -1,58 +1,55 @@
-#include "Headers/graphwindow.h"
-#include "Headers/popup.h"
+#include "graphwindow.h"
+#include "popup.h"
 #include "ui_graphwindow.h"
 
-#include "Headers/graphtable.h"
-#include "Headers/node.h"
-#include "Headers/graphicnode.h"
-#include "Headers/edge.h"
-#include "Headers/algorithm.h"
-#include "Headers/graph.h"
-#include "Headers/graphicedge.h"
-#include "Headers/popup.h"
+#include "algorithm.h"
+#include "edge.h"
+#include "graph.h"
+#include "graphicedge.h"
+#include "graphicnode.h"
+#include "graphtable.h"
+#include "node.h"
+#include "popup.h"
 
-#include <QJsonDocument>
-#include <future>
+#include <QFileDialog>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <fstream>
-#include <string>
-#include <QString>
-#include <QListWidgetItem>
-#include <QFileDialog>
-#include <QTextEdit>
-#include <QWidget>
-#include <QMessageBox>
-#include <iostream>
-#include <QShortcut>
-#include <math.h>
-#include <QTime>
 #include <QIcon>
+#include <QJsonDocument>
+#include <QListWidgetItem>
+#include <QMessageBox>
+#include <QShortcut>
+#include <QString>
+#include <QTextEdit>
+#include <QTime>
+#include <QWidget>
+#include <cmath>
+#include <fstream>
+#include <future>
+#include <iostream>
 #include <sstream>
+#include <string>
 #include <unistd.h>
 
 //#include "ui_popup.h"
 
 GraphWindow::GraphWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::GraphWindow)
-    , m_graph(new Graph(false, true))
-    , m_GraphTable(new GraphTable(m_graph->isDirected(), this))
-{
+        : QMainWindow(parent), ui(new Ui::GraphWindow),
+            m_graph(new Graph(false)),
+            m_GraphTable(new GraphTable(m_graph->isDirected(), this)) {
     ui->setupUi(this);
 
     ui->horizontalSlider->setRange(1000, 4000);
-    ui->horizontalSlider->setValue((ui->horizontalSlider->maximum()+ui->horizontalSlider->minimum())/2);
+    ui->horizontalSlider->setValue(
+            (ui->horizontalSlider->maximum() + ui->horizontalSlider->minimum()) / 2);
 
-//    connecting scene and view
+    // connecting scene and view
     m_GraphTable->setSceneRect(ui->graphicsView->rect());
     ui->graphicsView->setScene(m_GraphTable);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-//    connecting singals and slots
-    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
-    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
+    // connecting singals and slots
     connect(ui->pbAddNode, &QPushButton::clicked, this, &GraphWindow::AddNewEdge);
     connect(ui->teNode1, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
     connect(ui->teNode2, &MyTextEdit::textChanged, this, &GraphWindow::nodeNameLength);
@@ -91,19 +88,34 @@ GraphWindow::GraphWindow(QWidget *parent)
 
     connect(ui->horizontalSlider, &QSlider::valueChanged, dynamic_cast<GraphTable *>(m_GraphTable), &GraphTable::changeSliderValue);
 
+    connect(ui->actionClose, &QAction::triggered, this, &GraphWindow::onActionCloseTriggered);
+    connect(ui->actionSaveAsJpg, &QAction::triggered, this, &GraphWindow::onActionSaveAsJpgTriggered);
+    connect(ui->actionSaveAsPng, &QAction::triggered, this, &GraphWindow::onActionSaveAsPngTriggered);
+    connect(ui->actionSaveAsJson, &QAction::triggered, this, &GraphWindow::onActionSaveAsJsonTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &GraphWindow::onActionOpenTriggered);
+    connect(ui->actionLoadFromJson, &QAction::triggered, this, &GraphWindow::onActionLoadFromJsonTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &GraphWindow::onActionSaveTriggered);
+
+    connect(ui->pbSave, &QPushButton::clicked, this, &GraphWindow::onPbSaveClicked);
+    connect(ui->pbBeautify, &QPushButton::clicked, this, &GraphWindow::onPbBeautifyClicked);
+    connect(ui->pbDirected, &QPushButton::clicked, this, &GraphWindow::graphDirected);
+    connect(ui->pbUndirected, &QPushButton::clicked, this, &GraphWindow::graphUndirected);
 
     fillMap();
     QApplication::setWindowIcon(QIcon(":/Resources/logo.ico"));
     indexColors();
 }
 
-GraphWindow::~GraphWindow()
-{
+GraphWindow::~GraphWindow() {
     delete ui;
     delete m_GraphTable;
+
+    for (auto edge : m_graph->edgeSet()) {
+        delete edge;
+    }
+
     delete m_graph;
 }
-
 
 void GraphWindow::fillMap() {
     m_colors.insert("off white", "#E8E4D6");
@@ -116,7 +128,6 @@ void GraphWindow::fillMap() {
     m_colors.insert("blue", "#287caa");
     m_colors.insert("dark grey", "#3A3B3C");
     m_colors.insert("red", "#D0312D");
-
 }
 
 void GraphWindow::indexColors() {
@@ -132,22 +143,21 @@ void GraphWindow::indexColors() {
     m_indices.insert("red", 9);
 }
 
-
-
-void GraphWindow::SaveAsPic(const QString& m_ext){
+void GraphWindow::SaveAsPic(const QString &m_ext) {
     QString dir = QDir::homePath();
     QString name = "Untilted." + m_ext;
     QString fileType = m_ext.toUpper() + "(*." + m_ext.toUpper() + ")";
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", dir + "/" + name, fileType, nullptr, QFileDialog::DontUseNativeDialog);
-        if (!fileName.isNull()) {
-            QPixmap pixMap = this->ui->graphicsView->grab();
-            pixMap.save(fileName);
-        }
-
+    QString fileName = QFileDialog::getSaveFileName(
+            this, "Save image", dir + "/" + name, fileType, nullptr,
+            QFileDialog::DontUseNativeDialog);
+    if (!fileName.isNull()) {
+        QPixmap pixMap = ui->graphicsView->grab();
+        pixMap.save(fileName);
+    }
 }
 
 void GraphWindow::AddNewEdge() {
-    if(m_graph->nodeSet().size() >= 14){
+    if (m_graph->nodeSet().size() >= 14) {
         warning("You have reached the maximum number of nodes allowed");
         ui->teNode1->clear();
         ui->teNode2->clear();
@@ -161,27 +171,23 @@ void GraphWindow::AddNewEdge() {
     const auto name2 = ui->teNode2->toPlainText();
     ui->teNode2->clear();
 
-    GraphicNode* graphicNode1 = nullptr;
-    GraphicNode* graphicNode2 = nullptr;
-    Node* node1 = nullptr;
-    Node* node2 = nullptr;
+    GraphicNode *graphicNode1 = nullptr;
+    GraphicNode *graphicNode2 = nullptr;
+    Node *node1 = nullptr;
+    Node *node2 = nullptr;
 
     const auto w = ui->teWeight->toPlainText();
     int weight = w == "" ? 1 : w.toInt();
     ui->teWeight->clear();
 
-
-    if(name1.length()==0 || name2.length()==0){
+    if (name1.length() == 0 || name2.length() == 0) {
         warning(QString("You have to insert node name"));
-    }
-    else if(weight == 0){
+    } else if (weight == 0) {
         warning(QString("Edge weight must be a number"));
-    }
-    else if(name1 == name2){
+    } else if (name1 == name2) {
         warning(QString("Node names are the same"));
-    }
-    else{
-        if(!m_graph->hasNode(name1.toStdString())){
+    } else {
+        if (!m_graph->hasNode(name1.toStdString())) {
             node1 = new Node(name1.toStdString());
 
             m_graph->addNode(node1);
@@ -189,17 +195,16 @@ void GraphWindow::AddNewEdge() {
             graphicNode1 = new GraphicNode(node1);
             m_GraphTable->addItem(graphicNode1);
             emit AddedNewNode(graphicNode1);
-        }
-        else{
-            for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
-                if(n->getNode()->name() == name1.toStdString()){
+        } else {
+            for (GraphicNode *n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()) {
+                if (n->getNode()->name() == name1.toStdString()) {
                     node1 = n->getNode();
                     graphicNode1 = n;
                     break;
                 }
             }
         }
-        if(!m_graph->hasNode(name2.toStdString())){
+        if (!m_graph->hasNode(name2.toStdString())) {
             node2 = new Node(name2.toStdString());
 
             m_graph->addNode(node2);
@@ -207,10 +212,9 @@ void GraphWindow::AddNewEdge() {
             graphicNode2 = new GraphicNode(node2);
             m_GraphTable->addItem(graphicNode2);
             emit AddedNewNode(graphicNode2);
-        }
-        else{
-            for(GraphicNode* n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()){
-                if(n->getNode()->name() == name2.toStdString()){
+        } else {
+            for (GraphicNode *n : dynamic_cast<GraphTable *>(m_GraphTable)->getNodes()) {
+                if (n->getNode()->name() == name2.toStdString()) {
                     node2 = n->getNode();
                     graphicNode2 = n;
                     break;
@@ -218,17 +222,21 @@ void GraphWindow::AddNewEdge() {
             }
         }
 
-
-        if(m_graph->addEdge(node1, node2, weight)) {
-            if(m_graph->isDirected()){
-                ui->lw->addItem(QString::fromStdString(node1->name())+"->"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
-            }else{
-                ui->lw->addItem(QString::fromStdString(node1->name())+"-"+QString::fromStdString(node2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+        if (m_graph->addEdge(node1, node2, weight)) {
+            if (m_graph->isDirected()) {
+                ui->lw->addItem(QString::fromStdString(node1->name()) + "->" +
+                                QString::fromStdString(node2->name()) + "	weight=" +
+                                QString::fromStdString(std::to_string(weight)));
+            } else {
+                ui->lw->addItem(QString::fromStdString(node1->name()) + "-" +
+                                QString::fromStdString(node2->name()) + "	weight=" +
+                                QString::fromStdString(std::to_string(weight)));
             }
 
-            const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2, weight, m_graph->isDirected());
+            const auto graphicEdge = new GraphicEdge(graphicNode1, graphicNode2,
+													weight, m_graph->isDirected());
             emit AddedNewEdge(graphicEdge);
-        }else{
+        } else {
             warning("Edge already exists");
         }
 
@@ -236,16 +244,14 @@ void GraphWindow::AddNewEdge() {
     }
 }
 
-bool GraphWindow::nodeExists(std::string name){
-    if(!m_graph->hasNode(name))
-          return true;
+bool GraphWindow::nodeExists(std::string name) {
+    if (!m_graph->hasNode(name))
+        return true;
     return false;
 }
 
-
-
 void GraphWindow::DeleteGraphFromTable() {
-    for(auto node : m_graph->nodeSet()) {
+    for (auto node : m_graph->nodeSet()) {
         m_graph->removeNode(node);
     }
 
@@ -254,72 +260,75 @@ void GraphWindow::DeleteGraphFromTable() {
 }
 
 void GraphWindow::ChangeMode(int index) {
-    if(index == 2){
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(true);
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
-    }
-    else if(index == 3){
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(true);
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
-        dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
-    }
-    else{
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDrawingMode(false);
-        dynamic_cast<GraphTable*>(m_GraphTable)->setHasTmp(false);
-        dynamic_cast<GraphTable*>(m_GraphTable)->setDeleteMode(false);
+    if (index == 2) {
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDrawingMode(true);
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDeleteMode(false);
+    } else if (index == 3) {
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDeleteMode(true);
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDrawingMode(false);
+        dynamic_cast<GraphTable *>(m_GraphTable)->setHasTmp(false);
+    } else {
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDrawingMode(false);
+        dynamic_cast<GraphTable *>(m_GraphTable)->setHasTmp(false);
+        dynamic_cast<GraphTable *>(m_GraphTable)->setDeleteMode(false);
     }
 }
 
-void GraphWindow::AddNode(Node* node) {
-    m_graph->addNode(node);
-}
-void GraphWindow::AddEdge(Node* n1, Node* n2, int weight) {
-    if(m_graph->addEdge(n1, n2, weight)){
-        if(m_graph->isDirected()){
-            ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
-        }else{
-            ui->lw->addItem(QString::fromStdString(n1->name())+"-"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+void GraphWindow::AddNode(Node *node) { m_graph->addNode(node); }
+
+void GraphWindow::AddEdge(Node *n1, Node *n2, int weight) {
+    if (m_graph->addEdge(n1, n2, weight)) {
+        if (m_graph->isDirected()) {
+            ui->lw->addItem(QString::fromStdString(n1->name()) + "->" +
+                            QString::fromStdString(n2->name()) + "	weight=" +
+                            QString::fromStdString(std::to_string(weight)));
+        } else {
+            ui->lw->addItem(QString::fromStdString(n1->name()) + "-" +
+                            QString::fromStdString(n2->name()) + "	weight=" +
+                            QString::fromStdString(std::to_string(weight)));
         }
-
     }
 }
-void GraphWindow::changeWeight(Node* n1, Node* n2, int weight){
+void GraphWindow::changeWeight(Node *n1, Node *n2, int weight) {
     QString edge;
-    if(m_graph->isDirected()){
-        edge = QString::fromStdString(n1->name()+"->"+n2->name());
-    }else{
-        edge = QString::fromStdString(n1->name()+"-"+n2->name());
+    if (m_graph->isDirected()) {
+        edge = QString::fromStdString(n1->name() + "->" + n2->name());
+    } else {
+        edge = QString::fromStdString(n1->name() + "-" + n2->name());
     }
 
     int n = ui->lw->count();
-    for(int i=0;i<n;++i){
+    for (int i = 0; i < n; ++i) {
         auto item = ui->lw->item(i);
-        QString  text = item->text().trimmed();
-        if(text.startsWith(edge)){
+        QString text = item->text().trimmed();
+        if (text.startsWith(edge)) {
             auto item1 = ui->lw->takeItem(i);
             delete item1;
             break;
         }
     }
 
-    if(m_graph->isDirected()){
-        ui->lw->addItem(QString::fromStdString(n1->name())+"->"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
-    }else{
-        ui->lw->addItem(QString::fromStdString(n1->name())+"-"+QString::fromStdString(n2->name())+"    weight="+QString::fromStdString(std::to_string(weight)));
+    if (m_graph->isDirected()) {
+        ui->lw->addItem(QString::fromStdString(n1->name()) + "->" +
+                        QString::fromStdString(n2->name()) + "	weight=" +
+                        QString::fromStdString(std::to_string(weight)));
+    } else {
+        ui->lw->addItem(QString::fromStdString(n1->name()) + "-" +
+                        QString::fromStdString(n2->name()) + "	weight=" +
+                        QString::fromStdString(std::to_string(weight)));
     }
-
 
     m_graph->getEdge(n1, n2)->setWeight(weight);
 }
 
 void GraphWindow::warning(QString s) {
-    QMessageBox::warning(this, "Error", "<FONT COLOR='#171717'>"+s+"</FONT>");
+    QMessageBox::warning(this, "Error", "<FONT COLOR='#171717'>" + s + "</FONT>");
 }
 
 void GraphWindow::nodeNameLength() {
     auto text = ui->teNode1->toPlainText();
 
-    if (text.length() > 5){
+    if (text.length() > 5) {
         text.chop(text.length() - 5);
         ui->teNode1->setPlainText(text);
         QTextCursor cursor = ui->teNode1->textCursor();
@@ -329,7 +338,7 @@ void GraphWindow::nodeNameLength() {
 
     text = ui->teNode2->toPlainText();
 
-    if (text.length() > 5){
+    if (text.length() > 5) {
         text.chop(text.length() - 5);
         ui->teNode2->setPlainText(text);
 
@@ -340,24 +349,28 @@ void GraphWindow::nodeNameLength() {
 }
 
 void GraphWindow::graphDirected() {
-    if(m_graph->nodeSet().empty()){
-            emit changeToDir();
-            ui->pbUndirected->setEnabled(true);
-            ui->pbDirected->setEnabled(false);
-            m_graph->setDirected(true);
-            shouldPopUpUndir = true;
-            ui->pbMST->setDisabled(true);
-            ui->pbArticulation->setDisabled(true);
-    }else if(shouldPopUpDir){
-        switch(QMessageBox::question(this, "Error",
-                "<FONT COLOR='#171717'>Current progress will be deleted if you change to directed graph and some algorithms only work on undirected graphs. Click yes to continue</FONT>",
+    if (m_graph->nodeSet().empty()) {
+        onPbDirectedPressed();
+        emit changeToDir();
+        ui->pbUndirected->setEnabled(true);
+        ui->pbDirected->setEnabled(false);
+        m_graph->setDirected(true);
+        shouldPopUpUndir = true;
+        ui->pbMST->setDisabled(true);
+        ui->pbArticulation->setDisabled(true);
+    } else if (shouldPopUpDir) {
+        switch (QMessageBox::question(
+                this, "Error",
+                "<FONT COLOR='#171717'>Current progress will be deleted if you change "
+                "to directed graph and some algorithms only work on undirected graphs. "
+                "Click yes to continue</FONT>",
 
                 QMessageBox::Yes |
-                QMessageBox::No |
+				QMessageBox::No |
 
-                QMessageBox::No) )
-        {
-          case QMessageBox::Yes:
+                QMessageBox::No)) {
+        case QMessageBox::Yes:
+            onPbDirectedPressed();
             ui->pbMST->setDisabled(true);
             ui->pbArticulation->setDisabled(true);
             emit changeToDir();
@@ -368,14 +381,14 @@ void GraphWindow::graphDirected() {
             shouldPopUpUndir = true;
             shouldPopUpDir = false;
             break;
-          case QMessageBox::No:
-            shouldPopUpUndir=false;
+        case QMessageBox::No:
+            shouldPopUpUndir = false;
             ui->pbUndirected->setChecked(true);
             ui->pbUndirected->setEnabled(true);
             ui->pbUndirected->click();
             ui->pbUndirected->setEnabled(false);
             break;
-          default:
+        default:
             break;
         }
     }
@@ -383,25 +396,28 @@ void GraphWindow::graphDirected() {
 }
 
 void GraphWindow::graphUndirected() {
-    if(m_graph->nodeSet().empty()){
-            ui->pbMST->setDisabled(false);
-            ui->pbArticulation->setDisabled(false);
+    if (m_graph->nodeSet().empty()) {
+        onPbUndirectedPressed();
+        ui->pbMST->setDisabled(false);
+        ui->pbArticulation->setDisabled(false);
 
-            emit changeToUndir();
-            ui->pbUndirected->setEnabled(false);
-            ui->pbDirected->setEnabled(true);
-            m_graph->setDirected(false);
-            shouldPopUpDir = true;
-    }else if(shouldPopUpUndir){
-        switch(QMessageBox::question(this, "Error",
-                "<FONT COLOR='#171717'>Current progress will be deleted if you change to undirected graph, click yes to continue</FONT>",
+        emit changeToUndir();
+        ui->pbUndirected->setEnabled(false);
+        ui->pbDirected->setEnabled(true);
+        m_graph->setDirected(false);
+        shouldPopUpDir = true;
+    } else if (shouldPopUpUndir) {
+        switch (QMessageBox::question(
+                this, "Error",
+                "<FONT COLOR='#171717'>Current progress will be deleted if you change "
+                "to undirected graph, click yes to continue</FONT>",
 
                 QMessageBox::Yes |
-                QMessageBox::No |
+				QMessageBox::No |
 
-                QMessageBox::No) )
-        {
-          case QMessageBox::Yes:
+                QMessageBox::No)) {
+        case QMessageBox::Yes:
+            onPbUndirectedPressed();
             emit changeToUndir();
             ui->pbMST->setDisabled(false);
             ui->pbArticulation->setDisabled(false);
@@ -412,68 +428,73 @@ void GraphWindow::graphUndirected() {
             shouldPopUpDir = true;
             shouldPopUpUndir = false;
             break;
-          case QMessageBox::No:
-            shouldPopUpDir=false;
+        case QMessageBox::No:
+            shouldPopUpDir = false;
             ui->pbDirected->setChecked(true);
             ui->pbDirected->setEnabled(true);
             ui->pbDirected->click();
             ui->pbDirected->setEnabled(false);
             break;
-          default:
+        default:
             break;
         }
     }
     return;
 }
 
-        
-
-
-void GraphWindow::on_actionSaveAsPng_triggered() {
+void GraphWindow::onActionSaveAsPngTriggered() {
     GraphWindow::SaveAsPic("png");
 }
 
-
-void GraphWindow::on_actionSaveAsJpg_triggered() {
+void GraphWindow::onActionSaveAsJpgTriggered() {
     GraphWindow::SaveAsPic("jpeg");
 }
 
-void GraphWindow::on_pbUndirected_pressed() {
-    ui->pbUndirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
-    ui->pbDirected->setStyleSheet("background-color: #287caa; color: rgb(245, 243, 242); border-color: #287caa; border-style: solid; border-width: 2px");
+void GraphWindow::onPbUndirectedPressed() {
+    ui->pbUndirected->setStyleSheet(
+            "background-color: rgb(45, 74, 90); color: rgb(211, 215, 207); "
+            "border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+    ui->pbDirected->setStyleSheet(
+            "background-color: #287caa; color: rgb(245, 243, 242); border-color: "
+            "#287caa; border-style: solid; border-width: 2px");
 }
 
-void GraphWindow::on_pbDirected_pressed() {
-    ui->pbUndirected->setStyleSheet("background-color: #287caa; color: rgb(211, 215, 207); border-color: #287caa; border-style: solid; border-width: 2px");
-    ui->pbDirected->setStyleSheet("background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
+void GraphWindow::onPbDirectedPressed() {
+    ui->pbUndirected->setStyleSheet(
+            "background-color: #287caa; color: rgb(211, 215, 207); border-color: "
+            "#287caa; border-style: solid; border-width: 2px");
+    ui->pbDirected->setStyleSheet(
+            "background-color: rgb(45, 74, 90); color: rgb(245, 243, 242); "
+            "border-color: rgb(10, 10, 10); border-style: solid; border-width: 2px");
 }
 
-void GraphWindow::enterValue(std::string key, std::string key2, std::string value){
-    this->ui->teNode1->insertPlainText(QString::fromStdString(key));
-    this->ui->teNode2->insertPlainText(QString::fromStdString(key2));
-    this->ui->teWeight->insertPlainText(QString::fromStdString(value));
+void GraphWindow::enterValue(std::string key, std::string key2,
+                                                         std::string value) {
+    ui->teNode1->insertPlainText(QString::fromStdString(key));
+    ui->teNode2->insertPlainText(QString::fromStdString(key2));
+    ui->teWeight->insertPlainText(QString::fromStdString(value));
 }
 
-void GraphWindow::setDirection(QString direction){
-    if(direction=="directed"){
+void GraphWindow::setDirection(QString direction) {
+    if (direction == "directed") {
         graphDirected();
-        emit this->ui->pbDirected->pressed();
-    }else{
+        emit ui->pbDirected->pressed();
+    } else {
         graphUndirected();
-        emit this->ui->pbUndirected->pressed();
+        emit ui->pbUndirected->pressed();
     }
 }
 
-void GraphWindow::invalidateRegion(){
-    QGraphicsView obj=this;
-    obj.invalidateScene(this->ui->graphicsView->sceneRect(), QGraphicsScene::SceneLayers());
+void GraphWindow::invalidateRegion() {
+    QGraphicsView obj = this;
+    obj.invalidateScene(ui->graphicsView->sceneRect(),
+                                            QGraphicsScene::SceneLayers());
     QCoreApplication::processEvents();
 }
 
-void GraphWindow::fromVariant(const QVariant &variant)
-{
+void GraphWindow::fromVariant(const QVariant &variant) {
     const auto map = variant.toMap();
-    emit this->ui->pbDeleteAll->clicked();
+    emit ui->pbDeleteAll->clicked();
 
     int background = map.value("background").toInt();
     int nodeColor = map.value("nodeColor").toInt();
@@ -482,89 +503,89 @@ void GraphWindow::fromVariant(const QVariant &variant)
 
     indexColors();
 
-    QString color=m_indices.key(background);
-    this->ui->cbBgcolor->setCurrentIndex(background);
+    QString color = m_indices.key(background);
+    ui->cbBgcolor->setCurrentIndex(background);
 
-    color=m_indices.key(nodeColor);
-    this->ui->cbNodecolor->setCurrentIndex(nodeColor);
+    color = m_indices.key(nodeColor);
+    ui->cbNodecolor->setCurrentIndex(nodeColor);
 
-    color=m_indices.key(edgeColor);
-    this->ui->cbEdgecolor->setCurrentIndex(edgeColor);
-    emit this->ui->pbSave->clicked();
+    color = m_indices.key(edgeColor);
+    ui->cbEdgecolor->setCurrentIndex(edgeColor);
+    emit ui->pbSave->clicked();
 
     setDirection(direction);
     invalidateRegion();
 
     bool hasEdges = map.value("hasEdges").toBool();
-    QVector<Edge*> edgeSet;
+    QVector<Edge *> edgeSet;
     QString node1, node2, weight;
 
     if (hasEdges) {
         qDeleteAll(edgeSet);
 
         const auto edges = map.value("edges").toList();
-        for(const auto& edge : edges) {
-            const auto map2=edge.toMap();
-            node1=map2.value("node1").toString();
-            node2=map2.value("node2").toString();
-            weight=map2.value("weight").toString();
-            enterValue(node1.toStdString(), node2.toStdString(), weight.toStdString());
+        for (const auto &edge : edges) {
+            const auto map2 = edge.toMap();
+            node1 = map2.value("node1").toString();
+            node2 = map2.value("node2").toString();
+            weight = map2.value("weight").toString();
+            enterValue(node1.toStdString(), node2.toStdString(),
+                                 weight.toStdString());
             invalidateRegion();
             AddNewEdge();
         }
     }
-    on_pbBeautify_clicked();
+    onPbBeautifyClicked();
 }
 
-QVariant GraphWindow::toVariant() const
-{
-    auto edgeSet=this->m_graph->edgeSet();
-    int background=this->ui->cbBgcolor->currentIndex();
-    int nodeColor=this->ui->cbNodecolor->currentIndex();
-    int edgeColor=this->ui->cbEdgecolor->currentIndex();
-    QString direction=this->m_graph->isDirected()? "directed":"undirected";
-
-
+QVariant GraphWindow::toVariant() const {
+    auto edgeSet = m_graph->edgeSet();
+    int background = ui->cbBgcolor->currentIndex();
+    int nodeColor = ui->cbNodecolor->currentIndex();
+    int edgeColor = ui->cbEdgecolor->currentIndex();
+    QString direction = m_graph->isDirected() ? "directed" : "undirected";
 
     QVariantMap map;
-        map.insert("background", background);
-        map.insert("nodeColor", nodeColor);
-        map.insert("edgeColor", edgeColor);
-        map.insert("direction", direction);
-        map.insert("hasEdges", !edgeSet.empty());
+    map.insert("background", background);
+    map.insert("nodeColor", nodeColor);
+    map.insert("edgeColor", edgeColor);
+    map.insert("direction", direction);
+    map.insert("hasEdges", !edgeSet.empty());
 
-        if (!edgeSet.empty()) {
-            QVariantList edges;
-            for (const auto & edge : edgeSet) {
-                edges.append(edge->toVariant());
-            }
-            map.insert("edges", edges);
+    if (!edgeSet.empty()) {
+        QVariantList edges;
+        for (const auto &edge : edgeSet) {
+            edges.append(edge->toVariant());
         }
+        map.insert("edges", edges);
+    }
 
-        return map;
-
+    return map;
 }
 
-void GraphWindow::on_actionLoadFromJson_triggered(){
-    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "JSON files (*.json)", nullptr, QFileDialog::DontUseNativeDialog);
+void GraphWindow::onActionLoadFromJsonTriggered() {
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/",
+                                                "JSON files (*.json)", nullptr,
+                                                QFileDialog::DontUseNativeDialog);
     std::string filepath = file.toStdString();
 
     QFile newFile(QString::fromStdString(filepath));
-    if(newFile.open(QFile::ReadOnly)){
+    if (newFile.open(QFile::ReadOnly)) {
 
-    QJsonDocument doc = QJsonDocument::fromJson(newFile.readAll());
+        QJsonDocument doc = QJsonDocument::fromJson(newFile.readAll());
 
-    newFile.close();
+        newFile.close();
 
-    GraphWindow::fromVariant(doc.toVariant());}
-
+        GraphWindow::fromVariant(doc.toVariant());
+    }
 }
 
-std::map<std::string, int> GraphWindow::fillGraphInfo(int *colorInfo,std::ifstream *openFile){
+std::map<std::string, int> GraphWindow::fillGraphInfo(int *colorInfo,
+                                                      std::ifstream *openFile) {
     std::string line;
     std::string key, value;
     std::map<std::string, int> graphInfo;
-    for(int i=0;i<*colorInfo;i++){
+    for (int i = 0; i < *colorInfo; i++) {
         std::getline(*openFile, line);
         std::istringstream input(line);
         input >> key >> value;
@@ -573,72 +594,75 @@ std::map<std::string, int> GraphWindow::fillGraphInfo(int *colorInfo,std::ifstre
     return graphInfo;
 }
 
-void GraphWindow::readFromFile(std::ifstream *openFile){
-    int radius;
-    (*openFile)>>radius;
+void GraphWindow::readFromFile(std::ifstream *openFile) {
+	int radius;
+    (*openFile) >> radius;
     char c;
     openFile->get(c);
 
-    int colorInfo=3;
-    std::map<std::string, int> graphInfo=fillGraphInfo(&colorInfo, openFile);
+    int colorInfo = 3;
+    std::map<std::string, int> graphInfo = fillGraphInfo(&colorInfo, openFile);
     indexColors();
 
-    int colorIndex=graphInfo["background:"];
-    this->ui->cbBgcolor->setCurrentIndex(colorIndex);
+    int colorIndex = graphInfo["background:"];
+    ui->cbBgcolor->setCurrentIndex(colorIndex);
 
-    colorIndex=graphInfo["nodeColor:"];
-    this->ui->cbNodecolor->setCurrentIndex(colorIndex);
+    colorIndex = graphInfo["nodeColor:"];
+    ui->cbNodecolor->setCurrentIndex(colorIndex);
 
-    colorIndex=graphInfo["edgeColor:"];
-    this->ui->cbEdgecolor->setCurrentIndex(colorIndex);
+    colorIndex = graphInfo["edgeColor:"];
+    ui->cbEdgecolor->setCurrentIndex(colorIndex);
 
     invalidateRegion();
 
     std::string mode;
-    *openFile>>mode;
-    QString direction= mode=="dir"? "directed":"undirected";
+    *openFile >> mode;
+    QString direction = mode == "dir" ? "directed" : "undirected";
     setDirection(direction);
 
     int numEdges;
-    *openFile>>numEdges;
+    *openFile >> numEdges;
     std::string line, key, value, key2;
     getline(*openFile, line);
-    for (int i=0;i<numEdges;i++){
+    for (int i = 0; i < numEdges; i++) {
         getline(*openFile, line);
         std::istringstream input(line);
-        input >> key >> key2 >>value;
+        input >> key >> key2 >> value;
         enterValue(key, key2, value);
         invalidateRegion();
         AddNewEdge();
     }
     openFile->close();
-    emit this->ui->pbSave->clicked();
-    on_pbBeautify_clicked();
+    emit ui->pbSave->clicked();
+    onPbBeautifyClicked();
 }
 
-void GraphWindow::on_actionOpen_triggered(){
-    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/", "GRAPH files (*.graph)", nullptr, QFileDialog::DontUseNativeDialog);
+void GraphWindow::onActionOpenTriggered() {
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "/home/",
+                                                "GRAPH files (*.graph)", nullptr,
+                                                QFileDialog::DontUseNativeDialog);
     std::string filename = file.toStdString();
     std::ifstream openFile;
-    m_path=filename;
+    m_path = filename;
     openFile.open(filename);
 
-    if (!openFile.fail()){
-        emit this->ui->pbDeleteAll->clicked();
+    if (!openFile.fail()) {
+        emit ui->pbDeleteAll->clicked();
         readFromFile(&openFile);
     }
 }
 
-
-void GraphWindow::on_actionSaveAsJson_triggered(){
-    if (this->m_graph->countNodes()==0){
-            QMessageBox::information(this, tr("Error"), "The scene is empty");
-    }else{
-        QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "JSON files (*.json)", nullptr, QFileDialog::DontUseNativeDialog);
-        if (!file.isEmpty()){
+void GraphWindow::onActionSaveAsJsonTriggered() {
+    if (m_graph->countNodes() == 0) {
+        QMessageBox::information(this, tr("Error"), "The scene is empty");
+    } else {
+        QString file = QFileDialog::getSaveFileName(
+                this, tr("Save File"), "/home/", "JSON files (*.json)", nullptr,
+                QFileDialog::DontUseNativeDialog);
+        if (!file.isEmpty()) {
             std::string filename = file.toStdString();
-            if (filename.substr(filename.size()-5).compare(".json")!=0){
-                filename+=".json";
+            if (filename.substr(filename.size() - 5).compare(".json") != 0) {
+                filename += ".json";
             }
 
             QJsonDocument doc = QJsonDocument::fromVariant(GraphWindow::toVariant());
@@ -650,54 +674,57 @@ void GraphWindow::on_actionSaveAsJson_triggered(){
             file.write(doc.toJson(QJsonDocument::JsonFormat::Indented));
 
             file.close();
-
         }
     }
 }
 
-void GraphWindow::saveInfoIntoFile(std::ofstream *saveFile){
+void GraphWindow::saveInfoIntoFile(std::ofstream *saveFile) {
     std::map<std::string, int> graphInfo;
-    int backgroundColor=this->ui->cbBgcolor->currentIndex();
-    int nodeRadius=this->ui->sbRadius->displayIntegerBase();
-    int nodeColor=this->ui->cbNodecolor->currentIndex();
-    int edgeColor=this->ui->cbEdgecolor->currentIndex();
+    int backgroundColor = ui->cbBgcolor->currentIndex();
+    int nodeRadius = ui->sbRadius->displayIntegerBase();
+    int nodeColor = ui->cbNodecolor->currentIndex();
+    int edgeColor = ui->cbEdgecolor->currentIndex();
 
     graphInfo.insert({"background: ", backgroundColor});
     graphInfo.insert({"nodeColor: ", nodeColor});
     graphInfo.insert({"edgeColor: ", edgeColor});
 
-    auto edges=this->m_graph->edgeSet();
-    (*saveFile)<<nodeRadius<<"\n";
+    auto edges = m_graph->edgeSet();
+    (*saveFile) << nodeRadius << "\n";
 
-    for (auto &pair: graphInfo){
-        (*saveFile)<<pair.first<<" "<<pair.second<<"\n";
+    for (auto &pair : graphInfo) {
+        (*saveFile) << pair.first << " " << pair.second << "\n";
     }
 
-    if(this->m_graph->isDirected()){
-        (*saveFile)<<"dir"<<"\n";
-    }else{
-        (*saveFile)<<"undir"<<"\n";
+    if (m_graph->isDirected()) {
+        (*saveFile) << "dir" << "\n";
+    } else {
+        (*saveFile) << "undir" << "\n";
     }
 
-    (*saveFile)<<edges.size()<<"\n";
+    (*saveFile) << edges.size() << "\n";
 
-    for (auto &edge:edges){
-        (*saveFile) << edge->first()->name()<<" "<<edge->second()->name()<<" "<< edge->weight()<<"\n";
+    for (auto &edge : edges) {
+        (*saveFile) << edge->first()->name() << " " 
+					<< edge->second()->name() << " " 
+					<< edge->weight() << "\n";
     }
 
     saveFile->close();
 }
 
-void GraphWindow::on_actionSave_triggered(){
-    if (m_path==""){
-        if (this->m_graph->countNodes()==0){
-                QMessageBox::information(this, tr("Error"), "The scene is empty");
-        }else{
-            QString file = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/", "GRAPH files (*.graph)", nullptr, QFileDialog::DontUseNativeDialog);
-            if (!file.isEmpty()){
+void GraphWindow::onActionSaveTriggered() {
+    if (m_path == "") {
+        if (m_graph->countNodes() == 0) {
+            QMessageBox::information(this, tr("Error"), "The scene is empty");
+        } else {
+            QString file = QFileDialog::getSaveFileName(
+                    this, tr("Save File"), "/home/", "GRAPH files (*.graph)", nullptr,
+                    QFileDialog::DontUseNativeDialog);
+            if (!file.isEmpty()) {
                 std::string filename = file.toStdString();
-                if (filename.substr(filename.size()-6).compare(".graph")!=0){
-                    filename+=".graph";
+                if (filename.substr(filename.size() - 6).compare(".graph") != 0) {
+                    filename += ".graph";
                 }
                 m_path = filename;
                 std::ofstream saveFile;
@@ -705,57 +732,59 @@ void GraphWindow::on_actionSave_triggered(){
                 saveInfoIntoFile(&saveFile);
             }
         }
-    }else{
+    } else {
         std::ofstream saveFile;
         saveFile.open(m_path);
         saveInfoIntoFile(&saveFile);
     }
 }
 
-void GraphWindow::on_actionClose_triggered() {
-    switch(QMessageBox::question(this, "Warning",
+void GraphWindow::onActionCloseTriggered() {
+    switch (QMessageBox::question(
+            this, "Warning",
             "<FONT COLOR='#171717'>Do you want to save changes?</FONT>",
 
-                QMessageBox::Save |
-                QMessageBox::No |
-                QMessageBox::Cancel |
+            QMessageBox::Save |
+			QMessageBox::No |
+			QMessageBox::Cancel |
 
-                QMessageBox::Cancel) )
-    {
-      case QMessageBox::Save:
-        emit on_actionSave_triggered();
+            QMessageBox::Cancel)) {
+    case QMessageBox::Save:
+        onActionSaveTriggered();
         close();
         break;
-      case QMessageBox::No:
+    case QMessageBox::No:
         close();
         break;
-      case QMessageBox::Cancel:
+    case QMessageBox::Cancel:
         break;
-      default:
+    default:
         break;
     }
     return;
 }
 
-void GraphWindow::deleteNode(Node* node) {
+void GraphWindow::deleteNode(Node *node) {
     m_graph->removeNode(node);
-    QList<QListWidgetItem *> edges = ui->lw->findItems(QString::fromStdString(node->name()), Qt::MatchContains);
-
-    for(auto edge : edges){
-        delete edge;
-    }
 }
-void GraphWindow::deleteEdge(Node* node1, Node* node2) {
 
-    QString edge = QString::fromStdString(node1->name()+"->"+node2->name());
+void GraphWindow::deleteEdge(Node *node1, Node *node2) {
+
+    QString edge;
+    if(m_graph->isDirected()){
+        edge = QString::fromStdString(node1->name() + "->" + node2->name());
+    } else {
+        edge = QString::fromStdString(node1->name() + "-" + node2->name());
+    }
+
 
     int n = ui->lw->count();
-    for(int i=0;i<n;++i){
+    for (int i = 0; i < n; ++i) {
         auto item = ui->lw->item(i);
 
-        QString  text = item->text().trimmed();
+        QString text = item->text().trimmed();
 
-        if(text.startsWith(edge)){
+        if (text.startsWith(edge)) {
             auto item1 = ui->lw->takeItem(i);
             delete item1;
             break;
@@ -765,7 +794,7 @@ void GraphWindow::deleteEdge(Node* node1, Node* node2) {
     m_graph->removeEdge(node1, node2);
 }
 
-void GraphWindow::on_pbSave_clicked() {
+void GraphWindow::onPbSaveClicked() {
     GraphicNode::m_height = ui->sbRadius->value();
     GraphicNode::m_width = ui->sbRadius->value();
     GraphicNode::m_color = QColor(m_colors[ui->cbNodecolor->currentText()]);
@@ -773,8 +802,10 @@ void GraphWindow::on_pbSave_clicked() {
     ui->graphicsView->setBackgroundBrush(QColor(m_colors[ui->cbBgcolor->currentText()]));
 
     if (ui->cbEdgecolor->currentText() == ui->cbBgcolor->currentText()) {
-        ui->lblMsg->setText(QString("\n\n\nWatch out! Your edges are the same color as the background."));
-        ui->lblMsg->setStyleSheet(QString("background-image: url(:/new/rec/Resources/warning.png)"));
+        ui->lblMsg->setText(QString(
+                "\n\n\nWatch out! Your edges are the same color as the background."));
+        ui->lblMsg->setStyleSheet(
+                QString("background-image: url(:/new/rec/Resources/warning.png)"));
     } else {
         ui->lblMsg->setText(QString());
         ui->lblMsg->setStyleSheet(QString());
@@ -782,151 +813,161 @@ void GraphWindow::on_pbSave_clicked() {
 }
 
 void GraphWindow::algorithm() {
-    if(m_graph->nodeSet().empty()){
+    if (m_graph->nodeSet().empty()) {
         warning("Insert nodes before running algorithm!");
         return;
     }
 
     auto a = new Algorithm();
 
-    if(ui->pbBFS->isChecked()){
+    if (ui->pbBFS->isChecked()) {
         auto p = new Popup();
-        if(p->exec() == QDialog::Accepted){
+        if (p->exec() == QDialog::Accepted) {
             QString nodeName = p->getNodeName();
-            Node* node = m_graph->getNode(nodeName.toStdString());
-            if(node != nullptr){
+            Node *node = m_graph->getNode(nodeName.toStdString());
+            if (node != nullptr) {
                 QWidget::setEnabled(false);
-                QList<Node*> result = a->BFS(node);
+                QList<Node *> result = a->BFS(node);
                 emit colorBFS(result, true);
-                QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
+                QMessageBox::information(
+                        this, "Finished",
+                        "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
-            }
-            else{
+            } else {
                 warning("Node with that name does not exist");
             }
         }
-    }
-    else if(ui->pbDFS->isChecked()){
+    } else if (ui->pbDFS->isChecked()) {
         auto p = new Popup();
-        if(p->exec() == QDialog::Accepted){
+        if (p->exec() == QDialog::Accepted) {
             QString nodeName = p->getNodeName();
-            Node* node = m_graph->getNode(nodeName.toStdString());
-            if(node != nullptr){
-                QHash<Node*, bool> visited;
-                QList<Node*> result;
+            Node *node = m_graph->getNode(nodeName.toStdString());
+            if (node != nullptr) {
+                QHash<Node *, bool> visited;
+                QList<Node *> result;
 
                 QWidget::setEnabled(false);
                 a->DFS(node, visited, result);
                 emit colorDFS(result, true);
-                QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
+                QMessageBox::information(
+                        this, "Finished",
+                        "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
                 QWidget::setEnabled(true);
-            }
-            else{
+            } else {
                 warning("Node with that name does not exist");
             }
         }
-    }
-    else if(ui->pbMST->isChecked()){  // works for undirected graph
+    } else if (ui->pbMST->isChecked()) { // works for undirected graph
 
         QWidget::setEnabled(false);
-        std::map<Node*, Node*> parent = a->MST(*m_graph);
-        QList<Edge*> result;
+        std::map<Node *, Node *> parent = a->MST(*m_graph);
+        QList<Edge *> result;
 
-        for (std::map<Node*, Node*>::iterator it=parent.begin(); it!=parent.end(); ++it){
-            if(it->second != nullptr)
+        for (std::map<Node *, Node *>::iterator it = parent.begin(); it != parent.end(); ++it) {
+            if (it->second != nullptr)
                 result.append(m_graph->getEdge(it->second, it->first));
-
         }
 
         emit colorMST(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
+        QMessageBox::information(
+                this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
-    }
-    else if(ui->pbDjikstra->isChecked()){
-        Node* node1;
-        Node* node2;
+    } else if (ui->pbDjikstra->isChecked()) {
+        Node *node1;
+        Node *node2;
 
         auto p = new Popup();
-        if(p->exec() == QDialog::Accepted){
+        if (p->exec() == QDialog::Accepted) {
             QString nodeName = p->getNodeName();
             node1 = m_graph->getNode(nodeName.toStdString());
-            if(node1 == nullptr)
+            if (node1 == nullptr) {
                 warning("Node with that name does not exist");
-        }
-        else{
+                return;
+            }
+
+        } else {
             delete a;
             return;
         }
-        if(p->exec() == QDialog::Accepted){
+        if (p->exec() == QDialog::Accepted) {
             QString nodeName = p->getNodeName();
             node2 = m_graph->getNode(nodeName.toStdString());
-            if(node2 == nullptr)
+            if (node2 == nullptr) {
                 warning("Node with that name does not exist");
-        }
-        else {
+                return;
+            }
+        } else {
             delete a;
             return;
         }
 
         QWidget::setEnabled(false);
-        QList<Node*> path;
-        QList<Node*> visit;
-        QList<QPair<Node*, Node*>> edges1;
+        QList<Node *> path;
+        QList<Node *> visit;
+        QList<QPair<Node *, Node *>> edges1;
         int result = a->Dijkstra(*m_graph, node1, node2, path, visit, edges1);
 
-        if(result == -1){
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>There is no path from"+ QString::fromStdString(node1->name())+" to "+ QString::fromStdString(node2->name())+"</FONT>");
-        }
-        else{
-            QList<Edge*> edges2;
-            for(auto p : edges1){
+        if (result == -1) {
+            QMessageBox::information(
+                    this, "Finished",
+                    "<FONT COLOR='#171717'>There is no path from" +
+                    QString::fromStdString(node1->name()) + " to " +
+                    QString::fromStdString(node2->name()) + "</FONT>");
+        } else {
+            QList<Edge *> edges2;
+            for (auto p : edges1) {
                 edges2.append(m_graph->getEdge(p.first, p.second));
             }
 
             emit colorDijkstra(path, visit, edges2, true);
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished. Result: "+QString::fromStdString(std::to_string(result))+"</FONT>");
+            QMessageBox::information(
+                    this, "Finished",
+                    "<FONT COLOR='#171717'>Algorithm is finished. Result: " +
+                    QString::fromStdString(std::to_string(result)) + "</FONT>");
         }
         QWidget::setEnabled(true);
-    }
-    else if(ui->pbArticulation->isChecked()){
-        QSet<Node*> result;
+    } else if (ui->pbArticulation->isChecked()) {
+        QSet<Node *> result;
 
         QWidget::setEnabled(false);
         result = a->getArticulationNodes(*m_graph);
         emit colorArticulation(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR'#171717'>Algorithm is finished</FONT>");
+        QMessageBox::information(
+                this, "Finished", "<FONT COLOR'#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
-    }
-    else if(ui->pbBridges->isChecked()){
-        QList<Edge*> result;
+    } else if (ui->pbBridges->isChecked()) {
+        QList<Edge *> result;
 
         QWidget::setEnabled(false);
         result = a->getBridges(*m_graph);
         emit colorBridges(result, true);
-        QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
+        QMessageBox::information(
+                this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         QWidget::setEnabled(true);
-    }
-    else if(ui->pbEulerian->isChecked()) {
+    } else if (ui->pbEulerian->isChecked()) {
         QWidget::setEnabled(false);
-        QList<std::string> result = a->getEulerianCircuit(*m_graph);
+        QList<std::string> result = a->getEulerianCircuit(m_graph);
 
-        if(result.size() == 0) {
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>There is no Euler cycle in this graph</FONT>");
-        }
-        else {
-            QList<Edge*> coloring;
+        if (result.size() == 0) {
+            QMessageBox::information(
+                    this, "Finished",
+                    "<FONT COLOR='#171717'>There is no Euler cycle in this graph</FONT>");
+        } else {
+            QList<Edge *> coloring;
             auto start = result.begin();
             auto end = result.end() - 1;
 
-            while(start != end) {
-                Node* u = m_graph->getNode(*start);
-                Node* v = m_graph->getNode((*(start+1)));
+            while (start != end) {
+                Node *u = m_graph->getNode(*start);
+                Node *v = m_graph->getNode((*(start + 1)));
                 coloring.push_back(m_graph->getEdge(u, v));
                 ++start;
             }
 
             emit colorEulerCycle(coloring, true);
-            QMessageBox::information(this, "Finished", "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
+            QMessageBox::information(
+                    this, "Finished",
+                    "<FONT COLOR='#171717'>Algorithm is finished</FONT>");
         }
 
         QWidget::setEnabled(true);
@@ -934,15 +975,14 @@ void GraphWindow::algorithm() {
     delete a;
 }
 
-void GraphWindow::gravityDelay(){
-        QTime dieTime = QTime::currentTime().addMSecs(3);
-        while(QTime::currentTime() < dieTime){
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
-        }
+void GraphWindow::gravityDelay() {
+    QTime dieTime = QTime::currentTime().addMSecs(3);
+    while (QTime::currentTime() < dieTime) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
+    }
 }
 
-void GraphWindow::on_pbBeautify_clicked()
-{
+void GraphWindow::onPbBeautifyClicked() {
     int numOfIters = 500;
 
     double C = 0.2;
@@ -950,7 +990,8 @@ void GraphWindow::on_pbBeautify_clicked()
     double pointsDistance = 0.0;
     double directionCorrection = m_graph->isDirected() ? 0.4 : 1.0;
 
-    QVector<GraphicNode*> nodesList = dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
+    QVector<GraphicNode *> nodesList =
+            dynamic_cast<GraphTable *>(m_GraphTable)->getNodes();
 
     QPointF normalizedVector = QPointF(0, 0);
     QPointF repulsiveForce = QPointF(0, 0);
@@ -959,26 +1000,28 @@ void GraphWindow::on_pbBeautify_clicked()
     QPointF gravityForce = QPointF(0, 0);
     QPointF centerForce = QPointF(375, 300);
 
-    for(int iter = 0; iter < numOfIters; iter++) {
+    for (int iter = 0; iter < numOfIters; iter++) {
 
         for (int i = 0; i < nodesList.size(); i++) {
 
             gravityForce += nodesList[i]->normalize(centerForce) * 0.1;
-            QList<Node*> neighourList = nodesList[i]->getNode()->neighbours();
+            QList<Node *> neighourList = nodesList[i]->getNode()->neighbours();
 
-            for(int j = 0; j < nodesList.size(); j++) {
+            for (int j = 0; j < nodesList.size(); j++) {
 
-                if(i == j)
+                if (i == j)
                     continue;
 
                 pointsDistance = nodesList[i]->distance(nodesList[j]);
                 normalizedVector = nodesList[i]->normalize(nodesList[j]);
-                repulsiveForce += (-C*K*K / pointsDistance) * normalizedVector * 0.2 * directionCorrection;
+                repulsiveForce += (-C * K * K / pointsDistance) * normalizedVector *
+                                                    0.2 * directionCorrection;
 
-                for(int k = 0; k < neighourList.size(); k++) {
+                for (int k = 0; k < neighourList.size(); k++) {
 
-                    if(nodesList[j]->getNode() == neighourList[k]) {
-                        attractionForce += pow(pointsDistance, 2) / K  * normalizedVector * 0.001 * directionCorrection;
+                    if (nodesList[j]->getNode() == neighourList[k]) {
+                        attractionForce += pow(pointsDistance, 2) / K * normalizedVector *
+                                               0.001 * directionCorrection;
                         break;
                     }
                 }
@@ -989,8 +1032,12 @@ void GraphWindow::on_pbBeautify_clicked()
             double newX = nodesList[i]->CenterPosition().x() + moveForce.x();
             double newY = nodesList[i]->CenterPosition().y() + moveForce.y();
 
-            double x = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().width() - GraphicNode::m_width, newX - nodesList[i]->m_width / 2);
-            double y = fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().height() - GraphicNode::m_height, newY - nodesList[i]->m_height / 2);
+            double x =
+                    fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().width() - GraphicNode::m_width,
+                         newX - nodesList[i]->m_width / 2);
+            double y =
+                    fmin(dynamic_cast<GraphTable *>(m_GraphTable)->sceneRect().height() - GraphicNode::m_height,
+                         newY - nodesList[i]->m_height / 2);
             x = std::fmax(0, x);
             y = std::fmax(0, y);
 
@@ -1002,4 +1049,3 @@ void GraphWindow::on_pbBeautify_clicked()
         gravityDelay();
     }
 }
-

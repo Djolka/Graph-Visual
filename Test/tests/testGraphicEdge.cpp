@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "../GraphVisual/Headers/graphicedge.h"
-#include "../GraphVisual/Headers/graphtable.h"
+#include "graphicedge.h"
+#include "graphtable.h"
 #include <QApplication>
 
 

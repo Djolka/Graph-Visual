@@ -1,19 +1,17 @@
-#include "Headers/graphtable.h"
-#include "Headers/graphicnode.h"
-#include "Headers/graphicedge.h"
+#include "graphtable.h"
+#include "graphicedge.h"
+#include "graphicnode.h"
 
-#include "Headers/popup.h"
+#include "popup.h"
 #include "qapplication.h"
 #include "qdatetime.h"
 #include <QMessageBox>
-#include <iostream>
 #include <QTime>
+#include <iostream>
 
-#include<cmath>
+#include <cmath>
 
-
-GraphTable::GraphTable(bool dir, QObject *parent)
-    : QGraphicsScene(parent) {
+GraphTable::GraphTable(bool dir, QObject *parent) : QGraphicsScene(parent) {
     m_directed = dir;
 }
 
@@ -32,18 +30,17 @@ void GraphTable::AddNewEdgeOnTable(GraphicEdge *edge) {
     connect(edge, &GraphicEdge::needRedraw, this, &GraphTable::Redraw);
     connect(edge, &GraphicEdge::needWarning, this, &GraphTable::Warning);
 
-
     addItem(edge);
     addWidget(edge->getLineEdit());
 }
 
 void GraphTable::DeleteGraphFromTable() {
-    for(auto edge : m_Edges) {
+    for (auto edge : m_Edges) {
         removeItem(edge);
         delete edge;
     }
     m_Edges.clear();
-    for(auto node : m_Nodes) {
+    for (auto node : m_Nodes) {
         removeItem(node);
         delete node;
     }
@@ -51,9 +48,7 @@ void GraphTable::DeleteGraphFromTable() {
     update();
 }
 
-void GraphTable::Redraw(){
-    this->update();
-}
+void GraphTable::Redraw() { update(); }
 
 void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     const int tableWidth = static_cast<int>(width());
@@ -66,68 +61,72 @@ void GraphTable::PlaceNodeOnTable(GraphicNode *node) {
     node->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 }
 
+QVector<GraphicNode *> GraphTable::getNodes() { return m_Nodes; }
+QVector<GraphicEdge *> GraphTable::getEdges() { return m_Edges; }
 
-QVector<GraphicNode *> GraphTable::getNodes(){
-    return m_Nodes;
-}
-QVector<GraphicEdge *> GraphTable::getEdges(){
-    return m_Edges;
-}
-
-void GraphTable::editWeight(GraphicEdge* edge, int w){
+void GraphTable::editWeight(GraphicEdge *edge, int w) {
     emit edgeWeightChanged(edge->getStart()->getNode(), edge->getEnd()->getNode(), w);
 }
 
-void GraphTable::Warning (QString s){
-    emit needWarning(s);
-}
+void GraphTable::Warning(QString s) { emit needWarning(s); }
 
 bool GraphTable::hasGraphicEdge(GraphicNode *u, GraphicNode *v) {
     auto it = m_Edges.begin();
-    for(;it != m_Edges.end(); ++it){
-        if ((*it)->getStart()->getNode() == u->getNode() && (*it)->getEnd()->getNode() == v->getNode()){
-            return true;
+    for (; it != m_Edges.end(); ++it) {
+        if (m_directed) {
+            if ((*it)->getStart()->getNode() == u->getNode() &&
+                (*it)->getEnd()->getNode() == v->getNode()) {
+                return true;
+            }
+        } else {
+            if (((*it)->getStart()->getNode() == u->getNode() &&
+                (*it)->getEnd()->getNode() == v->getNode()) ||
+                ((*it)->getEnd()->getNode() == u->getNode() &&
+                (*it)->getStart()->getNode() == v->getNode())) {
+                return true;
+            }
         }
+
     }
     return false;
 }
 
-void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
+void GraphTable::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
-    if(m_drawingMode && itemAt(event->scenePos(), QTransform()) == NULL){
-        if(m_hasTmp){
+    if (m_drawingMode && itemAt(event->scenePos(), QTransform()) == nullptr) {
+        if (m_hasTmp) {
             setHasTmp(false);
-        }
-        else{
-            Popup* p = new Popup();
+        } else {
+            auto p = new Popup();
 
-            if(p->exec() == QDialog::Accepted){
+            if (p->exec() == QDialog::Accepted) {
 
                 QString nodeName = p->getNodeName();
 
                 bool alreadyExists = false;
-                for(GraphicNode* n : m_Nodes){
-                    if(n->getNode()->name() == nodeName.toStdString()){
+                for (GraphicNode *n : m_Nodes) {
+                    if (n->getNode()->name() == nodeName.toStdString()) {
                         alreadyExists = true;
                         emit needWarning("Node with that name already exists");
                         break;
                     }
                 }
 
+                if (!alreadyExists && !(nodeName.length() == 0)) {
 
-                if(!alreadyExists && !(nodeName.length()==0)){
+                    Node *node = new Node(nodeName.toStdString());
+                    auto graphicNode = new GraphicNode(node);
 
-                    Node* node = new Node(nodeName.toStdString());
-                    GraphicNode* graphicNode = new GraphicNode(node);
-
-                    QPointF point = event->scenePos() - QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2);
+                    QPointF point =
+                            event->scenePos() -
+                            QPointF(graphicNode->m_width / 2, graphicNode->m_height / 2);
                     qreal x = 0, y = 0;
                     x = std::min(sceneRect().width() - GraphicNode::m_width, point.x());
                     y = std::min(sceneRect().height() - GraphicNode::m_height, point.y());
                     x = std::fmax(0, x);
                     y = std::fmax(0, y);
 
-                    if(m_Nodes.size() >= 15){
+                    if (m_Nodes.size() >= 15) {
                         Warning("You have reached the maximum number of nodes allowed");
                         delete node;
                         delete graphicNode;
@@ -140,129 +139,122 @@ void GraphTable::mousePressEvent ( QGraphicsSceneMouseEvent * event ){
                     emit addedNewNode(node);
                 }
             }
+            delete p;
         }
-    }
-    else if(m_drawingMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){ //click on node
-        if(!m_hasTmp){
-            this->m_tmp = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+    } else if (m_drawingMode &&
+               (itemAt(event->scenePos(), QTransform())->type() == 1)) { // click on node
+        if (!m_hasTmp) {
+            m_tmp = dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
             setHasTmp(true);
-        }
-        else{
-            GraphicNode* node = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+        } else {
+            GraphicNode *node = dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
 
-            if(!hasGraphicEdge(m_tmp, node) && m_tmp != node) {
-                GraphicEdge* edge = new GraphicEdge(m_tmp, node, 1, m_directed);
+            if (!hasGraphicEdge(m_tmp, node) && m_tmp != node) {
+                auto edge = new GraphicEdge(m_tmp, node, 1, m_directed);
                 AddNewEdgeOnTable(edge);
-
 
                 emit addedNewEdge(m_tmp->getNode(), node->getNode(), 1);
             }
 
             setHasTmp(false);
         }
-        this->update();
-    }
-    else if(m_deleteMode && itemAt(event->scenePos(), QTransform()) == NULL){
+        update();
+    } else if (m_deleteMode && itemAt(event->scenePos(), QTransform()) == nullptr) {
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
-    }
-    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 1)){ //delete node
-        const auto graphicNode = dynamic_cast<GraphicNode*>(itemAt(event->scenePos(), QTransform()));
+    } else if (m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 1)) { // delete node
+        const auto graphicNode =
+                dynamic_cast<GraphicNode *>(itemAt(event->scenePos(), QTransform()));
         removeItem(graphicNode);
         m_Nodes.removeOne(graphicNode);
 
-        Node* node = graphicNode->getNode();
+        Node *node = graphicNode->getNode();
 
         // delete edges around the node
-        auto i = m_Edges.begin();
+        QVector<GraphicEdge *>::iterator i = m_Edges.begin();
         while (i != m_Edges.end()) {
-            if((*i)->getStart()->getNode()==node || (*i)->getEnd()->getNode()==node){
+            if ((*i)->getStart()->getNode() == node ||
+                    (*i)->getEnd()->getNode() == node) {
                 removeItem(*i);
                 removeItem((*i)->getLineEdit()->graphicsProxyWidget());
-                emit deletedEdge((*i)->getStart()->getNode(), (*i)->getEnd()->getNode());
+                emit deletedEdge((*i)->getStart()->getNode(),
+                                 (*i)->getEnd()->getNode());
                 i = m_Edges.erase(i);
                 Redraw();
-            }
-            else
+            } else
                 ++i;
         }
 
         emit deletedNode(node);
-    }
-    else if(m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)){ //delete edge
-        const auto graphicEdge = dynamic_cast<GraphicEdge*>(itemAt(event->scenePos(), QTransform()));
+    } else if (m_deleteMode && (itemAt(event->scenePos(), QTransform())->type() == 2)) { // delete edge
+        const auto graphicEdge = dynamic_cast<GraphicEdge *>(itemAt(event->scenePos(), QTransform()));
         removeItem(graphicEdge);
         removeItem(graphicEdge->getLineEdit()->graphicsProxyWidget());
         m_Edges.removeOne(graphicEdge);
 
         Redraw();
 
-        emit deletedEdge(graphicEdge->getStart()->getNode(), graphicEdge->getEnd()->getNode());
-    }
-    else{
+        emit deletedEdge(graphicEdge->getStart()->getNode(),
+                         graphicEdge->getEnd()->getNode());
+    } else {
         setHasTmp(false);
         QGraphicsScene::mousePressEvent(event);
     }
 }
 
-void GraphTable::setDrawingMode(bool x) {
-    m_drawingMode = x;
-}
-void GraphTable::setHasTmp(bool x) {
-    m_hasTmp = x;
-}
-void GraphTable::setDeleteMode(bool x) {
-    m_deleteMode = x;
-}
-
+void GraphTable::setDrawingMode(bool x) { m_drawingMode = x; }
+void GraphTable::setHasTmp(bool x) { m_hasTmp = x; }
+void GraphTable::setDeleteMode(bool x) { m_deleteMode = x; }
 
 void GraphTable::delay() {
-    QTime dieTime = QTime::currentTime().addMSecs(4000-m_sliderValue);
-    while(QTime::currentTime() < dieTime){
+    QTime dieTime = QTime::currentTime().addMSecs(4000 - m_sliderValue);
+    while (QTime::currentTime() < dieTime) {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
 }
 
-GraphicNode* GraphTable::getGraphicNode(Node *node) {
-    for(GraphicNode *gn : m_Nodes)
-        if(gn->getNode()->name() == node->name())
+GraphicNode *GraphTable::getGraphicNode(Node *node) {
+    for (GraphicNode *gn : m_Nodes)
+        if (gn->getNode()->name() == node->name())
             return gn;
 
     return nullptr;
 }
-GraphicEdge* GraphTable::getGraphicEdge(Edge *edge) {
+GraphicEdge *GraphTable::getGraphicEdge(Edge *edge) {
 
-    for(GraphicEdge *ge : m_Edges){
+    for (GraphicEdge *ge : m_Edges) {
 
-        if((ge->getStart()->getNode()->name() == edge->first()->name() && ge->getEnd()->getNode()->name() == edge->second()->name())
-                ||(ge->getStart()->getNode()->name() == edge->second()->name() && ge->getEnd()->getNode()->name() == edge->first()->name())){
+        if ((ge->getStart()->getNode()->name() == edge->first()->name() &&
+                ge->getEnd()->getNode()->name() == edge->second()->name()) ||
+            (ge->getStart()->getNode()->name() == edge->second()->name() &&
+                ge->getEnd()->getNode()->name() == edge->first()->name())) {
             return ge;
         }
     }
     return nullptr;
 }
 
-
-void GraphTable::colorNodes(QList<Node*> result) {
+void GraphTable::colorNodes(QList<Node *> result) {
     reset();
-    for(auto n : result){
-        GraphicNode* node = getGraphicNode(n);
+    for (auto n : result) {
+        GraphicNode *node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), true);
         Redraw();
         delay();
     }
 }
 
-void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList<Edge*> edges) {
+void GraphTable::colorNodesDijkstra(QList<Node *> path, QList<Node *> visit,
+                                    QList<Edge *> edges) {
     reset();
-    for(auto n : visit){
-        GraphicNode* node = getGraphicNode(n);
+    for (auto n : visit) {
+        GraphicNode *node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), true);
         Redraw();
 
-        for(auto e : edges){
-            if(e->first()->name()==n->name() || e->second()->name()==n->name()){
-                GraphicEdge* edge = getGraphicEdge(e);
+        for (auto e : edges) {
+            if (e->first()->name() == n->name() || e->second()->name() == n->name()) {
+                GraphicEdge *edge = getGraphicEdge(e);
                 edge->setPen(QPen(Qt::red), true);
                 Redraw();
                 delay();
@@ -271,7 +263,7 @@ void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList
             }
         }
 
-        if(!path.contains(n)){
+        if (!path.contains(n)) {
             delay();
             node->setBrush(QBrush(GraphicNode::m_color), true);
         }
@@ -280,10 +272,10 @@ void GraphTable::colorNodesDijkstra(QList<Node*> path, QList<Node*> visit, QList
     }
 }
 
-void GraphTable::colorEdges(QList<Edge*> result) {
+void GraphTable::colorEdges(QList<Edge *> result) {
     reset();
-    for(auto e : result){
-        GraphicEdge* edge = getGraphicEdge(e);
+    for (auto e : result) {
+        GraphicEdge *edge = getGraphicEdge(e);
 
         edge->setPen(QPen(Qt::red), true);
         Redraw();
@@ -291,12 +283,10 @@ void GraphTable::colorEdges(QList<Edge*> result) {
     }
 }
 
-
-
 void GraphTable::colorNodesSet(QSet<Node *> result) {
     reset();
-    for(auto n : result){
-        GraphicNode* node = getGraphicNode(n);
+    for (auto n : result) {
+        GraphicNode *node = getGraphicNode(n);
         node->setBrush(QBrush(Qt::red), true);
         Redraw();
         delay();
@@ -304,23 +294,17 @@ void GraphTable::colorNodesSet(QSet<Node *> result) {
 }
 
 void GraphTable::reset() {
-     for(GraphicNode* node : m_Nodes){
-         node->setBrush(QBrush(GraphicNode::m_color), false);
-     }
-     for(GraphicEdge* edge : m_Edges){
-         edge->setPen(QPen(GraphicEdge::m_color), false);
-     }
-     Redraw();
- }
-
-void GraphTable::setToDir() {
-    m_directed = true;
+    for (GraphicNode *node : m_Nodes) {
+        node->setBrush(QBrush(GraphicNode::m_color), false);
+    }
+    for (GraphicEdge *edge : m_Edges) {
+        edge->setPen(QPen(GraphicEdge::m_color), false);
+    }
+    Redraw();
 }
 
-void GraphTable::setToUndir() {
-    m_directed = false;
-}
+void GraphTable::setToDir() { m_directed = true; }
 
-void GraphTable::changeSliderValue(int value) {
-    m_sliderValue = value;
-}
+void GraphTable::setToUndir() { m_directed = false; }
+
+void GraphTable::changeSliderValue(int value) { m_sliderValue = value; }
